@@ -16,9 +16,10 @@ class LoginProtection(object):
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         if hasattr(request, 'session') and 'shopify' in request.session:
-            shopify.ShopifyResource.site = request.session['shopify'].site
+            shopify.ShopifyResource.activate_session(request.session['shopify'])
 
     def process_response(self, request, response):
         shopify.ShopifyResource.site = None
         return response
+
 

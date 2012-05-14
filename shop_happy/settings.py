@@ -98,6 +98,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
+    'django.core.context_processors.static',
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
     # shopify
@@ -146,6 +147,8 @@ INSTALLED_APPS = (
     'shop_happy.apps.default',
     # Product email
     'shop_happy.apps.mail',
+    # Application Settings - Allow user to modify the settings
+    'shop_happy.apps.app_settings',
     # Product review
     'shop_happy.apps.product_review',
 )

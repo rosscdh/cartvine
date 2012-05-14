@@ -1,1 +1,30 @@
 {% extends 'default/base.html' %}
+{% load i18n %}
+
+{% block title %}{{ super }} - Install Shop Happy{% endblock %}
+
+{% block content-head %}
+<h1>Install Shop Happy</h1>
+{% endblock %}
+
+{% block body %}
+{% if not current_shop %}
+    <form action="{% url default:index %}" method="GET" class="form-search">
+        {{ form.shop.errors }}
+        <i class="icon-off"></i>
+        <label for="id_shop">{{ form.shop.label }}</label>
+        {{ form.shop }}
+
+        <div class="form-actions">
+        <button class="btn btn-primary" type="submit">{% trans 'Install' %}</button>
+        </div>
+    </form>
+{% else %}
+    <h3>You have successfully installed the app</h3>
+    <p>Now you can:</p>
+    <ul>
+        <li><i class="icon-ok-circle"></i>Setup your app settings</li>
+        <li><i class="icon-asterisk"></i>Setup your product review page</li>
+    </ul>
+{% endif %}
+{% endblock %}
