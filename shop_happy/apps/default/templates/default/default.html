@@ -23,8 +23,8 @@
     <h3>You have successfully installed the app</h3>
     <p>Now you can:</p>
     <ul>
-        <li><i class="icon-ok-circle"></i>Setup your app settings</li>
-        <li><i class="icon-asterisk"></i>Setup your product review page</li>
+        <li><i class="icon-ok-circle"></i><a href="{% url myapp:settings %}">Setup your app settings</a></li>
+        <li><i class="icon-asterisk"></i><a href="{% url myapp:design %}">Setup your product review page</a></li>
     </ul>
 {% endif %}
 {% endblock %}
