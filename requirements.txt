@@ -1,0 +1,13 @@
+django
+django_annoying
+django_extensions
+Werkzeug
+south
+django-tastypie
+-e git+https://github.com/Shopify/shopify_python_api.git#egg=shopify
+
+# Email template system
+-e git+https://github.com/bradwhittington/django-templated-email.git#egg=django-templated-email
+
+# Tasks
+-e git+https://github.com/dcramer/taskmaster.git#egg=taskmaster
