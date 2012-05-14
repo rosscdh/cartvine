@@ -136,6 +136,7 @@ INSTALLED_APPS = (
 
     # helpers
     'django_extensions',
+    'annoying',
     'south',
 
     # Addons
