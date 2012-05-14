@@ -4,6 +4,8 @@ django_extensions
 Werkzeug
 south
 django-tastypie
+django-debug-toolbar
+
 -e git+https://github.com/Shopify/shopify_python_api.git#egg=shopify
 
 # Email template system
@@ -11,3 +13,6 @@ django-tastypie
 
 # Tasks
 -e git+https://github.com/dcramer/taskmaster.git#egg=taskmaster
+
+# Thumbnails
+-e git+https://github.com/sorl/sorl-thumbnail.git#egg=sorl-thumbnail

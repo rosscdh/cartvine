@@ -138,8 +138,13 @@ INSTALLED_APPS = (
     'django_extensions',
     'south',
 
+    # Addons
+    'sorl.thumbnail',
+
     # Default - Install the shopify app
     'shop_happy.apps.default',
+    # Product email
+    'shop_happy.apps.mail',
     # Product review
     'shop_happy.apps.product_review',
 )
