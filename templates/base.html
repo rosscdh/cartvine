@@ -42,13 +42,16 @@
           <a class="brand" href="/">{{ SITE }}</a>
           <div class="nav-collapse">
             <ul class="nav">
+                {% if current_shop and user.is_authenticated %}
+                {% endif %}
             </ul>
 
             <p class="navbar-text pull-right">
-                {% if current_shop %}
+                {% if current_shop and user.is_authenticated %}
                 {% blocktrans with current_shop.name as shop_name %}
                 Logged in as {{ shop_name }}
                 {% endblocktrans %}
+                <a href="{% url default:logout %}">{% trans 'Logout' %}</a>
                 {% endif %}
             </p>
 

@@ -1,6 +1,7 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ImproperlyConfigured
 import shopify
 
 from django.contrib.auth.models import User
@@ -43,13 +44,20 @@ class ShopManager(models.Manager):
         """ Create the webhook on the remote app if it does not exist """
         webhook_callback_address = request.build_absolute_uri(reverse('webhook:invite_review_create'))
         webhook = shopify.Webhook.find(address=webhook_callback_address)
+
         if not webhook:
             # Create it
-            webhook = shopify.Webhook()
-            webhook.topic = 'orders/create'
-            webhook.address = webhook_callback_address
-            webhook.format = 'json'
-            webhook.save()
+            new_webhook = shopify.Webhook()
+            new_webhook.topic = 'orders/create'
+            new_webhook.address = webhook_callback_address
+            new_webhook.format = 'json'
+            new_webhook.save()
+
+            # Try to get the newly created webhook again
+            webhook = shopify.Webhook.find(address=webhook_callback_address)
+            if not webhook:
+                # no luck is probably the host
+                raise ImproperlyConfigured('Suspect that %s is not allowed by remote host' %(webhook_callback_address,))
 
         return webhook
 
