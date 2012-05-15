@@ -8,10 +8,11 @@ from django.views.generic import DetailView, ListView
 
 import shopify
 
+from models import Product
 
 
 class ProductListView(ListView):
-    object_list = []
+    model = Product
 
     def get_context_data(self, **kwargs):
         product_list = shopify.Product.find(limit=3)

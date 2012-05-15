@@ -1,0 +1,12 @@
+{% extends 'product/base.html' %}
+{% load i18n %}
+
+{% block title %}{{ super }} - Your Products{% endblock %}
+
+{% block content-head %}
+<h1>Your Products</h1>
+{% endblock %}
+
+{% block body %}
+{% object_list %}
+{% endblock %}
