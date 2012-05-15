@@ -10,3 +10,7 @@ STATIC_ROOT = '/home/stard0g101/webapps/static/shopify'
 STATICFILES_DIRS = (
     '/home/stard0g101/webapps/static/shopify/base/',
 )
+
+# Shopify Key
+SHOPIFY_API_KEY = '44af80f89180e77316223733d99bf8c7'
+SHOPIFY_API_SECRET = '0ee7abaeade2098cec4c8e2bf3770fe8'
