@@ -2,7 +2,7 @@ import os
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__+ '/../'))
 
-STATIC_URL = '/static/shopify/'
+STATIC_URL = '/static/shop_happy/'
 
 STATIC_ROOT = '/home/stard0g101/webapps/static/shop_happy/'
 
