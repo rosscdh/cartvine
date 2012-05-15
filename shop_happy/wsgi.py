@@ -13,16 +13,19 @@ middleware here, or combine a Django application with an application of another
 framework.
 
 """
-import os
+import os, sys, site
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "shop_happy.settings")
+# Tell wsgi to add the Python site-packages to its path. 
+site.addsitedir('/home/stard0g101/.virtualenvs/shop_happy/lib/python2.7/site-packages')
 
-# This application object is used by any WSGI server configured to use this
-# file. This includes Django's development server, if the WSGI_APPLICATION
-# setting points here.
-from django.core.wsgi import get_wsgi_application
-application = get_wsgi_application()
+os.environ['DJANGO_SETTINGS_MODULE'] = 'shop_happy.settings'
 
-# Apply WSGI middleware here.
-# from helloworld.wsgi import HelloWorldApplication
-# application = HelloWorldApplication(application)
+activate_this = os.path.expanduser("~/.virtualenvs/shop_happy/bin/activate_this.py")
+execfile(activate_this, dict(__file__=activate_this))
+
+# Calculate the path based on the location of the WSGI script
+project = '/home/stard0g101/webapps/shop_happy/'
+workspace = os.path.dirname(project)
+sys.path.append(workspace)
+
+from django.core.handlers.wsgi import WSGIHandler
