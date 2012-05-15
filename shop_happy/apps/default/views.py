@@ -53,13 +53,21 @@ class LogoutView(RedirectView):
 class FinalizeInstallationView(RedirectView):
 
     def get_or_create_shop(self, shopify_session):
-        assert False
-        shop = Shop.objects.get_or_create(url=shopify_session.site)
+        shopify.ShopifyResource.activate_session(shopify_session)
+
+        current_shop = shopify.Shop.current()
+
+        domain_parts = current_shop.__dict__['attributes']['domain'].split('.')
+
+        shop, is_new = Shop.objects.get_or_create(shopify_id=current_shop.id, slug=domain_parts[0], url=shopify_session.site, name=current_shop.name)
+        shop.data = current_shop.__dict__['attributes']
+        shop.save()
+
         return shop
 
     def get_or_create_user(self, shop):
-        user = User.objects.get_or_create()
         assert False
+        user = User.objects.get_or_create()
         return None
 
     def get(self, request, *args, **kwargs):
@@ -67,15 +75,15 @@ class FinalizeInstallationView(RedirectView):
         if shop_url:
             try:
                 shopify_session = shopify.Session(shop_url, request.REQUEST)
-                
-                shop = self.get_or_create_shop(shopify_session)
-                user = self.get_or_create_user(shop)
-
             except shopify.ValidationException:
                 messages.error(request, _('Could not log in to Shopify store.'))
                 return redirect(reverse('default:login'))
 
+            shop = self.get_or_create_shop(shopify_session)
+            user = self.get_or_create_user(shop)
+
             request.session['shopify'] = shopify_session
+
             messages.info(request, _('Sucessfully logged into your shopify store.'))
 
         response = redirect(_return_address(request))

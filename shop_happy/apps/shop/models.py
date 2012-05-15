@@ -3,8 +3,9 @@ from shop_happy.fields import JSONField
 
 
 class Shop(models.Model):
-    name = models.CharField(null=True, blank=True, max_length=255)
-    slug = models.SlugField(null=True)
-    url = models.URLField(null=False, blank=False)
+    name = models.CharField(max_length=255)
+    shopify_id = models.IntegerField()
+    slug = models.SlugField()
+    url = models.URLField()
     data = JSONField(null=True)
 
