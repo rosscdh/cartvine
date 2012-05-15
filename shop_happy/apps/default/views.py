@@ -81,6 +81,19 @@ class FinalizeInstallationView(RedirectView):
             shop.users.add(user)
         return user
 
+    def create_webhook_if_not_exists(self, request):
+        """ Create the webhook on the remote app if it does not exist """
+        webhook_callback_address = request.build_absolute_uri(reverse('webhook:invite_review_create'))
+        webhook = shopify.Webhook.find(address=webhook_callback_address)
+        if not webhook:
+            # Create it
+            webhook = shopify.Webhook()
+            webhook.topic = 'orders/create'
+            webhook.address = webhook_callback_address
+            webhook.format = 'json'
+            webhook.save()
+
+
     def get(self, request, *args, **kwargs):
         shop_url = request.REQUEST.get('shop', None)
         if shop_url:
@@ -94,6 +107,7 @@ class FinalizeInstallationView(RedirectView):
             user = self.get_or_create_user(shop)
             authenticate(user=user, access_token=shopify_session.token)
             login(request, user)
+            self.create_webhook_if_not_exists(request)
 
             request.session['shopify'] = shopify_session
 
