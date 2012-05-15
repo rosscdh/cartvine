@@ -70,14 +70,15 @@ class FinalizeInstallationView(RedirectView):
             # Create/Get Shopify User
             user = Shop.objects.get_or_create_user(shop)
 
+            # Get the user logged in if possible
             authenticate(user=user, access_token=shopify_session.token)
             login(request, user)
 
             # Create/Get Shopify Webhook
             webhook = Shop.objects.create_webhook_if_not_exists(request)
 
+            # Setup the shopify session and show message
             request.session['shopify'] = shopify_session
-
             messages.info(request, _('Sucessfully logged into your shopify store.'))
 
         response = redirect(_return_address(request))
