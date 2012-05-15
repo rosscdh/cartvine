@@ -12,7 +12,8 @@ django-debug-toolbar
 -e git+https://github.com/bradwhittington/django-templated-email.git#egg=django-templated-email
 
 # Tasks
--e git+https://github.com/dcramer/taskmaster.git#egg=taskmaster
+#-e git+https://github.com/dcramer/taskmaster.git#egg=taskmaster
 
 # Thumbnails
+pil
 -e git+https://github.com/sorl/sorl-thumbnail.git#egg=sorl-thumbnail
