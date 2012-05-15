@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render_to_response, redirect
 from django.core.urlresolvers import reverse
 from django.views.generic.base import TemplateView, RedirectView
-from django.template.defaultfilters import slugify
+
 
 import shopify
 
