@@ -5,9 +5,12 @@ from django.shortcuts import render_to_response, redirect
 from django.core.urlresolvers import reverse
 from django.views.generic.base import TemplateView, RedirectView
 
+import shopify
+
+from django.contrib.auth.models import User
+from shop_happy.apps.shop.models import Shop
 
 from forms import ShopifyInstallForm
-import shopify
 
 
 def _return_address(request):
@@ -37,20 +40,43 @@ class LoginView(TemplateView):
 
 
 class LogoutView(RedirectView):
-    url = '/'
+
+    def get(self, request, *args, **kwargs):
+        # Clear shopify Session
+        shopify.ShopifyResource.clear_session()
+        request.session.pop('shopify', None)
+        messages.info(request, _('Successfully logged out.'))
+
+        return redirect(reverse('default:index'))
 
 
 class FinalizeInstallationView(RedirectView):
-    def get(self, request, *args, **kwargs):
-        shop_url = request.REQUEST.get('shop')
-        try:
-            shopify_session = shopify.Session(shop_url, request.REQUEST)
-        except shopify.ValidationException:
-            messages.error(request, _('Could not log in to Shopify store.'))
-            return redirect(reverse('default:login'))
 
-        request.session['shopify'] = shopify_session
-        messages.info(request, _('Sucessfully logged into your shopify store.'))
+    def get_or_create_shop(self, shopify_session):
+        assert False
+        shop = Shop.objects.get_or_create(url=shopify_session.site)
+        return shop
+
+    def get_or_create_user(self, shop):
+        user = User.objects.get_or_create()
+        assert False
+        return None
+
+    def get(self, request, *args, **kwargs):
+        shop_url = request.REQUEST.get('shop', None)
+        if shop_url:
+            try:
+                shopify_session = shopify.Session(shop_url, request.REQUEST)
+                
+                shop = self.get_or_create_shop(shopify_session)
+                user = self.get_or_create_user(shop)
+
+            except shopify.ValidationException:
+                messages.error(request, _('Could not log in to Shopify store.'))
+                return redirect(reverse('default:login'))
+
+            request.session['shopify'] = shopify_session
+            messages.info(request, _('Sucessfully logged into your shopify store.'))
 
         response = redirect(_return_address(request))
         request.session.pop('return_to', None)

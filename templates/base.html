@@ -28,7 +28,7 @@
     {% block css %}{% endblock %}
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target=".subnav" data-offset="50">
 
     <div id="navbar" class="navbar navbar-fixed-top">
       <div class="navbar-inner">
@@ -45,8 +45,10 @@
             </ul>
 
             <p class="navbar-text pull-right">
-                {% if user.is_authenticated %}
-                {% else %}
+                {% if current_shop %}
+                {% blocktrans with current_shop.name as shop_name %}
+                Logged in as {{ shop_name }}
+                {% endblocktrans %}
                 {% endif %}
             </p>
 
@@ -54,9 +56,11 @@
         </div>
       </div>
     </div>
-
+  
     <div class="container">
+
         <div id="lang-selector" class="row">&nbsp;</div>
+
         {% if messages %}
         <div class="row">
         <ul class="messages">
@@ -66,9 +70,10 @@
         </ul>
         </div>
         {% endif %}
-        {% block content-head %}{% endblock %}
+        <div class="page-header">{% block content-head %}{% endblock %}</div>
         {% block pre-body %}{% endblock %}
         {% block body %}{% endblock %}
+
     </div> <!-- /container -->
 
     <p>&nbsp;</p>

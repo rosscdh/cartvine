@@ -4,7 +4,11 @@
 {% block title %}{{ super }} - Install Shop Happy{% endblock %}
 
 {% block content-head %}
+{% if not current_shop %}
 <h1>Login & Install Shop Happy</h1>
+{% else %}
+<h1>Welcome to Shop Happy</h1>
+{% endif %}
 {% endblock %}
 
 {% block body %}
@@ -26,6 +30,11 @@
     <ul>
         <li><i class="icon-ok-circle"></i><a href="{% url my_app:settings %}">Setup your app settings</a></li>
         <li><i class="icon-asterisk"></i><a href="{% url my_app:design %}">Setup your product review page</a></li>
+    </ul>
+    <ul>
+        <li><i class="icon-ok-circle"></i><a href="{% url my_app:settings %}">View reviews of your Products</a></li>
+        <li><i class="icon-ok-circle"></i><a href="{% url my_app:settings %}">View Reviewers</a></li>
+        <li><i class="icon-ok-circle"></i><a href="{% url my_app:settings %}">View pending invitation messages</a></li>
     </ul>
 {% endif %}
 {% endblock %}

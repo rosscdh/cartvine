@@ -149,7 +149,13 @@ INSTALLED_APPS = (
     'shop_happy.apps.mail',
     # Application Settings - Allow user to modify the settings
     'shop_happy.apps.app_settings',
-    # Product review
+
+    # Shop
+    'shop_happy.apps.shop',
+
+    # Product
+    'shop_happy.apps.product',
+    # Product reviews
     'shop_happy.apps.product_review',
 )
 
