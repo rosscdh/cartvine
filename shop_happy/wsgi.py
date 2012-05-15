@@ -16,7 +16,7 @@ framework.
 import os, sys, site
 
 # Tell wsgi to add the Python site-packages to its path. 
-site.addsitedir('/home/stard0g101/.virtualenvs/shop_happy/lib/python2.7/site-packages')
+site.addsitedir('/home/stard0g101/.virtualenvs/shop_happy/lib/python2.6/site-packages')
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'shop_happy.settings'
 
@@ -24,8 +24,10 @@ activate_this = os.path.expanduser("~/.virtualenvs/shop_happy/bin/activate_this.
 execfile(activate_this, dict(__file__=activate_this))
 
 # Calculate the path based on the location of the WSGI script
-project = '/home/stard0g101/webapps/shop_happy/'
+project = '/home/stard0g101/webapps/shop_happy/shop_happy/'
 workspace = os.path.dirname(project)
 sys.path.append(workspace)
 
 from django.core.handlers.wsgi import WSGIHandler
+application = WSGIHandler()
+
