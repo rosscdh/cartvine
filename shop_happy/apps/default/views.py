@@ -37,12 +37,8 @@ class DefaultView(TemplateView):
         })
 
 
-class LoginView(TemplateView):
-    pass
-
-
 class LogoutView(RedirectView):
-
+    """ Log the user out """
     def get(self, request, *args, **kwargs):
         # Clear shopify Session
         shopify.ShopifyResource.clear_session()
@@ -53,8 +49,13 @@ class LogoutView(RedirectView):
         return redirect(reverse('default:index'))
 
 
+# LoginView - Effectively the same thing.. our login is dependent on the shopify api
 class FinalizeInstallationView(RedirectView):
-
+    """
+    Class finalizes the login process and will create the shop as well as user
+    if they do not exist. Has been written to cater to multiple users associated
+    with one shop
+    """
     def get_or_create_shop(self, shopify_session):
         shopify.ShopifyResource.activate_session(shopify_session)
 
