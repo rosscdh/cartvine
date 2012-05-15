@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.core.urlresolvers import reverse
 
@@ -7,7 +8,6 @@ from views import SettingsView, DesignView
 
 
 urlpatterns = patterns('',
-    url(r'^settings/$', shop_login_required(SettingsView.as_view()), name='settings'),
-    url(r'^design/$', shop_login_required(DesignView.as_view()), name='design'),
-
+    url(r'^settings/$', SettingsView.as_view(), name='settings'),
+    url(r'^design/$', DesignView.as_view(), name='design'),
 )

@@ -1,15 +1,22 @@
 {% extends 'product_review/base.html' %}
 {% load i18n %}
 
-{% block title %}Product Review of - {% endblock %}
+{% block title %}Your review of - {% endblock %}
 
 {% block content-head %}
-<h1>Product Review of - </h1>
+<h1>Your review of - </h1>
 {% endblock %}
 
 {% block body %}
 <div class="row">
-    Social stuff, link, +1, tweet
+
+    <form action="" method="GET" class="form-search">
+        {{ form.as_p }}
+        <div class="form-actions">
+        <button class="btn btn-primary" type="submit">{% trans 'Save' %}</button>
+        </div>
+    </form>
+
 </div>
 <div class="row">
     <div class="span3">Image slideshow</div>

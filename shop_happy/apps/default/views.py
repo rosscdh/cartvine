@@ -32,6 +32,14 @@ class DefaultView(TemplateView):
         })
 
 
+class LoginView(TemplateView):
+    pass
+
+
+class LogoutView(RedirectView):
+    url = '/'
+
+
 class FinalizeInstallationView(RedirectView):
     def get(self, request, *args, **kwargs):
         shop_url = request.REQUEST.get('shop')
@@ -39,7 +47,7 @@ class FinalizeInstallationView(RedirectView):
             shopify_session = shopify.Session(shop_url, request.REQUEST)
         except shopify.ValidationException:
             messages.error(request, _('Could not log in to Shopify store.'))
-            return redirect(reverse('shopify_app:login'))
+            return redirect(reverse('default:login'))
 
         request.session['shopify'] = shopify_session
         messages.info(request, _('Sucessfully logged into your shopify store.'))

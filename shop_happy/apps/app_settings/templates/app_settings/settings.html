@@ -7,4 +7,16 @@
 <h1>Application Settings</h1>
 {% endblock %}
 
-{% block body %}{% endblock %}
+{% block body %}
+<form action="{% url default:index %}" method="GET" class="form-search">
+    {{ form.send_email.errors }}
+    <i class="icon-email"></i>
+    <label for="id_send_email">{{ form.send_email.label }}</label>
+    {{ form.send_email }}
+    <span class="help_text">{{ form.send_email.help_text }}</span>
+
+    <div class="form-actions">
+    <button class="btn btn-primary" type="submit">{% trans 'Save' %}</button>
+    </div>
+</form>
+{% endblock %}

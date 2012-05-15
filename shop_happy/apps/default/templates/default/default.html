@@ -4,7 +4,7 @@
 {% block title %}{{ super }} - Install Shop Happy{% endblock %}
 
 {% block content-head %}
-<h1>Install Shop Happy</h1>
+<h1>Login & Install Shop Happy</h1>
 {% endblock %}
 
 {% block body %}
@@ -14,17 +14,18 @@
         <i class="icon-off"></i>
         <label for="id_shop">{{ form.shop.label }}</label>
         {{ form.shop }}
+        <span class="help_text">{{ form.shop.help_text }}</span>
 
         <div class="form-actions">
-        <button class="btn btn-primary" type="submit">{% trans 'Install' %}</button>
+        <button class="btn btn-primary" type="submit">{% trans 'Login' %}</button>
         </div>
     </form>
 {% else %}
-    <h3>You have successfully installed the app</h3>
+    <h3>You have successfully installed the Shop Happy App</h3>
     <p>Now you can:</p>
     <ul>
-        <li><i class="icon-ok-circle"></i><a href="{% url myapp:settings %}">Setup your app settings</a></li>
-        <li><i class="icon-asterisk"></i><a href="{% url myapp:design %}">Setup your product review page</a></li>
+        <li><i class="icon-ok-circle"></i><a href="{% url my_app:settings %}">Setup your app settings</a></li>
+        <li><i class="icon-asterisk"></i><a href="{% url my_app:design %}">Setup your product review page</a></li>
     </ul>
 {% endif %}
 {% endblock %}
