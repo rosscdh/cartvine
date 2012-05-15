@@ -126,6 +126,11 @@ TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates'),
 )
 
+AUTHENTICATION_BACKENDS  = (
+    'django.contrib.auth.backends.ModelBackend',
+    'shop_happy.backends.ShopifyUserBackend',
+)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -1,9 +1,11 @@
 from django.conf import settings
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render_to_response, redirect
 from django.core.urlresolvers import reverse
 from django.views.generic.base import TemplateView, RedirectView
+from django.template.defaultfilters import slugify
 
 import shopify
 
@@ -45,6 +47,7 @@ class LogoutView(RedirectView):
         # Clear shopify Session
         shopify.ShopifyResource.clear_session()
         request.session.pop('shopify', None)
+        logout(request)
         messages.info(request, _('Successfully logged out.'))
 
         return redirect(reverse('default:index'))
@@ -59,16 +62,23 @@ class FinalizeInstallationView(RedirectView):
 
         domain_parts = current_shop.__dict__['attributes']['domain'].split('.')
 
-        shop, is_new = Shop.objects.get_or_create(shopify_id=current_shop.id, slug=domain_parts[0], url=shopify_session.site, name=current_shop.name)
+        shop, is_new = Shop.objects.get_or_create(shopify_id=current_shop.id )
         shop.data = current_shop.__dict__['attributes']
         shop.save()
 
         return shop
 
     def get_or_create_user(self, shop):
-        assert False
-        user = User.objects.get_or_create()
-        return None
+        name = shop.data['shop_owner']
+        first_name = name.split(' ')[0]
+        last_name = ' '.join(name.split(' ')[1:])
+        unique_id = '%d-%s' %(shop.data['id'], name,)
+        username = slugify(unique_id)
+        email = shop.data['email']
+        user, is_new = User.objects.get_or_create(username=username, email=email, first_name=first_name, last_name=last_name)
+        if is_new or not shop.users.filter(pk=user.pk).exists():
+            shop.users.add(user)
+        return user
 
     def get(self, request, *args, **kwargs):
         shop_url = request.REQUEST.get('shop', None)
@@ -81,6 +91,8 @@ class FinalizeInstallationView(RedirectView):
 
             shop = self.get_or_create_shop(shopify_session)
             user = self.get_or_create_user(shop)
+            authenticate(user=user, access_token=shopify_session.token)
+            login(request, user)
 
             request.session['shopify'] = shopify_session
 
