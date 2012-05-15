@@ -4,29 +4,29 @@ In order to provide clean access to constants used in model definitions
 This class provides a simple lookup mechnism which allows static reference to named values
 instead of having to hardcode the numeric variable
 """
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from collections import namedtuple
 from django.http import HttpResponseRedirect
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.http import HttpResponse
-import simplejson as json
+#import simplejson as json
 
 
 class HttpResponseUnauthorized(HttpResponse):
     status_code = 401
 
 
-class JsonHttpResponseUnauthorized(HttpResponseUnauthorized):
-    mimetype = 'text/json'
-
-    def __init__(self, content='', mimetype=None, status=None, content_type=None):
-        content = {
-            'status': self.status_code,
-            'message': content
-        }
-        super(HttpResponseUnauthorized, self).__init__(json.dumps(content), mimetype, status, content_type)
+# class JsonHttpResponseUnauthorized(HttpResponseUnauthorized):
+#     mimetype = 'text/json'
+# 
+#     def __init__(self, content='', mimetype=None, status=None, content_type=None):
+#         content = {
+#             'status': self.status_code,
+#             'message': content
+#         }
+#         super(HttpResponseUnauthorized, self).__init__(json.dumps(content), mimetype, status, content_type)
 
 
 def get_namedtuple_choices(name, choices_tuple):

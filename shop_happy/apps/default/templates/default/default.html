@@ -13,12 +13,11 @@
 
 {% block body %}
 {% if not current_shop %}
-    <form action="{% url default:index %}" method="GET" class="form-search">
+    <form action="{% url default:index %}" method="GET" class="form-horizontal">
         {{ form.shop.errors }}
-        <i class="icon-off"></i>
         <label for="id_shop">{{ form.shop.label }}</label>
-        {{ form.shop }}
-        <span class="help_text">{{ form.shop.help_text }}</span>
+        {{ form.shop }}<span class="input-append">.shopify.com</span>
+        <div class="help_text">{{ form.shop.help_text }}</div>
 
         <div class="form-actions">
         <button class="btn btn-primary" type="submit">{% trans 'Login' %}</button>

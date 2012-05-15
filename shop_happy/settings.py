@@ -158,6 +158,9 @@ INSTALLED_APPS = (
     # Shop
     'shop_happy.apps.shop',
 
+    # Customer - People who come to review after purchasing a product from the Shop
+    'shop_happy.apps.customer',
+
     # Product
     'shop_happy.apps.product',
     # Product reviews
@@ -165,6 +168,7 @@ INSTALLED_APPS = (
 )
 
 LOGIN_URL = '/'
+CUSTOMER_LOGIN_URL_NAME = '/customer/login/'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

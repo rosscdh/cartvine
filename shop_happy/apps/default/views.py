@@ -9,7 +9,6 @@ from django.template.defaultfilters import slugify
 
 import shopify
 
-from django.contrib.auth.models import User
 from shop_happy.apps.shop.models import Shop
 
 from forms import ShopifyInstallForm
@@ -23,8 +22,8 @@ class DefaultView(TemplateView):
     template_name = 'default/default.html'
 
     def get(self, request, *args, **kwargs):
-
         shop = request.REQUEST.get('shop')
+
         if shop:
             redirect_uri = request.build_absolute_uri(reverse('default:finalize'))
             permission_url = shopify.Session.create_permission_url(shop.strip(), scope=settings.SHOPIFY_ACCESS_SCOPE, redirect_uri=redirect_uri)
@@ -56,43 +55,6 @@ class FinalizeInstallationView(RedirectView):
     if they do not exist. Has been written to cater to multiple users associated
     with one shop
     """
-    def get_or_create_shop(self, shopify_session):
-        shopify.ShopifyResource.activate_session(shopify_session)
-
-        current_shop = shopify.Shop.current()
-
-        domain_parts = current_shop.__dict__['attributes']['domain'].split('.')
-
-        shop, is_new = Shop.objects.get_or_create(shopify_id=current_shop.id )
-        shop.data = current_shop.__dict__['attributes']
-        shop.save()
-
-        return shop
-
-    def get_or_create_user(self, shop):
-        name = shop.data['shop_owner']
-        first_name = name.split(' ')[0]
-        last_name = ' '.join(name.split(' ')[1:])
-        unique_id = '%d-%s' %(shop.data['id'], name,)
-        username = slugify(unique_id)
-        email = shop.data['email']
-        user, is_new = User.objects.get_or_create(username=username, email=email, first_name=first_name, last_name=last_name)
-        if is_new or not shop.users.filter(pk=user.pk).exists():
-            shop.users.add(user)
-        return user
-
-    def create_webhook_if_not_exists(self, request):
-        """ Create the webhook on the remote app if it does not exist """
-        webhook_callback_address = request.build_absolute_uri(reverse('webhook:invite_review_create'))
-        webhook = shopify.Webhook.find(address=webhook_callback_address)
-        if not webhook:
-            # Create it
-            webhook = shopify.Webhook()
-            webhook.topic = 'orders/create'
-            webhook.address = webhook_callback_address
-            webhook.format = 'json'
-            webhook.save()
-
 
     def get(self, request, *args, **kwargs):
         shop_url = request.REQUEST.get('shop', None)
@@ -103,11 +65,16 @@ class FinalizeInstallationView(RedirectView):
                 messages.error(request, _('Could not log in to Shopify store.'))
                 return redirect(reverse('default:login'))
 
-            shop = self.get_or_create_shop(shopify_session)
-            user = self.get_or_create_user(shop)
+            # Create/Get Shopify Shop
+            shop = Shop.objects.get_or_create_shop(shopify_session)
+            # Create/Get Shopify User
+            user = Shop.objects.get_or_create_user(shop)
+
             authenticate(user=user, access_token=shopify_session.token)
             login(request, user)
-            self.create_webhook_if_not_exists(request)
+
+            # Create/Get Shopify Webhook
+            webhook = Shop.objects.create_webhook_if_not_exists(request)
 
             request.session['shopify'] = shopify_session
 
