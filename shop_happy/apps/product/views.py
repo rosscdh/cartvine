@@ -13,10 +13,14 @@ from models import Product
 
 class ProductListView(ListView):
     model = Product
-
     def get_context_data(self, **kwargs):
-        product_list = shopify.Product.find()
+        from django.contrib.auth.models import User
+        object_list = Product.objects.by_shopify_owner(User.objects.get(pk=1)).all()
 
         return {
-            'object_list': product_list
+        'object_list': object_list
         }
+
+
+class ProductDetailView(DetailView):
+    queryset = Product.objects.all()

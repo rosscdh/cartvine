@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block body %}
-{% if not current_shop %}
+{% if not user.is_authenticated %}
     <form action="{% url default:index %}" method="GET" class="form-horizontal">
         {{ form.shop.errors }}
         <label for="id_shop">{{ form.shop.label }}</label>

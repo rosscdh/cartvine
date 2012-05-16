@@ -146,7 +146,7 @@ INSTALLED_APPS = (
     'south',
 
     # Addons
-    'djcelery',
+    #'djcelery',
     'sorl.thumbnail',
 
     # Default - Install the shopify app

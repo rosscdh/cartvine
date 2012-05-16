@@ -1,4 +1,4 @@
-from celery.task import task
+#from celery.task import task
 
 from shop_happy.apps.shop.models import Shop
 from django.template.defaultfilters import slugify
@@ -8,7 +8,7 @@ from models import Webhook
 import shopify
 
 
-@task
+#@task
 def sync_webhook(request, shop, shopify_session):
     """ Task to sync the products listed in Shopify shop with local database 
     Called on login/install """

@@ -1,12 +1,24 @@
 {% extends 'product/base.html' %}
 {% load i18n %}
 
-{% block title %}{{ super }} - Your Products{% endblock %}
+{% block title %}Products from your Shop{% endblock %}
 
 {% block content-head %}
-<h1>Your Products</h1>
+<h1>Products from your Shop</h1>
+{% endblock %}
+
+{% block pre-body %}
+<div class="hero-unit">
+    These products are our local listing from your store... info about syncing and stuff
+</div>
 {% endblock %}
 
 {% block body %}
-{{ object_list }}
+<ul id="" class="">
+{% for p in object_list %}
+    <li><a href="{% url product:info slug=p.slug %}">{{ p.name }}</a></li>
+{% empty%}
+    <li>{% trans 'No Products found.' %}</li>
+{% endfor %}
+</ul>
 {% endblock %}
