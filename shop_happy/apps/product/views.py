@@ -14,8 +14,7 @@ from models import Product
 class ProductListView(ListView):
     model = Product
     def get_context_data(self, **kwargs):
-        from django.contrib.auth.models import User
-        object_list = Product.objects.by_shopify_owner(User.objects.get(pk=1)).all()
+        object_list = Product.objects.by_shopify_owner(self.request.user).all()
 
         return {
         'object_list': object_list
@@ -23,4 +22,6 @@ class ProductListView(ListView):
 
 
 class ProductDetailView(DetailView):
-    queryset = Product.objects.all()
+    queryset = Product.objects.filter(pk=-1)
+    def get_queryset(self):
+		return Product.objects.by_shopify_owner(self.request.user).all()

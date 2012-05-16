@@ -146,7 +146,7 @@ INSTALLED_APPS = (
     'south',
 
     # Addons
-    #'djcelery',
+    'djcelery',
     'sorl.thumbnail',
 
     # Default - Install the shopify app
@@ -200,6 +200,10 @@ LOGGING = {
     }
 }
 
+# Django Celery
+CELERY_RESULT_BACKEND = "amqp"
+BROKER_URL = "amqp://guest@localhost:5672//"
+CELERY_TASK_RESULT_EXPIRES = 30
 
 # Email Templates
 TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django.TemplateBackend'

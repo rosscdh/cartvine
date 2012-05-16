@@ -45,7 +45,7 @@ The app flow is:
 ###### Technical Notes ######
 
 * All shopify items are replicated locally and have a shopify_id field which is used for syncing_
-* On Owner login a task to sync each object is initialzed asynchronously and updates the local list using the .find(since=shopify_id)
+* On Owner login a task to sync each object is initialzed asynchronously and updates the local list using the .find(since_id=shopify_id)
 * *@TODO Email sending should be done via Mailchimp? or similar
 
 

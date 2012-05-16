@@ -11,9 +11,8 @@ class WebhookManager(models.Manager):
     """ Manager for Webhook objects 
     Provides accessor methods that wrap around the shopify api
     """
-    def create_webhook_if_not_exists(self, request, shop):
+    def create_webhook_if_not_exists(self, webhook_callback_address, shop):
         """ Create the webhook on the remote app if it does not exist """
-        webhook_callback_address = request.build_absolute_uri(reverse('webhook:invite_review_create'))
         webhook = shopify.Webhook.find(address=webhook_callback_address)
 
         if not webhook:
@@ -26,6 +25,7 @@ class WebhookManager(models.Manager):
 
             # Try to get the newly created webhook again
             webhook = shopify.Webhook.find(address=webhook_callback_address)
+
             if not webhook:
                 # no luck is probably the host
                 if not settings.DEBUG:
