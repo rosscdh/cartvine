@@ -80,12 +80,17 @@ class FinalizeInstallationView(RedirectView):
             authenticate(user=user, access_token=shopify_session.token)
             login(request, user)
 
-            # Create/Get Shopify Webhook
-            sync_webhook(request, shop, shopify_session)
-
-            # Call Product Sync Task here
-            sync_products.delay(shopify_session, shop)
-            sync_customers.delay(shopify_session, shop)
+            try:
+                # Create/Get Shopify Webhook
+                sync_webhook.delay(request, shop, shopify_session)
+                # Call Product Sync Task here
+                sync_products.delay(shopify_session, shop)
+                sync_customers.delay(shopify_session, shop)
+            except:
+                # Try the same calls without the celery async .delay()
+                sync_webhook(request, shop, shopify_session)
+                sync_products(shopify_session, shop)
+                sync_customers(shopify_session, shop)
 
             # Setup the shopify session and show message
             request.session['shopify'] = shopify_session
