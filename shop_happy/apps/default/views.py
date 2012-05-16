@@ -14,6 +14,9 @@ from shop_happy.apps.webhook.models import Webhook
 
 from forms import ShopifyInstallForm
 
+from shop_happy.apps.product.tasks import sync_products
+from shop_happy.apps.customer.tasks import sync_customers
+
 
 def _return_address(request):
     return request.session.get('return_to') or reverse('default:index')
@@ -77,6 +80,10 @@ class FinalizeInstallationView(RedirectView):
 
             # Create/Get Shopify Webhook
             webhook = Webhook.objects.create_webhook_if_not_exists(request, shop)
+
+            # Call Product Sync Task here
+            sync_products(shopify_session, shop)
+            sync_customers(shopify_session, shop)
 
             # Setup the shopify session and show message
             request.session['shopify'] = shopify_session
