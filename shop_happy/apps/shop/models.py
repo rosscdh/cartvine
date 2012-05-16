@@ -13,3 +13,7 @@ class Shop(models.Model):
     data = JSONField(null=True)
 
     objects = ShopManager()
+
+    def __unicode__(self):
+        return u'%s - %d' % (self.slug, self.shopify_id,)
+

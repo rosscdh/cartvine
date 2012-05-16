@@ -10,6 +10,7 @@ from django.views.generic.base import TemplateView, RedirectView
 import shopify
 
 from shop_happy.apps.shop.models import Shop
+from shop_happy.apps.webhook.models import Webhook
 
 from forms import ShopifyInstallForm
 
@@ -75,7 +76,7 @@ class FinalizeInstallationView(RedirectView):
             login(request, user)
 
             # Create/Get Shopify Webhook
-            webhook = Shop.objects.create_webhook_if_not_exists(request)
+            webhook = Webhook.objects.create_webhook_if_not_exists(request, shop)
 
             # Setup the shopify session and show message
             request.session['shopify'] = shopify_session
