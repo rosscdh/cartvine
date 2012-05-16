@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.core.urlresolvers import reverse
@@ -27,7 +28,8 @@ class WebhookManager(models.Manager):
             webhook = shopify.Webhook.find(address=webhook_callback_address)
             if not webhook:
                 # no luck is probably the host
-                raise ImproperlyConfigured('Suspect that %s is not allowed by remote host for shop %s' %(webhook_callback_address,shop,))
+                if not settings.DEBUG:
+                    raise ImproperlyConfigured('Suspect that %s is not allowed by remote host for shop %s' %(webhook_callback_address,shop,))
             else:
                 # Create the local Webhook object
                 webhook = self.add(shop=shop, shopify_id=webhook.id, topic=webhook.topic, address=webhook.address, format=webhook.format)

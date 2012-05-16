@@ -31,9 +31,10 @@
         <li><i class="icon-asterisk"></i><a href="{% url my_app:design %}">Setup your product review page</a></li>
     </ul>
     <ul>
-        <li><i class="icon-ok-circle"></i><a href="{% url my_app:settings %}">View reviews of your Products</a></li>
-        <li><i class="icon-ok-circle"></i><a href="{% url my_app:settings %}">View Reviewers</a></li>
-        <li><i class="icon-ok-circle"></i><a href="{% url my_app:settings %}">View pending invitation messages</a></li>
+        <li><i class="icon-ok-circle"></i><a href="{% url product:index %}">Products</a></li>
+        <li><i class="icon-ok-circle"></i><a href="{% url reviews:index %}">Products Reviews</a></li>
+        <li><i class="icon-ok-circle"></i><a href="{% url reviews:reviewers %}">Reviewers</a></li>
+        <li><i class="icon-ok-circle"></i><a href="{% url mail:index %}">View pending invitation messages</a></li>
     </ul>
 {% endif %}
 {% endblock %}
