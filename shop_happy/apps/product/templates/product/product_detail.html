@@ -10,12 +10,19 @@
 {% block pre-body %}
 <div class="hero-unit">
     <h2>{{ object.name }}</h2>
-    Info about this product
+    <strong>{{ object.data.vendor }}: {{ object.product_type }}</strong>
+    <br/>{{ object.data.tags }}
+    {{ object.data.featured_image }}
 </div>
 {% endblock %}
 
 {% block body %}
 
-{{ object.shopify_url }}
+<div class="span5">
+{{ object.summary|safe }}
+</div>
 
+<div class="span5">
+<a href="https://{{ current_shop.myshopify_domain }}{{ object.shopify_url }}">View in Shopify</a>
+</div>
 {% endblock %}

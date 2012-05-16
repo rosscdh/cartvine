@@ -81,7 +81,7 @@ class FinalizeInstallationView(RedirectView):
             login(request, user)
 
             webhook_callback_address = request.build_absolute_uri(reverse('webhook:invite_review_create'))
-
+            sync_products(shopify_session, shop)
             try:
                 # Create/Get Shopify Webhook
                 #sync_webhook.delay(webhook_callback_address, shop, shopify_session)

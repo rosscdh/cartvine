@@ -18,5 +18,13 @@ class Product(models.Model):
         return u'%s' % (self.slug,)
 
     @property
+    def summary(self):
+        return u'%s' % (self.data['body_html'],)
+
+    @property
+    def product_type(self):
+        return u'%s' % (self.data['product_type'],)
+
+    @property
     def shopify_url(self):
-        return u'http://%s' % (self.shopify_id,)
+        return u'/admin/products/%d' % (self.shopify_id,)
