@@ -1,0 +1,24 @@
+{% extends 'mail/base.html' %}
+{% load i18n %}
+
+{% block title %}Customer Communication{% endblock %}
+
+{% block content-head %}
+<h1>Customer Communication</h1>
+{% endblock %}
+
+{% block pre-body %}
+<div class="hero-unit">
+    This is a list of Customer Communication that may be pending or sent
+</div>
+{% endblock %}
+
+{% block body %}
+<ul id="" class="">
+{% for p in object_list %}
+    <li><a href="{% url mail:info pk=p.pk %}">{{ p.email_to }}</a></li>
+{% empty%}
+    <li>{% trans 'No Communication found.' %}</li>
+{% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'product/base.html' %}
+{% load i18n %}
+
+{% block title %}Product Detail{% endblock %}
+
+{% block content-head %}
+<h1>Product Detail</h1>
+{% endblock %}
+
+{% block pre-body %}
+<div class="hero-unit">
+    <h2>{{ object.name }}</h2>
+    Info about this product
+</div>
+{% endblock %}
+
+{% block body %}
+
+{{ object.shopify_url }}
+
+{% endblock %}
