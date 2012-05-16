@@ -146,6 +146,7 @@ INSTALLED_APPS = (
     'south',
 
     # Addons
+    'djcelery',
     'sorl.thumbnail',
 
     # Default - Install the shopify app
@@ -208,8 +209,6 @@ TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django'
 TEMPLATED_EMAIL_DJANGO_SUBJECTS = {
     'welcome':'Thanks and are you happy with your purchased product?',
 }
-
-
 
 try:
     from shopify_settings import *

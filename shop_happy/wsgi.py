@@ -31,3 +31,5 @@ sys.path.append(workspace)
 from django.core.handlers.wsgi import WSGIHandler
 application = WSGIHandler()
 
+import djcelery
+djcelery.setup_loader()

@@ -12,12 +12,8 @@ django-debug-toolbar
 -e git+https://github.com/bradwhittington/django-templated-email.git#egg=django-templated-email
 
 # Tasks
-progressbar
-pyzmq
-gevent
-# Requries: aptitude install libzmq-dev libevent-dev
-gevent_zeromq
--e git+https://github.com/dcramer/taskmaster.git#egg=taskmaster
+# apt-get install rabbitmq-server
+django-celery
 
 # Thumbnails
 pil
