@@ -14,12 +14,11 @@ class LoginProtection(object):
         shopify.Session.setup(api_key=settings.SHOPIFY_API_KEY,secret=settings.SHOPIFY_API_SECRET)
 
     def process_request(self, request):
-        if hasattr(request, 'session') and 'shopify' in request.session:
-            shopify.ShopifyResource.activate_session(request.session['shopify'])
         return None
 
     def process_view(self, request, view_func, view_args, view_kwargs):
-        pass
+        if hasattr(request, 'session') and 'shopify' in request.session:
+            shopify.ShopifyResource.activate_session(request.session['shopify'])
 
     def process_response(self, request, response):
         shopify.ShopifyResource.site = None
