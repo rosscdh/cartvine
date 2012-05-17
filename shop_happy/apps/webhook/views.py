@@ -19,7 +19,7 @@ def CreateInvite(request):
 	body = json.loads(request.read())
 
 	order.data = body
-	order.shop_name = request.META.get('HTTP_X_SHOPIFY_SHOP_DOMAIN')
+	order.shop_name = request.META.get('HTTP_X_SHOPIFY_SHOP_DOMAIN')# This must be present and shoudl also do validation check
 	order.content_type = request.META.get('CONTENT_TYPE')
 	order.recieved_from = request.META.get('REMOTE_HOST')
 	order.recieved_from_ip = request.META.get('REMOTE_ADDR')

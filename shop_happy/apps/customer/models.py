@@ -1,5 +1,5 @@
 from django.db import models
-from shop_happy.fields import JSONField
+from jsonfield import JSONField
 from shop_happy.apps.shop.models import Shop
 
 

@@ -22,4 +22,4 @@ pil
 -e git+https://github.com/sorl/sorl-thumbnail.git#egg=sorl-thumbnail
 
 # JSONField
-https://github.com/bradjasper/django-jsonfield.git
+-e git+https://github.com/bradjasper/django-jsonfield.git#egg=django-jsonfield

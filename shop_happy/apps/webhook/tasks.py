@@ -27,14 +27,14 @@ def sync_webhook(webhook_callback_address, shop, shopify_session):
         # Try to get the newly created webhook again
         webhook = shopify.Webhook.find(address=webhook_callback_address)
 
-        if not webhook:
-            # no luck is probably the host
-            if not settings.DEBUG:
-                #raise ImproperlyConfigured('Suspect that %s is not allowed by remote host for shop %s' %(webhook_callback_address,shop,))
-                pass
-        else:
-	    	#webhook, is_new = Webhook.objects.create_webhook_if_not_exists(webhook_callback_address, shop)
-	    	pass
+    if webhook:
+        webhook = webhook[0]
+        webhook, is_new = Webhook.objects.get_or_create(shop=shop, shopify_id=webhook.id, topic=webhook.topic, address=webhook.address, format=webhook.format)
+    else:
+        # no luck is probably the host
+        if not settings.DEBUG:
+            # @TODO add logging
+            raise ImproperlyConfigured('Suspect that %s is not allowed by remote host for shop %s' %(webhook_callback_address,shop,))
 
     return None
 
