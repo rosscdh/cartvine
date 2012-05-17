@@ -21,14 +21,18 @@ class ShopManager(models.Manager):
 
         domain_parts = current_shop.__dict__['attributes']['domain'].split('.')
 
-        shop, is_new = self.get_or_create(shopify_id=current_shop.id )
+        shop, is_new = self.get_or_create(shopify_id=current_shop.id)
         shop.data = current_shop.__dict__['attributes']
+        shop.name = shop.data['name']
+        shop.slug = slugify(shop.name)
+        shop.shopify_access_token = shopify_session.token
+        shop.url = 'http://%s' % (shop.data['myshopify_domain'],)
         shop.save()
 
         return shop
 
-    def get_or_create_user(self, shop):
-        """ Get/Create the user for this Shop 
+    def get_or_create_owner(self, shop):
+        """ Get/Create the owner for this Shop 
         depending if it exists or not """
         name = shop.data['shop_owner']
         first_name = name.split(' ')[0]

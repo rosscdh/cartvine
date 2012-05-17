@@ -76,7 +76,7 @@ class FinalizeInstallationView(RedirectView):
             # Create/Get Shopify Shop
             shop = Shop.objects.get_or_create_shop(shopify_session)
             # Create/Get Shopify User
-            user = Shop.objects.get_or_create_user(shop)
+            user = Shop.objects.get_or_create_owner(shop)
 
             # Get the user logged in if possible
             authenticate(user=user, access_token=shopify_session.token)
