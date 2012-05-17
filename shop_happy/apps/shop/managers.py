@@ -15,6 +15,7 @@ class ShopManager(models.Manager):
     def get_or_create_shop(self, shopify_session):
         """ Get or Create the Shop from the session if it does not exist
         also updates data from shopify api """
+        # session is not present yet so create it
         shopify.ShopifyResource.activate_session(shopify_session)
 
         current_shop = shopify.Shop.current()

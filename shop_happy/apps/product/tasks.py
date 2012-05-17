@@ -13,7 +13,7 @@ def sync_products(shopify_session, shop):
     """ Task to sync the products listed in Shopify shop with local database 
     Called on login/install """
 
-    shopify.ShopifyResource.activate_session(shopify_session)
+    shop.activate_shopify_session()
 
     try:
         latest_product = Product.objects.filter(shop=shop).latest('shopify_id')

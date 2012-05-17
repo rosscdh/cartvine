@@ -13,7 +13,7 @@ def sync_customers(shopify_session, shop):
     """ Task to sync the products listed in Shopify shop with local database 
     Called on login/install """
 
-    shopify.ShopifyResource.activate_session(shopify_session)
+    shop.activate_shopify_session()
 
     try:
         latest_customer = Customer.objects.filter(shops__pk__in=[shop.pk]).latest('pk')

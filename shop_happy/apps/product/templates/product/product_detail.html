@@ -23,6 +23,6 @@
 </div>
 
 <div class="span5">
-<a href="https://{{ current_shop.myshopify_domain }}{{ object.shopify_url }}">View in Shopify</a>
+<a href="{{ object.shop.url }}{{ object.shopify_url }}">View in Shopify</a>
 </div>
 {% endblock %}

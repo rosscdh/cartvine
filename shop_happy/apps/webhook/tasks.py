@@ -12,7 +12,8 @@ import shopify
 def sync_webhook(webhook_callback_address, shop, shopify_session):
     """ Task to sync the products listed in Shopify shop with local database 
     Called on login/install """
-    shopify.ShopifyResource.activate_session(shopify_session)
+
+    shop.activate_shopify_session()
 
     webhook = shopify.Webhook.find(address=webhook_callback_address)
 
