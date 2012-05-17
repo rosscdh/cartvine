@@ -8,6 +8,7 @@ debug = True
 
 PROJECT = 'shop_happy'
 PROJECT_PATH = '/home/rossc/Projects/Personal/%s' % (PROJECT,)
+#PROJECT_PATH = '/Users/rossc/Projects/Personal/%s' % (PROJECT,)
 REMOTE_PROJECT_PATH = '/home/stard0g101/webapps/%s' % (PROJECT,)
 
 live_hosts = ('stard0g101@stard0g101.webfactional.com')

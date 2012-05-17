@@ -20,3 +20,6 @@ django-celery
 # Thumbnails
 pil
 -e git+https://github.com/sorl/sorl-thumbnail.git#egg=sorl-thumbnail
+
+# JSONField
+https://github.com/bradjasper/django-jsonfield.git
