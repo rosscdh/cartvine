@@ -184,7 +184,8 @@ if DEBUG:
     }
 
 if DEBUG:
-    WEBHOOK_POSTBACK_HOST = 'http://178.200.223.240:8000'
+    #WEBHOOK_POSTBACK_HOST = 'http://178.200.223.240:8000'
+    pass
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

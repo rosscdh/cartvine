@@ -65,13 +65,14 @@ class FinalizeInstallationView(RedirectView):
 
     def get(self, request, *args, **kwargs):
         shop_url = request.REQUEST.get('shop', None)
+
         if shop_url:
             try:
                 shopify_session = shopify.Session(shop_url, request.REQUEST)
             except shopify.ValidationException:
                 messages.error(request, _('Could not log in to Shopify store.'))
                 return redirect(reverse('default:login'))
-
+            
             # Create/Get Shopify Shop
             shop = Shop.objects.get_or_create_shop(shopify_session)
             # Create/Get Shopify User

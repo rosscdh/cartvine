@@ -18,20 +18,24 @@ The app flow is:
 2. On login/install a local shop is set up
 3. On login/install a local user is set up (manytomany relationship between owner and shop; allows for many owners of 1 shop)
 4. On login/install a webhook is installed on the shopify app; is re-installed if the user deletes it from shopify
-5. **@TODO On login/install an invitation email is scheduled to go out to the customer
-6. Sync Products
-7. Sync Customers
-8. **@TODO List of Products
-9. **@TODO List of Product Reviews
-10. **@TODO List of Reviewers
-11. **@TODO List of Emails
+6. Sync Webhook
+7. Sync Products
+8. Sync Customers
+9. List of Products **@TODO pagination,design
+10. List of Product Reviews **@TODO pagination,design
+11. List of Reviewers **@TODO pagination,design
+12. List of Emails
 
 
 ###### Customer Invitation Email ######
 
-1. *@TODO Email is sent to the email provided by the Customer and supplied in the order/create Webhook and stored locally
-2. On the date scheduled in the @mail app model the email is sent to the Customer
-3. The email invites the user to come and review their product
+####### On Shopify order create #######
+1. **@TODO On login/install an invitation email is scheduled to go out to the customer
+
+####### On Shopify order create #######
+2. *@TODO Email is sent to the email provided by the Customer and supplied in the order/create Webhook and stored locally
+3. *@TODO On the date scheduled in the @mail app model the email is sent to the Customer
+4. *@TODO The email invites the user to come and review their product
 
 
 ###### Customer sign up ######

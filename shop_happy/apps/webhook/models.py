@@ -27,3 +27,12 @@ class Webhook(models.Model):
     def __unicode__(self):
         return u'%s - %d' % (self.topic, self.shopify_id,)
 
+
+class OrderCreatePostback(models.Model):
+    """ Model to store postbacks Created on order/create Webhook calls """
+    shop_name = models.CharField(max_length=255,null=True)
+    content_type = models.CharField(max_length=255,null=True)
+    date_recieved = models.DateTimeField(auto_now=True, auto_now_add=True)
+    recieved_from = models.CharField(max_length=255, null=True, blank=True)
+    recieved_from_ip = models.IPAddressField()
+    data = JSONField()
