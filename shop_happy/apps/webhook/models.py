@@ -36,3 +36,9 @@ class OrderCreatePostback(models.Model):
     recieved_from = models.CharField(max_length=255, null=True, blank=True)
     recieved_from_ip = models.IPAddressField()
     data = JSONField()
+
+    class Meta:
+        ordering = ['-pk']
+
+    def __unicode__(self):
+        return u'%s - %s (%s)' % (self.shop_name, self.date_recieved, self.recieved_from_ip)
