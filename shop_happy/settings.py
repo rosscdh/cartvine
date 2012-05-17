@@ -6,7 +6,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Ross', 'sendrossemail@gmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -182,6 +182,9 @@ if DEBUG:
     DEBUG_TOOLBAR_CONFIG = {
       'INTERCEPT_REDIRECTS': False
     }
+
+if DEBUG:
+    WEBHOOK_POSTBACK_HOST = 'http://178.200.223.240:8000'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

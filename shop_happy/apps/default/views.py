@@ -14,6 +14,7 @@ from shop_happy.apps.webhook.models import Webhook
 
 from forms import ShopifyInstallForm
 
+from shop_happy.utils import get_webhook_postback_url
 from shop_happy.apps.product.tasks import sync_products
 from shop_happy.apps.customer.tasks import sync_customers
 from shop_happy.apps.webhook.tasks import sync_webhook
@@ -80,8 +81,8 @@ class FinalizeInstallationView(RedirectView):
             authenticate(user=user, access_token=shopify_session.token)
             login(request, user)
 
-            webhook_callback_address = request.build_absolute_uri(reverse('webhook:invite_review_create'))
-            sync_products(shopify_session, shop)
+            webhook_callback_address = get_webhook_postback_url(request, reverse('webhook:invite_review_create'))
+
             try:
                 # Create/Get Shopify Webhook
                 sync_webhook.delay(webhook_callback_address, shop, shopify_session)
