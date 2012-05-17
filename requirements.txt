@@ -8,6 +8,8 @@ django-debug-toolbar
 
 -e git+https://github.com/Shopify/shopify_python_api.git#egg=shopify
 
+-e git+https://github.com/django-debug-toolbar/django-debug-toolbar.git#egg=django-debug-toolbar
+
 # Email template system
 -e git+https://github.com/bradwhittington/django-templated-email.git#egg=django-templated-email
 

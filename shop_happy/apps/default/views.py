@@ -84,7 +84,7 @@ class FinalizeInstallationView(RedirectView):
             sync_products(shopify_session, shop)
             try:
                 # Create/Get Shopify Webhook
-                #sync_webhook.delay(webhook_callback_address, shop, shopify_session)
+                sync_webhook.delay(webhook_callback_address, shop, shopify_session)
                 # Call Product Sync Task here
                 sync_products.delay(shopify_session, shop)
                 sync_customers.delay(shopify_session, shop)

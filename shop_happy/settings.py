@@ -115,7 +115,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # shopify
     'shop_happy.middleware.LoginProtection',
-)
+)   
 
 ROOT_URLCONF = 'shop_happy.urls'
 
@@ -166,10 +166,22 @@ INSTALLED_APPS = (
     'shop_happy.apps.product',
     # Product reviews
     'shop_happy.apps.product_review',
+
+    # Webhook
+    'shop_happy.apps.webhook',
 )
 
 LOGIN_URL = '/'
 CUSTOMER_LOGIN_URL_NAME = '/customer/login/'
+
+# Django Debug Toolbar
+if DEBUG:
+    MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+    INSTALLED_APPS += ('debug_toolbar',)
+    INTERNAL_IPS = ('127.0.0.1', '172.16.37.128')
+    DEBUG_TOOLBAR_CONFIG = {
+      'INTERCEPT_REDIRECTS': False
+    }
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

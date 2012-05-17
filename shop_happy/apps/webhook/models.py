@@ -18,9 +18,9 @@ class Webhook(models.Model):
     )
     shop = models.ForeignKey(Shop)
     shopify_id = models.IntegerField(db_index=True)
-    topic = models.CharField()
-    address = models.URLField()
-    format = models.CharField(choices=FORMATS)
+    topic = models.CharField(max_length=64)
+    address = models.URLField(max_length=255)
+    format = models.CharField(max_length=6,choices=FORMATS)
 
     objects = WebhookManager()
 
