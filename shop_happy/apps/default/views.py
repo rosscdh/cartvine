@@ -85,17 +85,17 @@ class FinalizeInstallationView(RedirectView):
 
             webhook_callback_address = get_webhook_postback_url(request, reverse('webhook:invite_review_create'))
 
-            # try:
-            #     # Create/Get Shopify Webhook
-            #     sync_webhook.delay(webhook_callback_address, shop, shopify_session)
-            #     # Call Product Sync Task here
-            #     sync_products.delay(shopify_session, shop)
-            #     sync_customers.delay(shopify_session, shop)
-            # except:
-            # Try the same calls without the celery async .delay()
-            sync_webhook(webhook_callback_address, shop, shopify_session)
-            sync_products(shopify_session, shop)
-            sync_customers(shopify_session, shop)
+            try:
+                # Create/Get Shopify Webhook
+                sync_webhook.delay(webhook_callback_address, shop, shopify_session)
+                # Call Product Sync Task here
+                sync_products.delay(shopify_session, shop)
+                sync_customers.delay(shopify_session, shop)
+            except:
+                # Try the same calls without the celery async .delay()
+                sync_webhook(webhook_callback_address, shop, shopify_session)
+                sync_products(shopify_session, shop)
+                sync_customers(shopify_session, shop)
 
             # Setup the shopify session and show message
             request.session['shopify'] = shopify_session
