@@ -182,10 +182,8 @@ if DEBUG:
     DEBUG_TOOLBAR_CONFIG = {
       'INTERCEPT_REDIRECTS': False
     }
-
-if DEBUG:
+    # Postback for the dev webhook interface
     WEBHOOK_POSTBACK_HOST = 'http://178.200.223.240:8000'
-    #pass
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -205,12 +203,22 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
+        # Customer Log to Db handler - writes specific logs to database/elasticsearch/senseidb
+        'lumberjack': {
+            'level': 'DEBUG',
+            'class': 'apps.lumberjack.handlers.BuildHandler',
+        },
     },
     'loggers': {
         'django.request': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
+            'propagate': True,
+        },
+        'happy_log': {
+            'handlers': ['lumberjack'],
+            'level': 'DEBUG',
             'propagate': True,
         },
     }
