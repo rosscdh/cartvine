@@ -19,22 +19,25 @@ The app flow is:
 3. On login/install a local user is set up (manytomany relationship between owner and shop; allows for many owners of 1 shop)
 4. On login/install a webhook is installed on the shopify app; is re-installed if the user deletes it from shopify
 6. Sync Webhook
-7. Sync Products
-8. Sync Customers
+7. Sync Products - @TODO need to check for updated products that we have already imported; use the shopify updatedated_at_date
+8. Sync Customers - @TODO need to check for updated customers that we have already imported; use the shopify updatedated_at_date
 9. List of Products **@TODO pagination,design
 10. List of Product Reviews **@TODO pagination,design
 11. List of Reviewers **@TODO pagination,design
-12. List of Emails
+12. List of Emails **@TODO pagination,design
 
 
 ###### Customer Invitation Email ######
 
 ####### On Shopify order create #######
-1. **@TODO On login/install an invitation email is scheduled to go out to the customer
+1. Store a record Webhook for local reference (and comparison checks to see if the user has deleted the webhook from their store)
+2. **@TODO On login/install an invitation email is scheduled to go out to the customer
 
 ####### On Shopify order create #######
-2. *@TODO Email is sent to the email provided by the Customer and supplied in the order/create Webhook and stored locally
-3. *@TODO On the date scheduled in the @mail app model the email is sent to the Customer
+1. Store Local Webhook record - for reference
+2. settings.EMAIL_POST_DATE_TIMEDELTA stores the amount of time to wait before sending the email
+2. *@TODO Email to be sent to the Customer is created and post dated. This email will be sent to the email provided by the Customer and supplied in the order/create Webhook and stored locally
+3. *@TODO On the date scheduled in the @mail app model; the email is sent out to the Customer
 4. *@TODO The email invites the user to come and review their product
 
 
