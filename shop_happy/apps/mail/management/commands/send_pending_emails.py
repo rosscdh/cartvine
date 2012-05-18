@@ -45,7 +45,7 @@ class Command(BaseCommand):
         email_list = ShopHappyEmail.objects.filter(post_date=self.dateof)
         for email in email_list:
             send_templated_mail(
-                template_name='invitation_to_review.html',
+                template_name='invitation_to_review',
                 from_email='ross@tweeqa.net',
                 recipient_list=['sendrossemail@gmail.com'],
                 context={
