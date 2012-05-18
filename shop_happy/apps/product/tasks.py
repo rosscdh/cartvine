@@ -6,6 +6,8 @@ from django.template.defaultfilters import slugify
 from models import Product
 
 import shopify
+import logging
+logger = logging.getLogger('happy_log')
 
 
 @task(name="sync_products")
@@ -19,6 +21,7 @@ def sync_products(shopify_session, shop):
         latest_product = Product.objects.filter(shop=shop).latest('shopify_id')
     except Product.DoesNotExist:
         # No Products stored locally so simple get them all from the shop
+        logger.info('No Products stored locally for %s so get all from the Shopify API', %(shop,))
         latest_product = None
         shopify_products = shopify.Product.find()
 
@@ -26,6 +29,7 @@ def sync_products(shopify_session, shop):
         shopify_products = shopify.Product.find(since_id=latest_product.shopify_id)
 
     if shopify_products:
+        logger.info('%d new Products found for %s', %(len(shopify_products),shop,))
         for product in shopify_products:
             # should use get_or_create here?
             safe_attribs = product.__dict__['attributes']

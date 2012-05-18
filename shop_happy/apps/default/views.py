@@ -19,6 +19,8 @@ from shop_happy.apps.product.tasks import sync_products
 from shop_happy.apps.customer.tasks import sync_customers
 from shop_happy.apps.webhook.tasks import sync_webhook
 
+import logging
+logger = logging.getLogger('happy_log')
 
 
 def _return_address(request):
@@ -72,6 +74,7 @@ class FinalizeInstallationView(RedirectView):
                 shopify_session = shopify.Session(shop_url, request.REQUEST)
             except shopify.ValidationException:
                 messages.error(request, _('Could not log in to Shopify store.'))
+                logger.error('FinalizeIntallationView: Could not login %s' % (shopify.ValidationException,))
                 return redirect(reverse('default:login'))
             
             # Create/Get Shopify Shop
@@ -103,5 +106,6 @@ class FinalizeInstallationView(RedirectView):
 
         response = redirect(_return_address(request))
         request.session.pop('return_to', None)
+        logger.info('Logged in as %s token:%s' % (user, shopify_session.token,))
 
         return response
