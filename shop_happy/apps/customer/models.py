@@ -10,3 +10,10 @@ class Customer(models.Model):
     last_name = models.CharField(max_length=128)
     email = models.EmailField()
     data = JSONField(null=True)
+
+    def __unicode__(self):
+        return u'%s - %s' % (self.get_full_name, self.email, )
+
+    @property
+    def get_full_name(self):
+        return u'%s %s' % (self.first_name, self.last_name, )

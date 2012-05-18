@@ -40,3 +40,6 @@ class OrderCreatePostback(models.Model):
 
     def __unicode__(self):
         return u'%s - %s (%s)' % (self.shop_name, self.date_recieved, self.recieved_from_ip)
+
+    def get_order_products(self):
+        return self.data['line_items']

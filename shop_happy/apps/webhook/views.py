@@ -18,8 +18,9 @@ from models import OrderCreatePostback
 
 def CreateInvite(request):
     body = None
-    if not settings.DEBUG and not request.META.get('HTTP_X_SHOPIFY_SHOP_DOMAIN', None):
+    if not request.META.get('HTTP_X_SHOPIFY_SHOP_DOMAIN', None):
         logger.error('Webhook Callback from shopify did not contain HTTP_X_SHOPIFY_SHOP_DOMAIN header')
+        raise Http404
     else:
         request_body = request.read()
         try:
@@ -34,6 +35,7 @@ def CreateInvite(request):
             order = OrderCreatePostback()
             order.data = body
             order.shop_name = request.META.get('HTTP_X_SHOPIFY_SHOP_DOMAIN')# This must be present and shoudl also do validation check
+            print order.shop_name
             order.content_type = request.META.get('CONTENT_TYPE')
             order.recieved_from = request.META.get('REMOTE_HOST')
             order.recieved_from_ip = request.META.get('REMOTE_ADDR')
@@ -41,7 +43,6 @@ def CreateInvite(request):
             logger.info('Webhook Callback from shopify body is valid. OrderCreatePostback was created')
 
             email = ShopHappyEmail.objects.create_email_from_callback(order)
-            
 
 	return render_to_response('webhook/response.html', {
 		'request': body,
