@@ -16,3 +16,6 @@ class ShopHappyEmail(models.Model):
     body = models.TextField()
 
     objects = ShopHappyEmailManager()
+
+    def __unicode__(self):
+    	return u'%s on %s - set ' %(self.email_to, self.post_date,)

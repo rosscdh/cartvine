@@ -5,6 +5,7 @@ from jsonfield import JSONField
 from managers import ShopManager
 
 import shopify
+import datetime
 
 
 class Shop(models.Model):

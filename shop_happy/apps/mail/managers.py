@@ -21,12 +21,6 @@ class ShopHappyEmailManager(models.Manager):
         post_date = Shop.get_email_post_date()
         customer, is_new = Customer.objects.get_or_create(email=callback_order.data['customer']['email'], first_name=callback_order.data['customer']['first_name'], last_name=callback_order.data['customer']['last_name'])
         email_to = callback_order.data['customer']['email']
-        # Load template
-        body = loader.render_to_string('mail/invitation_to_review.html', {
-            'shop': shop,
-            'name': customer.get_full_name,
-            'product_list': callback_order.get_order_products(),
-        })
 
-        email = self.create(shop=shop, customer=customer, post_date=post_date, email_to=email_to, body=body)
+        email = self.create(shop=shop, customer=customer, post_date=post_date, email_to=email_to)
         return email
