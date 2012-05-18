@@ -4,7 +4,6 @@ django_extensions
 Werkzeug
 south
 django-tastypie
-django-debug-toolbar
 
 -e git+https://github.com/Shopify/shopify_python_api.git#egg=shopify
 
