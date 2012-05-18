@@ -26,3 +26,7 @@ class Shop(models.Model):
         session = shopify.Session(self.url)
         session.token = self.shopify_access_token
         return shopify.ShopifyResource.activate_session(session)
+
+    @staticmethod
+    def get_email_post_date():
+        return datetime.date.today() + datetime.timedelta(weeks=2)

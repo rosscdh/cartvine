@@ -4,6 +4,8 @@ from shop_happy.apps.customer.models import Customer
 
 from managers import ShopHappyEmailManager
 
+import datetime
+
 
 class ShopHappyEmail(models.Model):
     shop = models.ForeignKey(Shop)
