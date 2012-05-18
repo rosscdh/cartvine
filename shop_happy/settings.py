@@ -151,8 +151,10 @@ INSTALLED_APPS = (
 
     # Default - Install the shopify app
     'shop_happy.apps.default',
+
     # Product email
     'shop_happy.apps.mail',
+
     # Application Settings - Allow user to modify the settings
     'shop_happy.apps.app_settings',
 
@@ -194,6 +196,14 @@ if DEBUG:
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d - %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
@@ -203,12 +213,14 @@ LOGGING = {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
         },
-        # Customer Log to Db handler - writes specific logs to database/elasticsearch/senseidb
-        'happy_log': {
+        'lumberjack': {
             'level': 'DEBUG',
-            'class': 'shop_happy.handlers.HappyLogHandler',
+            'class': 'logging.handlers.WatchedFileHandler',
+            'filename': os.path.join(SITE_ROOT, 'log/shop_happy.log'),
+            'formatter': 'verbose',
         },
     },
     'loggers': {
@@ -218,7 +230,7 @@ LOGGING = {
             'propagate': True,
         },
         'happy_log': {
-            'handlers': ['happy_log'],
+            'handlers': ['lumberjack'],
             'level': 'DEBUG',
             'propagate': True,
         },

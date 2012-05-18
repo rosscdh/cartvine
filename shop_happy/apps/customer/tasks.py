@@ -21,7 +21,7 @@ def sync_customers(shopify_session, shop):
         latest_customer = Customer.objects.filter(shops__pk__in=[shop.pk]).latest('pk')
     except Customer.DoesNotExist:
         # No Customers stored locally so simple get them all from the shop
-        logger.info('No Customers stored locally for %s so get all from the Shopify API', %(shop,))
+        logger.info('No Customers stored locally for %s so get all from the Shopify API'%(shop,))
         latest_customer = None
         shopify_customers = shopify.Customer.find()
 
@@ -29,7 +29,7 @@ def sync_customers(shopify_session, shop):
         shopify_customers = shopify.Customer.find(since_id=latest_customer.shopify_id)
 
     if shopify_customers:
-        logger.info('%d new Customers found for %s', %(len(shopify_customers),shop,))
+        logger.info('%d new Customers found for %s'%(len(shopify_customers),shop,))
         for customer in shopify_customers:
             # should use get_or_create here?
             safe_attribs = customer.__dict__['attributes']

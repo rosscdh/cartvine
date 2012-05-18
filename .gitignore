@@ -13,7 +13,7 @@ tags
 .DS_Store
 /media/*
 /static/*
-
+/log/*.log
 /MANIFEST
 /build
 /dist
