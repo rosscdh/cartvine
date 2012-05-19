@@ -1,5 +1,6 @@
 {% extends 'default/base.html' %}
 {% load i18n %}
+{% load url from future %}
 
 {% block title %}{{ super }} - Login and Shop Happy{% endblock %}
 
@@ -13,7 +14,7 @@
 
 {% block body %}
 {% if not user.is_authenticated %}
-    <form action="{% url default:index %}" method="GET" class="form-horizontal">
+    <form action="{% url 'default:index' %}" method="GET" class="form-horizontal">
         {{ form.shop.errors }}
         <label for="id_shop">{{ form.shop.label }}</label>
         {{ form.shop }}<span class="input-append">.myshopify.com</span>
@@ -27,14 +28,14 @@
     <h3>You have successfully installed the Shop Happy App</h3>
     <p>Now you can:</p>
     <ul>
-        <li><i class="icon-ok-circle"></i><a href="{% url my_app:settings %}">Setup your app settings</a></li>
-        <li><i class="icon-asterisk"></i><a href="{% url my_app:design %}">Setup your product review page</a></li>
+        <li><i class="icon-ok-circle"></i><a href="{% url 'my_app:settings' %}">Setup your app settings</a></li>
+        <li><i class="icon-asterisk"></i><a href="{% url 'my_app:design' %}">Setup your product review page</a></li>
     </ul>
     <ul>
-        <li><i class="icon-ok-circle"></i><a href="{% url product:index %}">Products</a></li>
-        <li><i class="icon-ok-circle"></i><a href="{% url review:index %}">Products Reviews</a></li>
-        <li><i class="icon-ok-circle"></i><a href="{% url review:reviewers %}">Reviewers</a></li>
-        <li><i class="icon-ok-circle"></i><a href="{% url mail:index %}">View pending invitation messages</a></li>
+        <li><i class="icon-ok-circle"></i><a href="{% url 'product:index' %}">Products</a></li>
+        <li><i class="icon-ok-circle"></i><a href="{% url 'review:index' %}">Products Reviews</a></li>
+        <li><i class="icon-ok-circle"></i><a href="{% url 'review:reviewers' %}">Reviewers</a></li>
+        <li><i class="icon-ok-circle"></i><a href="{% url 'mail:index' %}">View pending invitation messages</a></li>
     </ul>
 {% endif %}
 {% endblock %}

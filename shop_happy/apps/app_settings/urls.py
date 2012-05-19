@@ -9,6 +9,6 @@ from views import SettingsView, DesignView
 
 
 urlpatterns = patterns('',
-    url(r'^settings/$', SettingsView.as_view(), name='settings'),
-    url(r'^design/$', DesignView.as_view(), name='design'),
+    url(r'^settings/$', login_required(SettingsView.as_view()), name='settings'),
+    url(r'^design/$', login_required(DesignView.as_view()), name='design'),
 )

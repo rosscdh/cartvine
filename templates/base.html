@@ -1,4 +1,5 @@
 {% load i18n thumbnail %}
+{% load url from future %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -51,7 +52,7 @@
                 {% blocktrans with user.get_full_name as name %}
                 Logged in as {{ name }}
                 {% endblocktrans %}
-                <a href="{% url default:logout %}">{% trans 'Logout' %}</a>
+                <a href="{% url 'default:logout' %}">{% trans 'Logout' %}</a>
                 {% endif %}
             </p>
 

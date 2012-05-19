@@ -1,5 +1,6 @@
 {% extends 'product_review/base.html' %}
 {% load i18n %}
+{% load url from future %}
 
 {% block title %}Reviews for Products from your Shop{% endblock %}
 
@@ -16,7 +17,7 @@
 {% block body %}
 <ul id="" class="">
 {% for r in object_list %}
-    <li><a href="{% url review:by_shop slug=r.slug %}">{{ r.name }}</a></li>
+    <li><a href="{% url 'review:by_shop' slug=r.slug %}">{{ r.name }}</a></li>
 {% empty%}
     <li>{% trans 'No Product Reviews found.' %}</li>
 {% endfor %}

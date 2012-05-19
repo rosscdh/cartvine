@@ -131,7 +131,7 @@ AUTHENTICATION_BACKENDS  = (
     'shop_happy.backends.ShopifyUserBackend',
 )
 
-PREREQ_APPS = (
+BASE_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -160,7 +160,7 @@ PROJECT_APPS = (
     'shop_happy.apps.webhook',
 )
 
-ADDON_APPS = (
+HELPER_APPS = (
     # Addons
     'djcelery',
     'sorl.thumbnail',
@@ -170,7 +170,7 @@ ADDON_APPS = (
     'south',
 )
 
-INSTALLED_APPS = PREREQ_APPS + ADDON_APPS + PROJECT_APPS
+INSTALLED_APPS = BASE_APPS + HELPER_APPS + PROJECT_APPS
 
 LOGIN_URL = '/'
 CUSTOMER_LOGIN_URL_NAME = '/customer/login/'

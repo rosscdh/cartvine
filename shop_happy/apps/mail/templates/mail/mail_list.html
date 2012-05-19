@@ -1,5 +1,6 @@
 {% extends 'mail/base.html' %}
 {% load i18n %}
+{% load url from future %}
 
 {% block title %}Customer Communication{% endblock %}
 
@@ -16,7 +17,7 @@
 {% block body %}
 <ul id="" class="">
 {% for p in object_list %}
-    <li><a href="{% url mail:info pk=p.pk %}">{{ p.email_to }}</a></li>
+    <li><a href="{% url 'mail:info' pk=p.pk %}">{{ p.email_to }}</a></li>
 {% empty%}
     <li>{% trans 'No Communication found.' %}</li>
 {% endfor %}
