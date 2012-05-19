@@ -131,7 +131,7 @@ AUTHENTICATION_BACKENDS  = (
     'shop_happy.backends.ShopifyUserBackend',
 )
 
-INSTALLED_APPS = (
+PREREQ_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -139,39 +139,38 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+)
 
-    # helpers
-    'django_extensions',
-    'annoying',
-    'south',
-
-    # Addons
-    'djcelery',
-    'sorl.thumbnail',
-
+PROJECT_APPS = (
     # Default - Install the shopify app
     'shop_happy.apps.default',
-
     # Product email
     'shop_happy.apps.mail',
-
     # Application Settings - Allow user to modify the settings
     'shop_happy.apps.app_settings',
-
     # Shop
     'shop_happy.apps.shop',
-
     # Customer - People who come to review after purchasing a product from the Shop
     'shop_happy.apps.customer',
-
     # Product
     'shop_happy.apps.product',
     # Product reviews
     'shop_happy.apps.product_review',
-
     # Webhook
     'shop_happy.apps.webhook',
 )
+
+ADDON_APPS = (
+    # Addons
+    'djcelery',
+    'sorl.thumbnail',
+    # helpers
+    'django_extensions',
+    'annoying',
+    'south',
+)
+
+INSTALLED_APPS = PREREQ_APPS + ADDON_APPS + PROJECT_APPS
 
 LOGIN_URL = '/'
 CUSTOMER_LOGIN_URL_NAME = '/customer/login/'
@@ -253,6 +252,8 @@ TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django'
 TEMPLATED_EMAIL_DJANGO_SUBJECTS = {
     'welcome':'Thanks and are you happy with your purchased product?',
 }
+
+TEST_RUNNER = 'shop_happy.test_runner.ShopHappyTestRunner'
 
 try:
     from shopify_settings import *
