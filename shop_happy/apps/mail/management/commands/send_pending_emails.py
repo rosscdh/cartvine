@@ -42,16 +42,17 @@ class Command(BaseCommand):
             self.dateof = datetime.date.today()
 
 
-        email_list = ShopHappyEmail.objects.filter(post_date=self.dateof)
+        email_list = ShopHappyEmail.objects.select_related('shop').filter(post_date=self.dateof)
+
         for email in email_list:
             send_templated_mail(
                 template_name='invitation_to_review',
                 from_email='ross@tweeqa.net',
-                recipient_list=['sendrossemail@gmail.com'],
+                recipient_list=[email.data['customer']['email']],
                 context={
                     'shop': email.shop,
-                    'name': email.customer.get_full_name,
-                    'product_list': [],
+                    'name': email.get_customer_full_name(),
+                    'product_list': email.data['line_items'],
                 },
                 headers={'My-Custom-Header':'Custom Value'}
             )

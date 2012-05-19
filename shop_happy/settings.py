@@ -243,6 +243,9 @@ BROKER_URL = "amqp://guest@localhost:5672//"
 CELERY_TASK_RESULT_EXPIRES = 30
 
 # Email Templates
+TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/'
+TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
+
 TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django.TemplateBackend'
 # You can also use shortcut version
 TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django'

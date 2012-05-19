@@ -1,4 +1,6 @@
 from django.db import models
+from jsonfield import JSONField
+
 from shop_happy.apps.shop.models import Shop
 from shop_happy.apps.customer.models import Customer
 
@@ -13,9 +15,12 @@ class ShopHappyEmail(models.Model):
     email_to = models.EmailField()
     post_date = models.DateField()
     sent_date = models.DateField(null=True,blank=True)
-    body = models.TextField()
+    data = JSONField()
 
     objects = ShopHappyEmailManager()
 
     def __unicode__(self):
     	return u'%s on %s - set ' %(self.email_to, self.post_date,)
+
+    def get_customer_full_name(self):
+    	return u'%s %s' %(self.data['customer']['first_name'], self.data['customer']['last_name'],)

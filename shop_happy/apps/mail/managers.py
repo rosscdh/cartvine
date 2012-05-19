@@ -21,6 +21,7 @@ class ShopHappyEmailManager(models.Manager):
         post_date = Shop.get_email_post_date()
         customer, is_new = Customer.objects.get_or_create(email=callback_order.data['customer']['email'], first_name=callback_order.data['customer']['first_name'], last_name=callback_order.data['customer']['last_name'])
         email_to = callback_order.data['customer']['email']
+        data = {'customer': callback_order.data['customer'], 'line_items': callback_order.data['line_items']}
 
-        email = self.create(shop=shop, customer=customer, post_date=post_date, email_to=email_to)
+        email = self.create(shop=shop, customer=customer, post_date=post_date, email_to=email_to, data=data)
         return email
