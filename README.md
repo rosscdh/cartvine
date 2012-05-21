@@ -31,17 +31,22 @@ The app flow is:
 
 ####### On Shopify order create #######
 1. Store a record Webhook for local reference (and comparison checks to see if the user has deleted the webhook from their store)
-2. **@TODO On login/install an invitation email is scheduled to go out to the customer
+2. On login/install an invitation email is scheduled to go out to the customer
 
 ####### On Shopify order create #######
 1. Store Local Webhook record - for reference
 2. settings.EMAIL_POST_DATE_TIMEDELTA stores the amount of time to wait before sending the email
-2. *@TODO Email to be sent to the Customer is created and post dated. This email will be sent to the email provided by the Customer and supplied in the order/create Webhook and stored locally
-3. *@TODO On the date scheduled in the @mail app model; the email is sent out to the Customer
-4. *@TODO The email invites the user to come and review their product
+2. Email to be sent to the Customer is created and post dated. This email will be sent to the email provided by the Customer and supplied in the order/create Webhook and stored locally
+3. On the date scheduled in the @mail app model; the email is sent out to the Customer
+4. The email invites the user to come and review their product
 
 
-###### Customer sign up ######
+###### Customer sign up @TBD ######
+
+1. Am considering making this process unnecessary and simply using JS to hook into a particular shops product list;
+2. This JS is loaded from teh shop side; and will automatically create/update teh currently views products details
+3. this js hook will also allow the user to login via facebook/twitter
+
 
 1. User is taken to Customer sign in page (from email link)
 2. *@TODO User elects to sign in using twitter or facebook (required)
@@ -53,6 +58,6 @@ The app flow is:
 
 * All shopify items are replicated locally and have a shopify_id field which is used for syncing_
 * On Owner login a task to sync each object is initialzed asynchronously and updates the local list using the .find(since_id=shopify_id)
-* *@TODO Email sending should be done via Mailchimp? or similar
-
+* Email sending should be done via Mailchimp? or similar.. am using https://github.com/bradwhittington/django-templated-email which hooks intomailchimp or whats better postageapp
+* @TODO will be abstracting the shopify interface at some point to allow for multiple endpoint providers other than just shopify
 
