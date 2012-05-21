@@ -7,6 +7,7 @@ from shop_happy.apps.customer.models import Customer
 from managers import ShopHappyEmailManager
 
 import datetime
+from dateutil import parser
 
 
 class ShopHappyEmail(models.Model):
@@ -24,3 +25,15 @@ class ShopHappyEmail(models.Model):
 
     def get_customer_full_name(self):
     	return u'%s %s' %(self.data['customer']['first_name'], self.data['customer']['last_name'],)
+
+    @staticmethod
+    def get_email_post_date(date_from=None):
+        date_difference = datetime.timedelta(weeks=2)
+
+        if date_from is None:
+            date_from = datetime.date.today()
+        else:
+            date_from = parser.parse(date_from)
+
+        return date_from + date_difference
+

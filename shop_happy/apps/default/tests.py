@@ -8,6 +8,12 @@ from django.core.urlresolvers import reverse
 
 from shop_happy.apps.default.forms import ShopifyInstallForm
 
+login_required_urls = [
+		reverse('my_app:settings'), 
+		reverse('my_app:design'), 
+		reverse('product:index'), 
+		reverse('product:info', kwargs={'slug': 'test-product'}), 
+		]
 
 class ShopHappyDefaultAppTest(TestCase):
 	def setUp(self):
@@ -46,7 +52,6 @@ class ShopHappyDefaultAppTest(TestCase):
 
 	def test_anonymous_cannot_access_logged_in_urls(self):
 		""" test primary logged in urls cannot be acessed unless logged in """
-		login_required_urls = [reverse('my_app:settings'), reverse('my_app:design'), reverse('product:index'), reverse('product:info', kwargs={'slug': 'test-product'}), ]
 		for u in login_required_urls:
 			response = self.client.get(u, follow=True)
 			self.assertEqual(response.status_code, 200)

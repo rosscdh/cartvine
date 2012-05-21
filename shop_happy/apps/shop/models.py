@@ -14,7 +14,7 @@ class Shop(models.Model):
     shopify_id = models.IntegerField(db_index=True)
     shopify_access_token = models.CharField(max_length=255,db_index=True)
     slug = models.SlugField(db_index=True)
-    url = models.URLField()
+    url = models.URLField(db_index=True)
     data = JSONField(null=True)
 
     objects = ShopManager()
@@ -28,6 +28,3 @@ class Shop(models.Model):
         session.token = self.shopify_access_token
         return shopify.ShopifyResource.activate_session(session)
 
-    @staticmethod
-    def get_email_post_date():
-        return datetime.date.today() + datetime.timedelta(weeks=2)

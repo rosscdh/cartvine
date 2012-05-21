@@ -1,16 +1,27 @@
 """
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
+Test the default app views
 """
-
+from django.test.client import Client
 from django.test import TestCase
 
+from django.core.urlresolvers import reverse
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+from shop_happy.apps.default.forms import ShopifyInstallForm
+
+login_required_urls = [
+		reverse('product:index'), 
+		reverse('product:info', kwargs={'slug': 'test-product-1'}), 
+		]
+
+class AppSettingsTest(TestCase):
+	def setUp(self):
+		self.client = Client()
+
+	def test_anonymous_cannot_access_logged_in_urls(self):
+		""" test primary logged in urls cannot be acessed unless logged in """
+		for u in login_required_urls:
+			response = self.client.get(u, follow=True)
+			self.assertEqual(response.status_code, 200)
+			self.assertEqual(response.context['current_shop'], None)
+			self.assertTrue(isinstance(response.context['form'], ShopifyInstallForm))
+
