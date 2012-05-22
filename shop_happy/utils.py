@@ -11,27 +11,17 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.http import HttpResponse
-#from django.utils import simplejson as json
 
 
 class HttpResponseUnauthorized(HttpResponse):
     status_code = 401
 
 
-# class JsonHttpResponseUnauthorized(HttpResponseUnauthorized):
-#     mimetype = 'text/json'
-# 
-#     def __init__(self, content='', mimetype=None, status=None, content_type=None):
-#         content = {
-#             'status': self.status_code,
-#             'message': content
-#         }
-#         super(HttpResponseUnauthorized, self).__init__(json.dumps(content), mimetype, status, content_type)
-
 def get_webhook_postback_url(request, local_url):
     host = getattr(settings, 'WEBHOOK_POSTBACK_HOST', None)
     url = request.build_absolute_uri(local_url) if host is None else '%s%s' % (host,local_url,)
     return url
+
 
 def get_namedtuple_choices(name, choices_tuple):
     """Factory function for quickly making a namedtuple suitable for use in a

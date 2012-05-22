@@ -3,6 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
 from jsonfield import JSONField
+
+from shop_happy.utils import get_namedtuple_choices
 from shop_happy.apps.shop.models import Shop
 
 

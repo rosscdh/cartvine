@@ -1,3 +1,8 @@
+"""
+@NOTE this whole middleware class may not even be required;
+as we initialize the shopify session oly when requesting 
+items from their api
+"""
 from django.conf import settings
 from django.core.urlresolvers import reverse
 import shopify
@@ -15,6 +20,7 @@ class LoginProtection(object):
 
     def process_request(self, request):
         if hasattr(request, 'session') and 'shopify' in request.session:
+			# @NOTE taken out due to the python api making a request to the shopify api every single request surely this is not right raise with shopify
             #shopify.ShopifyResource.activate_session(request.session['shopify'])
             pass
         return None
