@@ -1,5 +1,5 @@
 {% extends 'product/base.html' %}
-{% load i18n %}
+{% load i18n product_tags %}
 
 {% block title %}Product Detail{% endblock %}
 
@@ -12,7 +12,7 @@
     <h2>{{ object.name }}</h2>
     <strong>{{ object.data.vendor }}: {{ object.product_type }}</strong>
     <br/>{{ object.data.tags }}
-    {% if object.featured_image_src %}<img src="{{ object.featured_image_src }}" border="0"/>{% endif %}
+    {% if object.featured_image_src %}<img src="{{ object.featured_image_src|image_resize:"large" }}" border="0"/>{% endif %}
 </div>
 {% endblock %}
 
