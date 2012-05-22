@@ -115,7 +115,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # shopify
     'shop_happy.middleware.LoginProtection',
-)   
+)
 
 ROOT_URLCONF = 'shop_happy.urls'
 

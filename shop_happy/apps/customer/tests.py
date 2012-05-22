@@ -6,11 +6,24 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+from models import Customer
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
+class CustomerTest(TestCase):
+    def setUp(self):
+		self.customer_data = {
+			'customer': {
+				'first_name': 'Jack',
+				'last_name': 'Johnson',
+				'email': 'jack@test.com',
+			},
+			'line_items': [],
+		}
+
+    def test_get_customer_full_name(self):
         """
-        Tests that 1 + 1 always equals 2.
+        Test that we get the full name of a generated customer
         """
-        self.assertEqual(1 + 1, 2)
+        customer = Customer.objects.create(shopify_id=1234567,first_name=self.customer_data['customer']['first_name'],last_name=self.customer_data['customer']['last_name'],email=self.customer_data['customer']['email'],data=self.customer_data)
+        test_name = u'%s %s' %(self.customer_data['customer']['first_name'],self.customer_data['customer']['last_name'],)
+        self.assertEqual(customer.get_full_name, test_name)

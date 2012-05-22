@@ -16,7 +16,8 @@ from dateutil import parser
 class MailTest(TestCase):
 
 	def test_get_email_post_date(self):
-		""" test the @static_method on the ShopHappyEmail model that  
+		""" test the @static_method on the ShopHappyEmail model that 
+		returns a date 2 weeks in the future
 		"""
 		date_from = datetime.datetime(2012,05,21,0,0)
 		date_expected = date_from + datetime.timedelta(weeks=2)
