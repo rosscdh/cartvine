@@ -28,3 +28,11 @@ class Product(models.Model):
     @property
     def shopify_url(self):
         return u'/admin/products/%d' % (self.shopify_id,)
+
+    @property
+    def shopify_updated_at(self):
+        return self.data['updated_at'] if 'updated_at' in self.data and not None else None
+
+    @property
+    def featured_image_src(self):
+        return self.data['featured_image'] if self.data['featured_image'] else None

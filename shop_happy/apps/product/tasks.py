@@ -21,7 +21,6 @@ def sync_products(shopify_session, shop):
         latest_product = Product.objects.filter(shop=shop).latest('shopify_id')
     except Product.DoesNotExist:
         # No Products stored locally so simple get them all from the shop
-
         logger.info('No Products stored locally for %s so get all from the Shopify API'%(shop,))
 
         latest_product = None
@@ -29,6 +28,8 @@ def sync_products(shopify_session, shop):
 
     if latest_product:
         shopify_products = shopify.Product.find(since_id=latest_product.shopify_id)
+        if latest_product.shopify_updated_at:
+            shopify_products += shopify.Product.find(updated_at_min=latest_product.shopify_updated_at)
 
     if shopify_products:
 
@@ -36,17 +37,20 @@ def sync_products(shopify_session, shop):
 
         for product in shopify_products:
             # should use get_or_create here?
-            safe_attribs = product.attributes
+            safe_attribs = product.__dict__['attributes']
             safe_attribs['variants'] = None
             safe_attribs['options'] = None
             safe_attribs['images'] = []
             safe_attribs['featured_image'] = product.images[0].attributes['src'] if product.images else None
+
             if product.images:
                 for i in product.images:
                     safe_attribs['images'].append(i.attributes['src'])
-            p, is_new = Product.objects.get_or_create(shop=shop, shopify_id=product.id, name=product.title, slug=slugify(product.title), data=safe_attribs)
-            if not is_new:
-                p.data = safe_attribs
+
+            p, is_new = Product.objects.get_or_create(shop=shop, shopify_id=product.id)
+            p.data = safe_attribs
+            p.name = product.title
+            p.slug = slugify(product.title)
             p.save()
 
     return None
