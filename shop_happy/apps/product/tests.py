@@ -24,19 +24,37 @@ class ProductTest(TestCase):
         # create user
         User.objects.create_user('usera', 'usera@test.com', 'test')
         user_a = User.objects.get(username='usera')
-        shop_a = Shop.objects.create(name='shop a',shopify_id=1234567, shopify_access_token=1234567,slug='shop-a',url='shop-a.myshopify.com')
+        self.user_a = user_a
+        Shop.objects.create(name='shop a',shopify_id=1234567, shopify_access_token=1234567,slug='shop-a',url='shop-a.myshopify.com')
+        shop_a = Shop.objects.get(slug='shop-a')
         shop_a.users.add(user_a)
         # create user products and associate with user1
-        self.create_products_for_shop(shop_a)
+        self.user_a_products = self.create_products_for_shop(shop_a)
 
         # create second user
         User.objects.create_user('userb', 'userb@test.com', 'test')
-        user_b = User.objects.get(username='usera')
-        shop_b = Shop.objects.create(name='shop b',shopify_id=2345678, shopify_access_token=2345678,slug='shop-b',url='shop-b.myshopify.com')
+        user_b = User.objects.get(username='userb')
+        self.user_b = user_b
+        Shop.objects.create(name='shop b',shopify_id=2345678, shopify_access_token=2345678,slug='shop-b',url='shop-b.myshopify.com')
+        shop_b = Shop.objects.get(slug='shop-b')
         shop_b.users.add(user_b)
         # create second user products and assocaited with user2
-        self.create_products_for_shop(shop_b)
+        self.user_b_products = self.create_products_for_shop(shop_b)
 
+    def create_products_for_shop(self, shop, num_products=5):
+        """ Create X number of products for the provided shop object """
+        product_list = []
+        for i in range(1,num_products+1):
+            shopify_id = shop.pk + (i*1000)
+            name = 'Product %d for Shop %s' %(i,shop.name,)
+            data = {
+                'body_html': '<p>Test Product HTML</p>',
+                'product_type': 'Test Product',
+            }
+            p = Product.objects.create(shop=shop, shopify_id=shopify_id, name=name, slug=shopify_id, data=data)
+            product_list.append(p)
+        return product_list
+        
     def test_anonymous_cannot_access_logged_in_urls(self):
         """ test primary logged in urls cannot be acessed unless logged in """
         for u in login_required_urls:
@@ -48,7 +66,7 @@ class ProductTest(TestCase):
     def test_product_list_view(self):
         """ test that when logged in the user can see their list of products (only their products) """
         # log user 1 in
-        loggedin = self.client.login(username='usera', password='test')
+        self.client.login(username='usera', password='test')
 
         # test user1 can see products
         # test user1 can see only their products
@@ -56,18 +74,20 @@ class ProductTest(TestCase):
 
         self.assertTrue(isinstance(response.context['object_list'], QuerySet))
         self.assertEqual(response.context['object_list'].count(), 5)
+        # ensure that none of user Bs products are in this list
+        self.assertTrue(self.user_b_products not in response.context['object_list'])
 
-    def create_products_for_shop(self, shop, num_products=5):
-        """ Create X number of products for the provided shop object """
-        product_list = []
-        for i in range(1,num_products+1):
-            shopify_id = (i*1000)
-            name = 'Product %d for Shop %s' %(i,shop.name,)
-            data = {
-                'body_html': '<p>Test Product HTML</p>',
-                'product_type': 'Test Product',
-            }
-            p = Product.objects.create(shop=shop, shopify_id=shopify_id, name=name, slug=shopify_id, data=data)
-            product_list.append(p)
-        return product_list
+    def test_product_detail_view(self):
+        self.client.login(username='usera', password='test')
+        response = self.client.get(reverse('product:info', kwargs={'slug': self.user_a_products[0].slug}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['object'], self.user_a_products[0])
         
+
+    def test_product_detail_view_access_by_non_owner(self):
+        """ Log user B in and try to view userAs products """
+        self.client.login(username='userb', password='test')
+
+        response = self.client.get(reverse('product:info', kwargs={'slug': self.user_a_products[0].slug}))
+        self.assertEqual(response.status_code, 404)
+
