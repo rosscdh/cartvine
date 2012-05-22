@@ -21,28 +21,27 @@ class ProductTest(TestCase):
     def setUp(self):
         self.client = Client()
         # Setup fixtures
-        # create user
+        # create user a
         User.objects.create_user('usera', 'usera@test.com', 'test')
-        user_a = User.objects.get(username='usera')
-        self.user_a = user_a
+        self.user_a = User.objects.get(username='usera')
+
         Shop.objects.create(name='shop a',shopify_id=1234567, shopify_access_token=1234567,slug='shop-a',url='shop-a.myshopify.com')
         shop_a = Shop.objects.get(slug='shop-a')
-        shop_a.users.add(user_a)
+        shop_a.users.add(self.user_a)
         # create user products and associate with user1
-        self.user_a_products = self.create_products_for_shop(shop_a)
+        self.user_a_products = self.__create_products_for_shop(shop_a)
 
-        # create second user
+        # create user b
         User.objects.create_user('userb', 'userb@test.com', 'test')
-        user_b = User.objects.get(username='userb')
-        self.user_b = user_b
+        self.user_b = User.objects.get(username='userb')
         Shop.objects.create(name='shop b',shopify_id=2345678, shopify_access_token=2345678,slug='shop-b',url='shop-b.myshopify.com')
         shop_b = Shop.objects.get(slug='shop-b')
-        shop_b.users.add(user_b)
+        shop_b.users.add(self.user_b)
         # create second user products and assocaited with user2
-        self.user_b_products = self.create_products_for_shop(shop_b)
+        self.user_b_products = self.__create_products_for_shop(shop_b)
 
-    def create_products_for_shop(self, shop, num_products=5):
-        """ Create X number of products for the provided shop object """
+    def __create_products_for_shop(self, shop, num_products=5):
+        """ Utility method to Create X number of products for the provided shop object """
         product_list = []
         for i in range(1,num_products+1):
             shopify_id = shop.pk + (i*1000)
