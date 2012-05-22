@@ -44,7 +44,7 @@ class ShopManager(models.Manager):
         email = shop.data['email']
         user, is_new = User.objects.get_or_create(username=username, email=email, first_name=first_name, last_name=last_name)
         # if is new or is not new but for some reason was not assocaited with this shop (could be an existing customer that has no association with this shop, potential bug here if we have multiple 1-john-smiths)
-        if is_new or not shop.users.get(pk=user.pk).exists():
+        if is_new or not shop.users.filter(pk=user.pk).exists():
             shop.users.add(user)
         return user
 
