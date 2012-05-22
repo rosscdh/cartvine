@@ -172,7 +172,7 @@ HELPER_APPS = (
 
 INSTALLED_APPS = BASE_APPS + HELPER_APPS + PROJECT_APPS
 
-LOGIN_URL = '/'
+LOGIN_URL = '/login/'
 CUSTOMER_LOGIN_URL_NAME = '/customer/login/'
 
 # Django Debug Toolbar

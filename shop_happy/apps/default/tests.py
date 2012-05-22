@@ -23,13 +23,24 @@ class ShopHappyDefaultAppTest(TestCase):
 		"""
 		The user should alwys be redirected to the login/signup screen
 		"""
-		test_urls = ['/', '/login/', '/monkey/test/page/']
-		for u in test_urls:
-			response = self.client.get('/')
-			self.assertEqual(response.status_code, 200)
+		for u in login_required_urls:
+			response = self.client.get(u, follow=True)
+			# Should only be 1 redirect
+			self.assertEqual(len(response.redirect_chain), 1)
+			# get the location and status code of each
+			location, status_code = response.redirect_chain[0]
+			self.assertEqual(status_code, 302)
+			# should contain ?next=/path/of/url
+			self.assertTrue('?next=%s'%(u,) in location)
 
-			self.assertEqual(response.context['current_shop'], None)
-			self.assertTrue(isinstance(response.context['form'], ShopifyInstallForm))
+	def test_invalid_url_404(self):
+		"""
+		Invalid pages should 404
+		"""
+		test_urls = ['/produkts/', '/monkey/test/page/']
+		for u in test_urls:
+			response = self.client.get(u)
+			self.assertEqual(response.status_code, 404)
 
 	def test_redirect_with_shop_get_param(self, response=None):
 		""" if ?shop=XXX is specified then we redirect to shopify with oauth request and scope """

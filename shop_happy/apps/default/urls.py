@@ -10,5 +10,5 @@ urlpatterns = patterns('',
     url(r'^login/$', DefaultView.as_view(), name='login'),
     url(r'^logout/$', login_required(LogoutView.as_view()), name='logout'),
     url(r'^finalize/$', FinalizeInstallationView.as_view(), name='finalize'),
-    url(r'^', DefaultView.as_view(), name='index'),
+    url(r'^$', DefaultView.as_view(), name='index'),
 )
