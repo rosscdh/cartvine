@@ -12,7 +12,7 @@
     <h2>{{ object.name }}</h2>
     <strong>{{ object.data.vendor }}: {{ object.product_type }}</strong>
     <br/>{{ object.data.tags }}
-    {{ object.featured_image }}
+    {% if object.featured_image_src %}<img src="{{ object.featured_image_src }}" border="0"/>{% endif %}
 </div>
 {% endblock %}
 

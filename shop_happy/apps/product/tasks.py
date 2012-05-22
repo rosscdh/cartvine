@@ -40,10 +40,10 @@ def sync_products(shopify_session, shop):
             safe_attribs = product.__dict__['attributes']
             safe_attribs['variants'] = None
             safe_attribs['options'] = None
+            safe_attribs['featured_image'] = product.attributes['images'][0].attributes['src'] if len(product.attributes['images']) > 0 else None
             safe_attribs['images'] = []
-            safe_attribs['featured_image'] = product.images[0].attributes['src'] if product.images else None
 
-            if product.images:
+            if len(product.attributes['images']) > 0:
                 for i in product.images:
                     safe_attribs['images'].append(i.attributes['src'])
 
