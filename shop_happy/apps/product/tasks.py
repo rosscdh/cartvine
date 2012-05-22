@@ -36,10 +36,14 @@ def sync_products(shopify_session, shop):
 
         for product in shopify_products:
             # should use get_or_create here?
-            safe_attribs = product.__dict__['attributes']
+            safe_attribs = product.attributes
             safe_attribs['variants'] = None
             safe_attribs['options'] = None
+            safe_attribs['images'] = []
             safe_attribs['featured_image'] = product.images[0].attributes['src'] if product.images else None
+            if product.images:
+                for i in product.images:
+                    safe_attribs['images'].append(i.attributes['src'])
             p, is_new = Product.objects.get_or_create(shop=shop, shopify_id=product.id, name=product.title, slug=slugify(product.title), data=safe_attribs)
             if not is_new:
                 p.data = safe_attribs
