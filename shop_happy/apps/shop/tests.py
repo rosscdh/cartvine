@@ -1,16 +1,22 @@
 """
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
+Test the Shop object and views
 """
-
+from django.contrib.auth.models import User
+from django.test.client import Client
 from django.test import TestCase
+from django.core.urlresolvers import reverse
+
+from models import Shop
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+
+class ShopTest(TestCase):
+
+    def setUp(self):
+        User.objects.create_user('usera', 'usera@test.com', 'test')
+        self.user_a = User.objects.get(username='usera')
+
+        Shop.objects.create(name='shop a',shopify_id=1234567, shopify_access_token=1234567,slug='shop-a',url='shop-a.myshopify.com')
+        self.shop = Shop.objects.get(slug='shop-a')
+        self.shop.users.add(self.user_a)
+

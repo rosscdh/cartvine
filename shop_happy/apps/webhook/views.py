@@ -21,7 +21,7 @@ from models import OrderCreatePostback
 def CreateInvite(request):
     body = None
     if not request.META.get('HTTP_X_SHOPIFY_SHOP_DOMAIN', None):
-        logger.error('Webhook Callback from shopify did not contain HTTP_X_SHOPIFY_SHOP_DOMAIN header')
+        logger.error('Webhook Callback from shopify did not contain HTTP_X_SHOPIFY_SHOP_DOMAIN header %s' %(request.META,))
         raise Http404
     else:
         request_body = request.read()

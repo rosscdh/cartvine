@@ -11,7 +11,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.http import HttpResponse
-#import simplejson as json
+#from django.utils import simplejson as json
 
 
 class HttpResponseUnauthorized(HttpResponse):
