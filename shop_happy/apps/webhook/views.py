@@ -47,7 +47,7 @@ def CreateInvite(request):
             email = ShopHappyEmail.objects.create_email_from_callback(order)
 
 	return render_to_response('webhook/response.html', {
-		'request': body,
+		'response': [order.pk],
 	})
 
 
