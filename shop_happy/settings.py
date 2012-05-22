@@ -69,9 +69,6 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
     os.path.join(STATIC_ROOT, 'base'),
 )
 
@@ -80,7 +77,6 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -90,7 +86,6 @@ SECRET_KEY = '+!&amp;e%aq9_qkjbyrneg@h#aum!u)2ug@s!m8vyugzvjvopkk%eq'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -141,6 +136,17 @@ BASE_APPS = (
     'django.contrib.admin',
 )
 
+
+HELPER_APPS = (
+    # Addons
+    'djcelery',
+    'sorl.thumbnail',
+    # helpers
+    'django_extensions',
+    'annoying',
+    'south',
+)
+
 PROJECT_APPS = (
     # Default - Install the shopify app
     'shop_happy.apps.default',
@@ -160,15 +166,6 @@ PROJECT_APPS = (
     'shop_happy.apps.webhook',
 )
 
-HELPER_APPS = (
-    # Addons
-    'djcelery',
-    'sorl.thumbnail',
-    # helpers
-    'django_extensions',
-    'annoying',
-    'south',
-)
 
 INSTALLED_APPS = BASE_APPS + HELPER_APPS + PROJECT_APPS
 
@@ -253,6 +250,7 @@ TEMPLATED_EMAIL_DJANGO_SUBJECTS = {
     'welcome':'Thanks and are you happy with your purchased product?',
 }
 
+# Custom test runner for this project
 TEST_RUNNER = 'shop_happy.test_runner.ShopHappyTestRunner'
 
 try:
