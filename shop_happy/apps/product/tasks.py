@@ -39,7 +39,7 @@ def sync_products(shopify_session, shop):
             safe_attribs = product.__dict__['attributes']
             safe_attribs['variants'] = None
             safe_attribs['options'] = None
-            safe_attribs['featured_image'] = product.images[0].src if product.images else None
+            safe_attribs['featured_image'] = product.images[0].attributes['src'] if product.images else None
             p, is_new = Product.objects.get_or_create(shop=shop, shopify_id=product.id, name=product.title, slug=slugify(product.title), data=safe_attribs)
             if not is_new:
                 p.data = safe_attribs
