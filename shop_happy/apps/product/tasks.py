@@ -1,5 +1,5 @@
 from celery.task import task
-
+from django.conf import settings
 from shop_happy.apps.shop.models import Shop
 from django.template.defaultfilters import slugify
 

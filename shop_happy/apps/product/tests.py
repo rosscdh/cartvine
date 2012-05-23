@@ -111,7 +111,9 @@ class ProductTemplateTagsTest(TestCase):
         # Default resie
         src = image_resize(image%('',))
         self.assertEqual(src, 'http://static.shopify.com/s/files/1/0157/5666/products/ant_water_compact.jpg?107')
+        # remove the %s palceholder
+        image = image%('',)
         for size in SHOP_IMAGE_SIZE:
-            src = image_resize(image%('',), size)
+            src = image_resize(image, size)
             self.assertEqual(src, 'http://static.shopify.com/s/files/1/0157/5666/products/ant_water%s.jpg?107'%('_'+size,))
 
