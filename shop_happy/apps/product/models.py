@@ -35,4 +35,4 @@ class Product(models.Model):
 
     @property
     def featured_image_src(self):
-        return self.data['featured_image'] if self.data['featured_image'] else None
+        return self.data['featured_image'] if 'featured_image' in self.data else None

@@ -9,7 +9,9 @@ from django.core.urlresolvers import reverse
 
 from shop_happy.apps.default.forms import ShopifyInstallForm
 from shop_happy.apps.shop.models import Shop
+from shop_happy.apps.product.templatetags.product_tags import image_resize
 from models import Product
+
 
 login_required_urls = [
 		reverse('product:index'), 
@@ -89,4 +91,27 @@ class ProductTest(TestCase):
 
         response = self.client.get(reverse('product:info', kwargs={'slug': self.user_a_products[0].slug}))
         self.assertEqual(response.status_code, 404)
+
+
+class ProductTemplateTagsTest(TestCase):
+    def setUp(self):
+        pass
+
+    def test_tag_image_reseize(self):
+        """ Test the image_resize template tag 
+        shopify makes a series of image sizes available via the api
+        shop_happy.apps.product.templatetags.product_tags.SHOP_IMAGE_SIZE
+        image_resize returns
+        http://static.shopify.com/s/files/1/0157/5666/products/ant_water_compact.jpg?107
+        http://static.shopify.com/s/files/1/0157/5666/products/ant_water_pico.jpg?107
+        ...
+        """
+        from shop_happy.apps.product.templatetags.product_tags import SHOP_IMAGE_SIZE
+        image = 'http://static.shopify.com/s/files/1/0157/5666/products/ant_water%s.jpg?107'
+        # Default resie
+        src = image_resize(image%('',))
+        self.assertEqual(src, 'http://static.shopify.com/s/files/1/0157/5666/products/ant_water_compact.jpg?107')
+        for size in SHOP_IMAGE_SIZE:
+            src = image_resize(image%('',), size)
+            self.assertEqual(src, 'http://static.shopify.com/s/files/1/0157/5666/products/ant_water%s.jpg?107'%('_'+size,))
 
