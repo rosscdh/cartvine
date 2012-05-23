@@ -27,6 +27,8 @@ def sync_customers(shopify_session, shop):
 
     if latest_customer:
         shopify_customers = shopify.Customer.find(since_id=latest_customer.shopify_id)
+        if latest_customer.shopify_updated_at:
+            shopify_customers += shopify.Customer.find(updated_at_min=latest_customer.shopify_updated_at)
 
     if shopify_customers:
         logger.info('%d new Customers found for %s'%(len(shopify_customers),shop,))
@@ -34,8 +36,15 @@ def sync_customers(shopify_session, shop):
             # should use get_or_create here?
             safe_attribs = customer.__dict__['attributes']
             safe_attribs['addresses'] = None
-            c = Customer(shopify_id=customer.id, first_name=customer.first_name, last_name=customer.last_name, email=customer.email, data=safe_attribs)
+
+            c, is_new = Customer.objects.get_or_create(shopify_id=customer.id)
+            c.first_name = customer.first_name
+            c.last_name = customer.last_name
+            c.email = customer.email
+            c.data = safe_attribs
             c.save()
-            c.shops.add(shop)
+            # Add the current shop to the customer
+            if shop not in c.shops:
+                c.shops.add(shop)
 
     return None
