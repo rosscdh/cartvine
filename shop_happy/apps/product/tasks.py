@@ -55,3 +55,11 @@ def sync_products(shopify_session, shop):
 
     return None
 
+
+REMOTE_STORAGE_PATH = getattr(settings, 'REMOTE_STORAGE_PATH', 'remote/')
+@task(name="retrieve_remote_image")
+def retrieve_remote_image(src):
+    """ Method downloads and saves a remote image based on its url
+    then returns a local url or false if unable to download and save
+    """
+    pass
