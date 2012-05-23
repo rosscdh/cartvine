@@ -14,7 +14,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(SITE_ROOT, 'dev.db'),
+        'NAME': os.path.join(SITE_ROOT, 'fbu-dev.db'),
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -96,8 +96,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
-    # shopify
-    'shop_happy.context_processors.current_shop',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -108,14 +106,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # shopify
-    'shop_happy.middleware.LoginProtection',
 )
 
-ROOT_URLCONF = 'shop_happy.urls'
+ROOT_URLCONF = 'facebook_user.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'shop_happy.wsgi.application'
+WSGI_APPLICATION = 'facebook_user.wsgi.application'
 
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates'),
@@ -123,7 +119,6 @@ TEMPLATE_DIRS = (
 
 AUTHENTICATION_BACKENDS  = (
     'django.contrib.auth.backends.ModelBackend',
-    'shop_happy.backends.ShopifyUserBackend',
 )
 
 BASE_APPS = (
@@ -149,22 +144,9 @@ HELPER_APPS = (
 
 PROJECT_APPS = (
     # Default - Install the shopify app
-    'shop_happy.apps.default',
-    # Product email
-    'shop_happy.apps.mail',
-    # Application Settings - Allow user to modify the settings
-    'shop_happy.apps.app_settings',
-    # Shop
-    'shop_happy.apps.shop',
-    # Customer - People who come to review after purchasing a product from the Shop
-    'shop_happy.apps.customer',
-    # Product
-    'shop_happy.apps.product',
-    # Product reviews
-    'shop_happy.apps.product_review',
-    # Webhook
-    'shop_happy.apps.webhook',
+    'facebook_user.apps.default',
 )
+
 
 # Assemble them all together
 INSTALLED_APPS = BASE_APPS + HELPER_APPS + PROJECT_APPS

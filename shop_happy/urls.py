@@ -5,6 +5,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
+    # Core Application
     url(r'^webhook/', include('shop_happy.apps.webhook.urls', namespace='webhook')),
     url(r'^mail/', include('shop_happy.apps.mail.urls', namespace='mail')),
     url(r'^customer/', include('shop_happy.apps.customer.urls', namespace='customer')),
