@@ -5,6 +5,7 @@ from django.template.defaultfilters import slugify
 
 from models import Product
 
+from urlparse import urlparse
 import shopify
 import logging
 logger = logging.getLogger('happy_log')
@@ -56,10 +57,19 @@ def sync_products(shopify_session, shop):
     return None
 
 
-REMOTE_STORAGE_PATH = getattr(settings, 'REMOTE_STORAGE_PATH', 'remote/')
+REMOTE_IMAGE_STORAGE_PATH = getattr(settings, 'REMOTE_IMAGE_STORAGE_PATH', 'remote')
 @task(name="retrieve_remote_image")
 def retrieve_remote_image(src):
     """ Method downloads and saves a remote image based on its url
     then returns a local url or false if unable to download and save
     """
-    pass
+    logger.info('Starting download of Remote Image: %s' %(src,))
+    image = urlparse(src)
+    if not image.scheme in ['http','https']:
+        logger.error('Could not download Image from : %s - Incorrect Scheme' %(src,))
+    else:
+        # valid scheme continue with process
+        # open remote image
+        # save file locally
+        pass
+    return None

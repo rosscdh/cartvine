@@ -253,6 +253,9 @@ TEMPLATED_EMAIL_DJANGO_SUBJECTS = {
 # Custom test runner for this project
 TEST_RUNNER = 'shop_happy.test_runner.ShopHappyTestRunner'
 
+# Remote images are downloaded and stored in this folder relative to the MEDIA_ROOT
+REMOTE_IMAGE_STORAGE_PATH = 'remote'
+
 try:
     from shopify_settings import *
 except ImportError:

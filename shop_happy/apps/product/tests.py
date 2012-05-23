@@ -14,9 +14,9 @@ from models import Product
 
 
 login_required_urls = [
-		reverse('product:index'), 
-		reverse('product:info', kwargs={'slug': 'test-product-1'}), 
-		]
+    reverse('product:index'), 
+    reverse('product:info', kwargs={'slug': 'test-product-1'}), 
+    ]
 
 
 class ProductTest(TestCase):
@@ -94,6 +94,7 @@ class ProductTest(TestCase):
 
 
 class ProductTemplateTagsTest(TestCase):
+    """ Test the Product templatetags """
     def setUp(self):
         pass
 
