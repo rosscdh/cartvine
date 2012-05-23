@@ -18,7 +18,7 @@ def sync_customers(shopify_session, shop):
     shop.activate_shopify_session()
 
     try:
-        latest_customer = Customer.objects.filter(shops__pk__in=[shop.pk]).latest('pk')
+        latest_customer = Customer.objects.filter(shop__pk__in=[shop.pk]).latest('pk')
     except Customer.DoesNotExist:
         # No Customers stored locally so simple get them all from the shop
         logger.info('No Customers stored locally for %s so get all from the Shopify API'%(shop,))
@@ -44,7 +44,7 @@ def sync_customers(shopify_session, shop):
             c.data = safe_attribs
             c.save()
             # Add the current shop to the customer
-            if shop not in c.shops.all():
-                c.shops.add(shop)
+            if shop not in c.shop.all():
+                c.shop.add(shop)
 
     return None

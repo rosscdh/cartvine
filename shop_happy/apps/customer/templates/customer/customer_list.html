@@ -1,0 +1,25 @@
+{% extends 'customer/base.html' %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}Customers from your Shop{% endblock %}
+
+{% block content-head %}
+<h1>Customers from your Shop</h1>
+{% endblock %}
+
+{% block pre-body %}
+<div class="hero-unit">
+    These are teh customers currently assocaited with your store
+</div>
+{% endblock %}
+
+{% block body %}
+<ul id="" class="">
+{% for c in object_list %}
+    <li><a href="{% url 'customer:info' pk=c.pk %}">{{ c.get_full_name }}</a></li>
+{% empty%}
+    <li>{% trans 'No Products found.' %}</li>
+{% endfor %}
+</ul>
+{% endblock %}

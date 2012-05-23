@@ -1,0 +1,42 @@
+{% extends 'customer/base.html' %}
+{% load i18n product_tags %}
+
+{% block title %}Customer Detail{% endblock %}
+
+{% block content-head %}
+<h1>Customer Detail</h1>
+{% endblock %}
+
+{% block pre-body %}
+<div class="hero-unit">
+    <span class="pull-right"><a href="{{ object.shop.url }}{{ object.shopify_url }}">View in Shopify</a></span>
+    <h2>{{ object.geT_full_name }}</h2>
+    <strong>{{ object.email }}</strong>
+</div>
+{% endblock %}
+
+{% block body %}
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#">The Customer</a></li>
+  <li><a href="#">Their Purchases</a></li>
+  <li><a href="#">Their Reviews</a></li>
+</ul>
+
+<div id="info" class="span7">
+<h3>About the Customer</h3>
+</div>
+
+<div class="clearfix"></div>
+
+<div id="purchases" class="span7">
+<h3>Purchases</h3>
+</div>
+
+<div class="clearfix"></div>
+
+<div id="reviews" class="span7">
+<h3>Reviews</h3>
+</div>
+
+
+{% endblock %}
