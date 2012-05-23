@@ -9,20 +9,25 @@
 
 {% block pre-body %}
 <div class="hero-unit">
+    <span class="pull-right"><a href="{{ object.shop.url }}{{ object.shopify_url }}">View in Shopify</a></span>
     <h2>{{ object.name }}</h2>
     <strong>{{ object.data.vendor }}: {{ object.product_type }}</strong>
     <br/>{{ object.data.tags }}
-    {% if object.featured_image_src %}<img src="{{ object.featured_image_src|image_resize:"medium" }}" border="0"/>{% endif %}
 </div>
 {% endblock %}
 
 {% block body %}
-
-<div class="span5">
+<div id="body-content" class="span7">
 {{ object.summary|safe }}
 </div>
 
-<div class="span5">
-<a href="{{ object.shop.url }}{{ object.shopify_url }}">View in Shopify</a>
+<div id="images" class="pull-right">
+{% if object.featured_image_src %}
+<img id="feature-image" src="{{ object.featured_image_src|image_resize:"medium" }}" border="0"/>
+{% endif %}
+{% for i in object.get_images_src %}
+    <img class="product image" src="{{ i|image_resize:"small" }}" border="0"/>
+{% endfor %}
 </div>
+
 {% endblock %}

@@ -36,3 +36,6 @@ class Product(models.Model):
     @property
     def featured_image_src(self):
         return self.data['featured_image'] if 'featured_image' in self.data else None
+
+    def get_images_src(self):
+        return self.data['images'] if 'images' in self.data and isinstance(self.data['images'], type([])) else None

@@ -1,8 +1,13 @@
 from celery.task import task
 from django.conf import settings
-from shop_happy.apps.shop.models import Shop
 from django.template.defaultfilters import slugify
 
+from PIL import Image
+import urllib2
+from django.core.files.base import ContentFile
+from StringIO import StringIO
+
+from shop_happy.apps.shop.models import Shop
 from models import Product
 
 from urlparse import urlparse
@@ -70,6 +75,15 @@ def retrieve_remote_image(src):
     else:
         # valid scheme continue with process
         # open remote image
+        output_file = '%s/%s' % (settings.MEDIA_ROOT, REMOTE_IMAGE_STORAGE_PATH,)
+        name = 'test'
+        input_file = StringIO(urllib2.urlopen(src).read())
+        output_file = StringIO()
+        img = Image.open(input_file)
+        if img.mode != "RGB":
+            img = img.convert("RGB")
         # save file locally
-        pass
+        img.save(output_file, "JPEG")
+        image.save(name+".jpg", ContentFile(output_file.getvalue()), save=False)
+
     return None

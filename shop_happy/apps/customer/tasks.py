@@ -44,7 +44,7 @@ def sync_customers(shopify_session, shop):
             c.data = safe_attribs
             c.save()
             # Add the current shop to the customer
-            if shop not in c.shops:
+            if shop not in c.shops.all():
                 c.shops.add(shop)
 
     return None
