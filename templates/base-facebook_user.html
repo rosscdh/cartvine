@@ -20,6 +20,7 @@
     <![endif]-->
     <script src="{{ STATIC_URL }}default/js/jquery.min.js"></script>
     <script src="{{ STATIC_URL }}default/js/bootstrap.min.js"></script>
+    {% block ember-view %}{% endblock %}    
 
     <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="{{ STATIC_URL }}default/img/favicon.ico">
@@ -27,11 +28,15 @@
     <link rel="apple-touch-icon" href="{{ STATIC_URL }}default/img/apple-touch-icon.png">
     <link rel="apple-touch-icon" sizes="72x72" href="{{ STATIC_URL }}default/img/apple-touch-icon-72x72.png">
     <link rel="apple-touch-icon" sizes="114x114" href="{{ STATIC_URL }}default/img/apple-touch-icon-114x114.png">
-    
+
     {% block css %}{% endblock %}
   </head>
 
   <body data-spy="scroll" data-target=".subnav" data-offset="50">
+
+      <script src="{{ STATIC_URL }}emberjs/js/libs/ember-0.9.8.1.min.js"></script>
+      <script src="{{ STATIC_URL }}emberjs/ember-facebook.js"></script>
+      <script src="{{ STATIC_URL }}emberjs/js/app.js"></script>
 
     <div id="navbar" class="navbar navbar-fixed-top">
       <div class="navbar-inner">
@@ -86,10 +91,6 @@
 
     <p>&nbsp;</p>
     <p>&nbsp;</p>
-
-    <script src="{{ STATIC_URL }}emberjs/js/libs/ember-0.9.8.1.min.js"></script>
-    <script src="{{ STATIC_URL }}emberjs/ember-facebook.js"></script>
-    <script src="{{ STATIC_URL }}emberjs/js/app.js"></script>
 
     {% facebook_load %}
     {% block js %}{% endblock %}

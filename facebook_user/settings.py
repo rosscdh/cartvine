@@ -140,6 +140,7 @@ HELPER_APPS = (
     'djcelery',
     'sorl.thumbnail',
     'django_facebook',
+    'templatetag_handlebars',
     # helpers
     'django_extensions',
     'annoying',
