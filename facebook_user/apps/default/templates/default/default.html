@@ -7,6 +7,16 @@
 <fb:login-button show-faces="false" scope="{% facebook_scope %}"></fb:login-button>
 {% facebook_init %}
     {% block facebook_code %}
+    FB.Event.subscribe('auth.login', function (response) {
+        console.log('The status of the session is: ' + response.status);
+        if (response.status == 'connected') {
+            // The user has logged in, reload to integrate user
+            console.log('Yay, logged in')
+        } else {
+            // The user has logged out, and the cookie has been cleared
+            console.log('Boo, not logged in')
+        }
+    });
     {% endblock %}
 {% endfacebook %}
 

@@ -106,6 +106,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Django Facebook
+    'django_facebook.middleware.FacebookMiddleware',
+    #'django_facebook.middleware.DjangoFacebook',
 )
 
 ROOT_URLCONF = 'facebook_user.urls'
@@ -168,7 +171,11 @@ if DEBUG:
     FACEBOOK_DEBUG_COOKIE = ''
     FACEBOOK_DEBUG_SIGNEDREQ = ''
 
-    MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+    MIDDLEWARE_CLASSES += (
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+        'django_facebook.middleware.FacebookDebugCanvasMiddleware',
+        'django_facebook.middleware.FacebookDebugCookieMiddleware',
+    )
     INSTALLED_APPS += ('debug_toolbar',)
     INTERNAL_IPS = ('127.0.0.1', '172.16.37.128')
     DEBUG_TOOLBAR_CONFIG = {

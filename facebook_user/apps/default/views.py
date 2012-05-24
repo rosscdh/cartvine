@@ -19,3 +19,19 @@ class DefaultView(TemplateView):
         return self.render_to_response({
         })
 
+
+class LoginView(RedirectView):
+    """ Log the user in """
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        messages.info(request, _('Successfully logged in.'))
+
+        return redirect(reverse('default:index'))
+
+class LogoutView(RedirectView):
+    """ Log the user out """
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        messages.info(request, _('Successfully logged out.'))
+
+        return redirect(reverse('default:index'))
