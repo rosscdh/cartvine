@@ -8,7 +8,6 @@ Werkzeug
 mock
 
 south
-django-tastypie
 
 -e git+https://github.com/Shopify/shopify_python_api.git#egg=shopify
 
@@ -32,5 +31,6 @@ pil
 # Facebook Connected Integration
 -e git+git://github.com/stard0g101/facebook-python-sdk.git#egg=facebook-python-sdk
 -e git+https://github.com/stard0g101/django-facebook.git#egg=django-facebook
+-e git+https://github.com/toastdriven/django-tastypie.git#egg=django-tastypie
 # Handlebar templates in django
 django-templatetag-handlebars

@@ -141,6 +141,7 @@ HELPER_APPS = (
     # Addons
     'djcelery',
     'sorl.thumbnail',
+    'tastypie',
     # helpers
     'django_extensions',
     'annoying',
@@ -164,6 +165,8 @@ PROJECT_APPS = (
     'shop_happy.apps.product_review',
     # Webhook
     'shop_happy.apps.webhook',
+    # API
+    'shop_happy.apps.api',
 )
 
 # Assemble them all together
