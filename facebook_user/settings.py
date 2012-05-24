@@ -14,7 +14,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(SITE_ROOT, 'fbu-dev.db'),
+        'NAME': os.path.join(SITE_ROOT, 'dev.db'),
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -80,7 +80,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '+!&amp;e%aq9_qkjbyrneg@h#aum!u)2ug@s!m8vyugzvjvopkk%eq'
+SECRET_KEY = '83*y+10iga$i58z3pnv2h!i0wqgue!*fxw5#vc5m=ezj73jqn^('
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -197,7 +197,7 @@ LOGGING = {
         'lumberjack': {
             'level': 'DEBUG',
             'class': 'logging.handlers.WatchedFileHandler',
-            'filename': os.path.join(SITE_ROOT, 'log/shop_happy.log'),
+            'filename': os.path.join(SITE_ROOT, 'log/facebook_user.log'),
             'formatter': 'verbose',
         },
     },
