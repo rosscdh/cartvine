@@ -1,1 +1,13 @@
 {% extends 'base-facebook_user.html' %}
+{% load facebook %}
+
+
+{% block js %}
+
+<fb:login-button show-faces="false" scope="{% facebook_scope %}"></fb:login-button>
+{% facebook_init %}
+    {% block facebook_code %}
+    {% endblock %}
+{% endfacebook %}
+
+{% endblock %}

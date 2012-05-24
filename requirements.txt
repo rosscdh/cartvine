@@ -27,3 +27,7 @@ pil
 
 # JSONField
 -e git+https://github.com/bradjasper/django-jsonfield.git#egg=django-jsonfield
+
+
+# Facebook Connected Integration
+-e git+https://github.com/stard0g101/django-facebook.git#egg=django-facebook

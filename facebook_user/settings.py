@@ -136,6 +136,7 @@ HELPER_APPS = (
     # Addons
     'djcelery',
     'sorl.thumbnail',
+    'django_facebook',
     # helpers
     'django_extensions',
     'annoying',
@@ -151,11 +152,22 @@ PROJECT_APPS = (
 # Assemble them all together
 INSTALLED_APPS = BASE_APPS + HELPER_APPS + PROJECT_APPS
 
-LOGIN_URL = '/login/'
-CUSTOMER_LOGIN_URL_NAME = '/customer/login/'
+LOGIN_URL = '/'
+
+FACEBOOK_APP_ID = '209234305864956'
+FACEBOOK_SECRET_KEY = 'd0875d1310c3708181b5b9d2092593d8'
+
+# Optionally set default permissions to request, e.g: ['email', 'user_about_me']
+FACEBOOK_PERMS = ['email','read_stream', 'publish_stream', 'publish_actions']
 
 # Django Debug Toolbar
 if DEBUG:
+    # And for local debugging, use one of the debug middlewares and set:
+    FACEBOOK_DEBUG_TOKEN = ''
+    FACEBOOK_DEBUG_UID = ''
+    FACEBOOK_DEBUG_COOKIE = ''
+    FACEBOOK_DEBUG_SIGNEDREQ = ''
+
     MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
     INSTALLED_APPS += ('debug_toolbar',)
     INTERNAL_IPS = ('127.0.0.1', '172.16.37.128')

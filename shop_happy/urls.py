@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 
 admin.autodiscover()
@@ -14,3 +15,5 @@ urlpatterns = patterns('',
     url(r'^app/', include('shop_happy.apps.app_settings.urls', namespace='my_app')),
     url(r'^', include('shop_happy.apps.default.urls', namespace='default')),
 )
+
+urlpatterns += staticfiles_urlpatterns()

@@ -5,8 +5,8 @@ from django.core.exceptions import ImproperlyConfigured
 from shop_happy.utils import get_namedtuple_choices
 
 VALID_APPLICATIONS = get_namedtuple_choices('VALID_APPLICATIONS', (
-    (['shop_happy', 'core', 'sh'], 'shop_happy', 'shop_happy'),
-    (['facebook_user', 'fbu', 'fb'], 'facebook_user', 'facebook_user'),
+    (['shop_happy', 'core', 'sh', 's'], 'shop_happy', 'shop_happy'),
+    (['facebook_user', 'fbu', 'fb', 'f'], 'facebook_user', 'facebook_user'),
 ))
 
 
