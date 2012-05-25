@@ -1,18 +1,46 @@
 {% extends 'base-facebook_user.html' %}
 {% load facebook templatetag_handlebars %}
 
+{% block content-head %}
+<div id="title"></div>
+{% endblock %}
+
+{% block body %}
+<div id="customer-nav"></div>
+<div id="login" class="hero-unit"></div>
+<div class="clearfix">&nbsp;</div>
+{% endblock %}
+
 {% block ember-view %}
+{% tplhandlebars "customer-nav" %}
+    {{#if App.FBUser}}
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#">About you!</a></li>
+      <li><a href="#">Messages</a></li>
+      <li><a href="#">Purchases</a></li>
+      <li><a href="#">Comments</a></li>
+    </ul>
+    {{else}}
+    &nbsp;
+    {{/if}}
+{% endtplhandlebars %}
+
+{% tplhandlebars "page-title" %}
+    {{#if App.FBUser}}
+    <h1>Hi there {{App.FBUser.first_name}}...</h1>
+    <a href="#" {{action "logout" target="FB"}}>Logout</a>
+    {{else}}
+    <h1>Connect to shop</h1>
+    {{/if}}
+{% endtplhandlebars %}
+
 {% tplhandlebars "fb_login" %}
     {{#if App.FBUser}}
 
-      <div class="span4 pull-left">
-          <h2>Welcome...now.. start shoppiing!</h2>
-          <div class="pull-right">{{App.FBUser.name}}
-          <br/><a href="#" {{action "logout" target="FB"}}>Logout</a>
+          <div class="">
+              {{App.FBUser.name}}
           </div>
           <img {{bindAttr src="App.FBUser.picture" alt="App.FBUser.name"}} />
-      </div>
-      <div class="clearfix">&nbsp;</div>
 
     {{else}}
       {{#view Em.FacebookView type="login-button" data-size="xlarge" data-scope="email, read_stream, publish_stream, offline_access"}}
@@ -22,14 +50,13 @@
 {% endtplhandlebars %}
 {% endblock %}
 
-{% block body %}
-<div id="login" class="hero-unit"></div>
-{% endblock %}
 
 {% block js %}
 <script>
 $(document).ready(function() {
     if ($('div#login').length) {
+        fb_login_title_view.appendTo('div#title');
+        fb_login_nav_view.appendTo('div#customer-nav');
         fb_login_view.appendTo('div#login'); 
     }
 });

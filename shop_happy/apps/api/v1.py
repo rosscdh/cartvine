@@ -10,6 +10,7 @@ from tastypie.cache import SimpleCache
 
 
 from shop_happy.apps.product.models import Product
+from shop_happy.apps.customer.models import Customer
 
 
 
@@ -37,7 +38,7 @@ class ShopHappyBaseModelResource(ModelResource):
         except AttributeError:
             pass
 
-        return super(AdcloudBaseModelResource, self).get_object_list(request)
+        return super(ShopHappyBaseModelResource, self).get_object_list(request)
 
 
 class ProductResource(ShopHappyBaseModelResource):
@@ -46,6 +47,12 @@ class ProductResource(ShopHappyBaseModelResource):
         resource_name = 'products'
         serializer = Serializer(formats=available_formats)
 
+class CustomerResource(ShopHappyBaseModelResource):
+    class Meta:
+        queryset = Customer.objects.all()
+        resource_name = 'customers'
+        serializer = Serializer(formats=available_formats)
 
 """ Register the api resources """
 v1_public_api.register(ProductResource())
+v1_public_api.register(CustomerResource())
