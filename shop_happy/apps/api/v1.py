@@ -8,6 +8,8 @@ from tastypie import fields, utils
 from tastypie.resources import Resource
 from tastypie.cache import SimpleCache
 
+from authentication import OAuthAuthentication
+from authorization import OAuthAuthorization
 
 from shop_happy.apps.product.models import Product
 from shop_happy.apps.customer.models import Customer
@@ -26,8 +28,8 @@ class ShopHappyBaseModelResource(ModelResource):
     """
     class Meta:
         serializer = Serializer(formats=available_formats)
-        # authentication = AdcloudOAuthAuthentication()
-        # authorization = AdcloudOAuthAuthorization()
+        authentication = OAuthAuthentication()
+        authorization = OAuthAuthorization()
 
     def get_object_list(self, request):
         """ Test for a set of catch field names 
