@@ -229,7 +229,7 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-        'happy_log': {
+        'facebook_user': {
             'handlers': ['lumberjack'],
             'level': 'DEBUG',
             'propagate': True,

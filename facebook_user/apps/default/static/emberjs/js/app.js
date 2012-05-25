@@ -10,24 +10,45 @@ App.reopen({
         this.person = Person.create({
             FBUser: this.FBUser
         });
-        $.ajax({
-            url: '/person/validate/',   // Hard Coded for now
-            type: 'POST',
-            data: {'person': this.FBUser }
-        })
-            .done(function(data) {
-                console.log(_this.person.say())
-            })
-            .fail(function() { alert("error"); })
-            .always(function() {});
     }.observes('FBUser')
 });
 
 //# ----- MODELS ----- #//
 Person = Ember.Object.extend({
     FBUser: null,
-    say: function() {
-    console.log(this.FBUser.picture)
+    init: function() {
+      this._super();
+      this.validate();
+    },
+    JsonifyFBUser: function() {
+        return {
+            'fb_id': this.FBUser.id,
+            'access_token': this.FBUser.access_token,
+            'email': this.FBUser.email,
+            'username': this.FBUser.username,
+            'verified': this.FBUser.verified,
+            'first_name': this.FBUser.first_name,
+            'last_name': this.FBUser.last_name,
+            'gender': this.FBUser.gender,
+            'link': this.FBUser.link,
+            'picture': this.FBUser.picture,
+            'location': this.FBUser.location,
+            'locale': this.FBUser.locale,
+            'quotes': this.FBUser.quotes
+        }
+    },
+    validate: function() {
+        var _this = this;
+        $.ajax({
+                url: '/person/validate/',   // Hard Coded for now
+                type: 'POST',
+                data: this.JsonifyFBUser()
+            }).done(function(data, textStatus, jqXHR) {
+                console.log(_this.JsonifyFBUser())
+                    console.log(textStatus);
+            }).fail(function() { alert("error"); 
+            }).always(function() {
+            });
     }
 });
 

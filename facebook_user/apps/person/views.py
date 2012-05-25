@@ -16,5 +16,24 @@ logger = logging.getLogger('facebook_user')
 class CustomerView(View):
     queryset = Customer.objects.all()
     def post(self, request, *args, **kwargs):
-        print 'fdafdsa'
-        return HttpResponse()
+		request_body = request.read()
+		try:
+		    body = request.POST
+		    logger.debug('Person Validation Recieved: %s' %(body,) )
+		except:
+		    logger.error('Person Validation from shopify could not parse response body as JSON')
+
+		person, is_new = Customer.objects.get_or_create(email=body.get('email'), shopify_id=body.get('fb_id'))
+		person.first_name = body.get('first_name')
+		person.last_name = body.get('last_name')
+		person.data = body.get('data')
+		person.save()
+
+		if is_new:
+			logger.info('Create New Facebook Person: %s' %(person.get_full_name,) )
+		else:
+			logger.info('Returning Facebook Person: %s' %(person.get_full_name,) )
+
+		#login(request, person)
+
+		return HttpResponse(status=200)
