@@ -63,7 +63,11 @@ def get_namedtuple_choices(name, choices_tuple):
 
         def get_values(self):
             values = []
-            [ values.extend(val) for val,name,desc in choices_tuple] 
+            for val,name,desc in choices_tuple:
+                if isinstance(val, type([])):
+                    values.extend(val)
+                else:
+                    values.append(val)
             return values
 
     return Choices._make([val for val,name,desc in choices_tuple])

@@ -103,8 +103,8 @@ class ProductTemplateTagsTest(TestCase):
         shopify makes a series of image sizes available via the api
         shop_happy.apps.product.templatetags.product_tags.SHOP_IMAGE_SIZE
         image_resize returns
-        http://static.shopify.com/s/files/1/0157/5666/products/ant_water_compact.jpg?107
-        http://static.shopify.com/s/files/1/0157/5666/products/ant_water_pico.jpg?107
+        http://static.shopify.com/s/files/1/0157/5666/products/ant_water_%s.jpg?107
+        http://static.shopify.com/s/files/1/0157/5666/products/ant_water_[pico,small...].jpg?107
         ...
         """
         from shop_happy.apps.product.templatetags.product_tags import SHOP_IMAGE_SIZE

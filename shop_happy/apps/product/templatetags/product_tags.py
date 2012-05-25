@@ -32,6 +32,5 @@ def image_resize(src, size=None):
     path = '%s_%s.%s' % (path[0],size,path[1],)
     #@TODO what is the filterspec? last value of the urlparse object?
     a,b,c,d,e,f = image
-    src = '%s://%s%s?%s%s' %(image.scheme, image.netloc, path, image.params, e)
-    return src
+    return '%s://%s%s?%s%s' %(image.scheme, image.netloc, path, image.params, e)
 image_resize.is_safe = True
