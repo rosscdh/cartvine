@@ -150,6 +150,8 @@ HELPER_APPS = (
 PROJECT_APPS = (
     # Default - Install the shopify app
     'facebook_user.apps.default',
+    # Facebook User to Customer Handler
+    'facebook_user.apps.person',
 )
 
 

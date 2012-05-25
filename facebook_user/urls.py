@@ -11,6 +11,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     # Api
     url(r'^api/', include(v1_public_api.urls)),
+    # Person & Validation
+    url(r'^person/', include('facebook_user.apps.person.urls', namespace='person')),
     # Facebook User Application
     url(r'^', include('facebook_user.apps.default.urls', namespace='default')),
 )
