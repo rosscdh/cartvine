@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^logout/$', login_required(LogoutView.as_view()), name='logout'),
     # Facebook Specific Urls
-    url(r'^facebook_debug/', TemplateView.as_view(template='facebook_debug.html'), name='fb-debug'),
-    url('^channel\.html', TemplateView.as_view(template='channel.html'), name='facebook_channel_receiver'),
+    url(r'^facebook_debug/', TemplateView.as_view(template_name='facebook_debug.html'), name='fb-debug'),
+    url('^channel\.html', TemplateView.as_view(template_name='channel.html'), name='facebook_channel_receiver'),
     url(r'^$', DefaultView.as_view(), name='index'),
 )
