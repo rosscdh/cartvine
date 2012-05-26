@@ -5,10 +5,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 from shop_happy.decorators import shop_login_required
 
-from views import CustomerView
+from views import PersonView
 
 
 urlpatterns = patterns('',
     # Account Validation
-    url(r'^validate/$', csrf_exempt(CustomerView.as_view()), name='validate'),
+    url(r'^validate/(?P<application_type>\w+)/$', csrf_exempt(PersonView.as_view()), name='validate'),
 )

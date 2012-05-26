@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 
 from models import Person
 
+import logging
+logger = logging.getLogger('facebook_user')
+
 
 class PersonFacebookBackend(object):
     """
@@ -12,10 +15,10 @@ class PersonFacebookBackend(object):
     supports_inactive_user = True
 
     def authenticate(self, user, application_type, uid, access_token):
+        logger.info('user: %s, application_type: %s, uid: %s, access_token: %s'%(user, application_type, uid, access_token))
     	person, is_new = Person.objects.get_or_create(application_type=application_type, uid=uid, access_token=access_token)
-        if is_new:
-            person.user = user
-            person.save()
+        person.user = user
+        person.save()
 
         return person.user
 

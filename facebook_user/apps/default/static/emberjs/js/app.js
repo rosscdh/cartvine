@@ -18,12 +18,16 @@ App.reopen({
 //# ----- MODELS ----- #//
 Person = Ember.Object.extend({
     FBUser: null,
+
     init: function() {
       this._super();
       this.validatePerson();
     },
+    /**
+    Convert the DBUser object into an dict that can be posted
+    */
     JsonifyFBUser: function() {
-        return {
+        return JSON.stringify({
             'uid': this.FBUser.id,
             'access_token': this.FBUser.accessToken,
             'email': this.FBUser.email,
@@ -37,15 +41,16 @@ Person = Ember.Object.extend({
             'location': this.FBUser.location,
             'locale': this.FBUser.locale,
             'quotes': this.FBUser.quotes
-        }
+        })
     },
     /**
     Validate the Person specifed here, from facebook
     */
     validatePerson: function() {
         $.ajax({
-                url: '/person/validate/',   // Hard Coded for now
+                url: '/person/validate/facebook/',   // Hard Coded for now
                 type: 'POST',
+                contentType: 'application/json',
                 data: this.JsonifyFBUser()
             })
             .done(function(data, textStatus, jqXHR) {
@@ -60,6 +65,9 @@ Person = Ember.Object.extend({
 });
 
 //# ----- CONTROLLERS ----- #//
+App.personProfileController = Ember.Object.create({
+
+});
 
 
 //# ----- VIEWS ----- #//
