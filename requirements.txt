@@ -34,3 +34,4 @@ pil
 -e git+https://github.com/toastdriven/django-tastypie.git#egg=django-tastypie
 # Handlebar templates in django
 -e git+https://github.com/stard0g101/django-templatetag-handlebars.git#egg=django-templatetag-handlebars
+-e git+https://github.com/stard0g101/django-socialregistration.git#egg=django-socialregistration

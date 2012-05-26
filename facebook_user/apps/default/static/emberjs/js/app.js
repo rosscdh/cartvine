@@ -43,11 +43,14 @@ Person = Ember.Object.extend({
                 url: '/person/validate/',   // Hard Coded for now
                 type: 'POST',
                 data: this.JsonifyFBUser()
-            }).done(function(data, textStatus, jqXHR) {
-                console.log(_this.JsonifyFBUser())
-                    console.log(textStatus);
-            }).fail(function() { alert("error"); 
-            }).always(function() {
+            })
+            .done(function(data, textStatus, jqXHR) {
+                console.log('PErson Validation reponse: ' + textStatus);
+            })
+            .fail(function() { 
+                alert("error"); 
+            })
+            .always(function() {
             });
     }
 });

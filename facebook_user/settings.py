@@ -122,6 +122,7 @@ TEMPLATE_DIRS = (
 
 AUTHENTICATION_BACKENDS  = (
     'django.contrib.auth.backends.ModelBackend',
+    'socialregistration.contrib.facebook.auth.FacebookAuth',
 )
 
 BASE_APPS = (
@@ -139,8 +140,10 @@ HELPER_APPS = (
     # Addons
     'djcelery',
     'sorl.thumbnail',
-    'django_facebook',
+    #'django_facebook',
     'templatetag_handlebars',
+    'socialregistration',
+    'socialregistration.contrib.facebook',
     # helpers
     'django_extensions',
     'annoying',
