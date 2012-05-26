@@ -20,7 +20,7 @@ Person = Ember.Object.extend({
     FBUser: null,
     init: function() {
       this._super();
-      this.validate();
+      this.validatePerson();
     },
     JsonifyFBUser: function() {
         return {
@@ -39,10 +39,10 @@ Person = Ember.Object.extend({
             'quotes': this.FBUser.quotes
         }
     },
-    validate: function() {
     /**
-    
+    Validate the Person specifed here, from facebook
     */
+    validatePerson: function() {
         $.ajax({
                 url: '/person/validate/',   // Hard Coded for now
                 type: 'POST',
@@ -53,9 +53,9 @@ Person = Ember.Object.extend({
             })
             .fail(function() { 
                 console.log("error"); 
-            })
-            .always(function() {
             });
+            // .always(function() {
+            // })
     }
 });
 
@@ -66,7 +66,6 @@ Person = Ember.Object.extend({
 var fb_login_nav_view = Em.View.create({
   templateName: 'customer-nav',
 });
-
 var fb_login_title_view = Em.View.create({
   templateName: 'page-title',
 });
