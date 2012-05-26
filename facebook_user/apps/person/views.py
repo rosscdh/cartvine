@@ -68,4 +68,6 @@ class PersonValidationView(View):
 
             login(request, user)
 
-        return HttpResponse(str(request.user), status=200)
+            response_data = user.person.get_validated_json_response()
+
+        return HttpResponse(json.dumps(response_data), mimetype="application/json")

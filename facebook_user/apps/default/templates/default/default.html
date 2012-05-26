@@ -9,6 +9,8 @@
 
 <div id="customer-nav"></div>
 <div id="login" class="hero-unit"></div>
+<div id="shop-list" class=""></div>
+<div id="product-list" class=""></div>
 <div class="clearfix">&nbsp;</div>
 
 {% endblock %}
@@ -52,6 +54,24 @@
       {{/if}}
   {% endtplhandlebars %}
 
+  {% tplhandlebars "shops" %}
+      {{#if App.Person}}
+      <h3>Your Shops</h3>
+      <ul>
+        {{#each App.Person.shops}}
+          <li>
+            {{name}} ({{id}})
+            <ul>
+              <li>{{App.Person.products.length}}</li>
+            </ul>
+          </li>
+        {{/each}}
+      </ul>
+      {{else}}
+      &nbsp;
+      {{/if}}
+  {% endtplhandlebars %}
+
 {% endblock %}
 
 
@@ -62,6 +82,8 @@ $(document).ready(function() {
         fb_login_title_view.appendTo('div#page-title');
         fb_login_nav_view.appendTo('div#customer-nav');
         fb_login_view.appendTo('div#login'); 
+
+        shops_partial_view.appendTo('div#shop-list'); 
     }
 });
 </script>

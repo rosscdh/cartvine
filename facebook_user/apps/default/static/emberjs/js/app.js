@@ -4,25 +4,38 @@ App.set('appId', '209234305864956');
 //# ----- OVERRIDES & EXTENSIONS ----- #//
 
 App.reopen({
-    person: null,
+    Person: void 0,
     fBUserChanged: function() {
         var _this = this;
 
-        this.person = Person.create({
+        this.set('Person', Person.create({
             FBUser: this.FBUser
-        });
+        }));
 
     }.observes('FBUser')
 });
 
 //# ----- MODELS ----- #//
 Person = Ember.Object.extend({
-    FBUser: null,
+    FBUser: void 0,
+    is_valid: void 0,
+    shops: void 0,
+    products: void 0,
 
     init: function() {
-      this._super();
-      this.validatePerson();
+        this._super();
+        this.validatePerson();
     },
+
+    isValidChanged: function() {
+    }.observes('is_valid'),
+
+    shopsChanged: function() {
+    }.observes('shops'),
+
+    productsChanged: function() {
+    }.observes('shops'),
+
     /**
     Convert the DBUser object into an dict that can be posted
     */
@@ -47,6 +60,7 @@ Person = Ember.Object.extend({
     Validate the Person specifed here, from facebook
     */
     validatePerson: function() {
+        var _this = this;
         $.ajax({
                 url: '/person/validate/facebook/',   // Hard Coded for now
                 type: 'POST',
@@ -54,13 +68,22 @@ Person = Ember.Object.extend({
                 data: this.JsonifyFBUser()
             })
             .done(function(data, textStatus, jqXHR) {
-                console.log('Person Validation reponse: ' + textStatus);
+                _this.set('is_valid', data.is_valid);
+
+                if (data.is_valid) {
+                    _this.set('shops', data.shops);
+                    _this.set('products', data.products);
+                }
             })
             .fail(function() { 
                 console.log("error"); 
             })
             .always(function() {
             });
+    },
+    getShopProducts: function(shop_id) {
+        console.log(shop_id)
+        return []
     }
 });
 
@@ -79,4 +102,11 @@ var fb_login_title_view = Em.View.create({
 });
 var fb_login_view = Em.View.create({
   templateName: 'fb_login',
+});
+var shops_partial_view = Em.View.create({
+  templateName: 'shops',
+  userNameBinding: Em.Binding.oneWay('App.Person.shops')
+});
+var products_partial_view = Em.View.create({
+  templateName: 'products',
 });

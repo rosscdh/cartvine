@@ -22,3 +22,13 @@ class Person(models.Model):
     def __unicode__(self):
         return u'%s (%s)'%(self.user, self.uid,)
 
+    def get_validated_json_response(self):
+        return {
+                'id': self.pk,
+                'application_type': self.application_type,
+                'uid': self.uid,
+                'is_valid': True,
+                'user': self.data,
+                'shops': [{'id': 1, 'name': 'shop_1'}, ],
+                'products': [],
+            }
