@@ -21,7 +21,7 @@ import logging
 logger = logging.getLogger('facebook_user')
 
 
-class PersonView(View):
+class PersonValidationView(View):
 
     def post(self, request, application_type):
         if not Person.APPLICATION_TYPES.is_valid(application_type):

@@ -16,7 +16,10 @@ class PersonFacebookBackend(object):
 
     def authenticate(self, user, application_type, uid, access_token):
         logger.info('user: %s, application_type: %s, uid: %s, access_token: %s'%(user, application_type, uid, access_token))
-    	person, is_new = Person.objects.get_or_create(application_type=application_type, uid=uid, access_token=access_token)
+
+    	person, is_new = Person.objects.get_or_create(application_type=application_type, uid=uid)
+
+        person.access_token=access_token
         person.user = user
         person.save()
 
