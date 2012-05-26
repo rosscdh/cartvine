@@ -268,6 +268,8 @@ TEST_RUNNER = 'shop_happy.test_runner.ShopHappyTestRunner'
 # Remote images are downloaded and stored in this folder relative to the MEDIA_ROOT
 REMOTE_IMAGE_STORAGE_PATH = 'remote'
 
+USE_EMBER_STYLE_ATTRS = True
+
 try:
     from shopify_settings import *
 except ImportError:
@@ -277,3 +279,5 @@ try:
     from local_settings import *
 except ImportError:
     pass
+
+
