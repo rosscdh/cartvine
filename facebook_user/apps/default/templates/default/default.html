@@ -2,18 +2,20 @@
 {% load facebook templatetag_handlebars %}
 
 {% block content-head %}
-<div id="title"></div>
+<div id="page-title"></div>
 {% endblock %}
 
 {% block body %}
+
 <div id="customer-nav"></div>
 <div id="login" class="hero-unit"></div>
 <div class="clearfix">&nbsp;</div>
+
 {% endblock %}
 
 {% block ember-view %}
 
-  {% tplhandlebars "customer-nav" %}
+  {% tplhandlebars "nav" %}
       {{#if App.FBUser}}
       <ul class="nav nav-tabs">
         <li class="active"><a href="#">About you!</a></li>
@@ -26,7 +28,7 @@
       {{/if}}
   {% endtplhandlebars %}
 
-  {% tplhandlebars "page-title" %}
+  {% tplhandlebars "title" %}
       {{#if App.FBUser}}
       <h1>Hi there {{App.FBUser.first_name}}...</h1>
       <a href="#" {{action "logout" target="FB"}}>Logout</a>
@@ -57,7 +59,7 @@
 <script>
 $(document).ready(function() {
     if ($('div#login').length) {
-        fb_login_title_view.appendTo('div#title');
+        fb_login_title_view.appendTo('div#page-title');
         fb_login_nav_view.appendTo('div#customer-nav');
         fb_login_view.appendTo('div#login'); 
     }

@@ -157,9 +157,14 @@ PROJECT_APPS = (
     'facebook_user.apps.person',
 )
 
+CO_DEPENDENT_APPS = (
+    # Shop so we can have people related to shops
+    'shop_happy.apps.shop',
+)
+
 
 # Assemble them all together
-INSTALLED_APPS = BASE_APPS + HELPER_APPS + PROJECT_APPS
+INSTALLED_APPS = BASE_APPS + HELPER_APPS + PROJECT_APPS + CO_DEPENDENT_APPS
 
 LOGIN_URL = '/'
 

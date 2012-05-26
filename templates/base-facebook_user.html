@@ -20,7 +20,6 @@
     <![endif]-->
     <script src="{{ STATIC_URL }}default/js/jquery.min.js"></script>
     <script src="{{ STATIC_URL }}default/js/bootstrap.min.js"></script>
-    {% block ember-view %}{% endblock %}    
 
     <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="{{ STATIC_URL }}default/img/favicon.ico">
@@ -33,10 +32,6 @@
   </head>
 
   <body data-spy="scroll" data-target=".subnav" data-offset="50">
-
-      <script src="{{ STATIC_URL }}emberjs/js/libs/ember-0.9.8.1.min.js"></script>
-      <script src="{{ STATIC_URL }}emberjs/ember-facebook.js"></script>
-      <script src="{{ STATIC_URL }}emberjs/js/app.js"></script>
 
     <div id="navbar" class="navbar navbar-fixed-top">
       <div class="navbar-inner">
@@ -92,6 +87,10 @@
     <p>&nbsp;</p>
     <p>&nbsp;</p>
 
+    <script src="{{ STATIC_URL }}emberjs/js/libs/ember-0.9.8.1.min.js"></script>
+    <script src="{{ STATIC_URL }}emberjs/ember-facebook.js"></script>
+    {% block ember-view %}{% endblock %}    
+    <script src="{{ STATIC_URL }}emberjs/js/app.js"></script>
     {% block js %}{% endblock %}
     
   </body>

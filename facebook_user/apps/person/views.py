@@ -39,7 +39,8 @@ class CustomerView(View):
         last_name = body.get('last_name')
 
         user, is_new = User.objects.get_or_create(username=username, email=email, first_name=first_name, last_name=last_name)
-        user = authenticate(user=user, application_type=Person.APPLICATION_TYPES.facebook, uid=body.get('uid'), access_token=access_token)
+        user = authenticate(user=user, application_type=Person.APPLICATION_TYPES.facebook, uid=uid, access_token=access_token)
+        user.data = body
 
         # @TODO make this dynamic when more than jsut FB is supported
         # Abstract into seperate class

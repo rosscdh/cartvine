@@ -53,9 +53,9 @@ Person = Ember.Object.extend({
             })
             .fail(function() { 
                 console.log("error"); 
+            })
+            .always(function() {
             });
-            // .always(function() {
-            // })
     }
 });
 
@@ -64,10 +64,10 @@ Person = Ember.Object.extend({
 
 //# ----- VIEWS ----- #//
 var fb_login_nav_view = Em.View.create({
-  templateName: 'customer-nav',
+  templateName: 'nav',
 });
 var fb_login_title_view = Em.View.create({
-  templateName: 'page-title',
+  templateName: 'title',
 });
 var fb_login_view = Em.View.create({
   templateName: 'fb_login',
