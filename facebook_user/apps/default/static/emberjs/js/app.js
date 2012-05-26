@@ -7,9 +7,11 @@ App.reopen({
     person: null,
     fBUserChanged: function() {
         var _this = this;
+
         this.person = Person.create({
             FBUser: this.FBUser
         });
+
     }.observes('FBUser')
 });
 
@@ -22,8 +24,8 @@ Person = Ember.Object.extend({
     },
     JsonifyFBUser: function() {
         return {
-            'fb_id': this.FBUser.id,
-            'access_token': this.FBUser.access_token,
+            'uid': this.FBUser.id,
+            'access_token': this.FBUser.accessToken,
             'email': this.FBUser.email,
             'username': this.FBUser.username,
             'verified': this.FBUser.verified,
@@ -38,17 +40,19 @@ Person = Ember.Object.extend({
         }
     },
     validate: function() {
-        var _this = this;
+    /**
+    
+    */
         $.ajax({
                 url: '/person/validate/',   // Hard Coded for now
                 type: 'POST',
                 data: this.JsonifyFBUser()
             })
             .done(function(data, textStatus, jqXHR) {
-                console.log('PErson Validation reponse: ' + textStatus);
+                console.log('Person Validation reponse: ' + textStatus);
             })
             .fail(function() { 
-                alert("error"); 
+                console.log("error"); 
             })
             .always(function() {
             });

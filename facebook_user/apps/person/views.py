@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -6,41 +7,52 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render_to_response, redirect
 from django.core.urlresolvers import reverse
 from django.views.generic.base import View
-from django.contrib.auth.models import User
 
-from shop_happy.apps.customer.models import Customer
+from socialregistration.views import Setup
+from socialregistration.contrib.facebook.client import Facebook as FacebookClient
+from socialregistration.contrib.facebook.models import FacebookProfile
+
+from models import Person
 
 import logging
 logger = logging.getLogger('facebook_user')
 
 
 class CustomerView(View):
-    queryset = Customer.objects.all()
-    def post(self, request, *args, **kwargs):
-		request_body = request.read()
-		try:
-		    body = request.POST
-		    logger.debug('Person Validation Recieved: %s' %(body,) )
-		except:
-		    logger.error('Person Validation from shopify could not parse response body as JSON')
 
-		user = authenticate(uid=body.get('fb_id'))
-		# user, is_new = User.objects.get_or_create(username=username, email=body.get('email'))
-		# if is_new:
-		# 	user.set_unusable_password()
-		# 	user.save()
+    def post(self, request):
+        # @TODO post form javascript as JSON
+        request_body = request.read()
+        try:
+            body = request.POST
+            logger.debug('Person Validation Recieved: %s' %(body,) )
+        except:
+            logger.error('Person Validation from shopify could not parse response body as JSON')
 
-		# person, is_new = Customer.objects.get_or_create(email=body.get('email'), shopify_id=body.get('fb_id'))
-		# person.first_name = body.get('first_name')
-		# person.last_name = body.get('last_name')
-		# person.data = body.get('data')
-		# person.save()
+        uid = body.get('uid')
+        access_token = body.get('access_token')
+        logger.info('Person uid: %s access_token: %s' %(uid, access_token,) )
 
-		if is_new:
-			logger.info('Create New Facebook Person: %s' %(person.get_full_name,) )
-		else:
-			logger.info('Returning Facebook Person: %s' %(person.get_full_name,) )
+        username = body.get('username')
+        email = body.get('email')
+        first_name = body.get('first_name')
+        last_name = body.get('last_name')
 
-		# login(request, request.user)
+        user, is_new = User.objects.get_or_create(username=username, email=email, first_name=first_name, last_name=last_name)
+        user = authenticate(user=user, application_type=Person.APPLICATION_TYPES.facebook, uid=body.get('uid'), access_token=access_token)
 
-		return HttpResponse(status=200)
+        # @TODO make this dynamic when more than jsut FB is supported
+        # Abstract into seperate class
+        client = FacebookClient()
+        profile, is_new = FacebookProfile.objects.get_or_create(user=user, uid=uid)
+        logger.info('New Facebook Profile Person uid: %s access_token: %s' %(uid, access_token,) )
+
+        # @TODO bug here can pass and uid and or access token in.. need to call facebook to validate here
+        if user is not None and hasattr(user, 'data'):
+            user.data = body
+
+        request.session['next'] = reverse('default:index')
+
+        login(request, user)
+
+        return HttpResponse(str(user), status=200)

@@ -107,7 +107,7 @@ MIDDLEWARE_CLASSES = (
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Django Facebook
-    'django_facebook.middleware.FacebookMiddleware',
+    #'django_facebook.middleware.FacebookMiddleware',
     #'django_facebook.middleware.DjangoFacebook',
 )
 
@@ -122,7 +122,7 @@ TEMPLATE_DIRS = (
 
 AUTHENTICATION_BACKENDS  = (
     'django.contrib.auth.backends.ModelBackend',
-    'socialregistration.contrib.facebook.auth.FacebookAuth',
+    'facebook_user.apps.person.backends.PersonFacebookBackend',
 )
 
 BASE_APPS = (
