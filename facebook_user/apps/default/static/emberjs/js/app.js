@@ -1,6 +1,11 @@
 var App = Em.Application.create(Em.Facebook);
 App.set('appId', '209234305864956');
 
+
+// App.store = DS.Store.create({
+//   revision: 4
+// });
+
 //# ----- OVERRIDES & EXTENSIONS ----- #//
 
 App.reopen({
