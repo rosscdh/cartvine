@@ -6,7 +6,6 @@ App.set('appId', '209234305864956');
 App.store = DS.Store.create({
   revision: 4,
   adapter: DS.DjangoTastypieAdapter.create()
-  //namespace: 'http://dev.tweeqa.net:8000'
 });
 
 //# ----- OVERRIDES & EXTENSIONS ----- #//
@@ -24,12 +23,24 @@ App.reopen({
 });
 
 //# ----- MODELS ----- #//
-Person = Ember.Object.extend({
+App.Product = DS.Model.extend({
+    url: 'products',
+});
+App.Shop = DS.Model.extend({
+    url: 'shops',
+    slug: DS.attr('string'),
+    data: DS.attr('string'),
+    shopify_id: DS.attr('string')
+});
+// App.Customer = DS.Model.extend({
+//     url: 'customers',
+// });
+Person = DS.Model.extend({
     url: 'persons',
     FBUser: void 0,
     is_valid: void 0,
     shops: void 0,
-    products: void 0,
+    products: DS.hasMany('App.Product'),
 
     init: function() {
         this._super();
@@ -39,11 +50,6 @@ Person = Ember.Object.extend({
     isValidChanged: function() {
     }.observes('is_valid'),
 
-    shopsChanged: function() {
-    }.observes('shops'),
-
-    productsChanged: function() {
-    }.observes('shops'),
 
     /**
     Convert the DBUser object into an dict that can be posted
@@ -80,8 +86,8 @@ Person = Ember.Object.extend({
                 _this.set('is_valid', data.is_valid);
 
                 if (data.is_valid) {
-                    _this.set('shops', data.shops);
-                    _this.set('products', data.products);
+                    // _this.set('shops', data.shops);
+                    // _this.set('products', data.products);
                 }
             })
             .fail(function() { 
@@ -97,7 +103,7 @@ Person = Ember.Object.extend({
 });
 
 //# ----- CONTROLLERS ----- #//
-App.personProfileController = Ember.Object.create({
+App.personProfileController = Em.Object.create({
 
 });
 

@@ -25,4 +25,11 @@ class PersonFacebookBackend(object):
 
         return person.user
 
-    
+    def get_user(self, user_id):
+        """ retrieve user account from related adcloudUser 
+        and not the base django user
+        """
+        try:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None

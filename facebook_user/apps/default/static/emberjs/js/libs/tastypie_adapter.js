@@ -40,7 +40,7 @@ DS.DjangoTastypieAdapter = DS.RESTAdapter.extend({
         }
 
       } else if (meta.kind === "hasMany") {
-        key = meta.options.key || Em.get(model, 'namingConvention').keyToJSONKey(key);
+        key = meta.options.key || Em.get(model, ' ').keyToJSONKey(key);
         value = jsonData[key] || [];
         $.each(value, function(i, item) {
           value[i] = self.getItemUrl(type, meta, item);
@@ -65,7 +65,7 @@ DS.DjangoTastypieAdapter = DS.RESTAdapter.extend({
     };
 
     var associations = Em.get(type, 'associationsByName');
-
+    console.log(associations)
     associations.forEach(function(key, meta) {
       meta = type.metaForProperty(key);
 
@@ -184,7 +184,7 @@ DS.DjangoTastypieAdapter = DS.RESTAdapter.extend({
   findAll: function(store, type) {
     var self = this;
     var root = this.rootForType(type);
-
+    alert(App.shop.url)
     this.ajax(root, "GET", {
       success: function(json) {
         json["objects"].forEach(function(item, i, collection) {
