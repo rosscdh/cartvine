@@ -8,8 +8,11 @@ debug = True
 
 PROJECT = 'shop_happy'
 PROJECT_PATH = '/home/rossc/Projects/Personal/%s' % (PROJECT,)
-#PROJECT_PATH = '/Users/rossc/Projects/Personal/%s' % (PROJECT,)
-REMOTE_PROJECT_PATH = '/home/stard0g101/webapps/%s' % (PROJECT,)
+PROJECT_DEPLOY_INSTANCE = ('shop_happy', 'facebook_user',)
+
+REMOTE_PROJECT_PATHS = []
+for p in PROJECT_DEPLOY_INSTANCE:
+  REMOTE_PROJECT_PATHS.append('/home/stard0g101/webapps/%s' % (p))
 
 live_hosts = ('stard0g101@stard0g101.webfactional.com')
 
@@ -26,12 +29,7 @@ def prepare_deploy():
     git_export()
 
 
-def deploy(env='staging', remote_project_path=None):
-    if remote_project_path == None:
-      remote_project_path = REMOTE_PROJECT_PATH
-
-    prepare_deploy()
-
+def deploy(env, remote_project_path):
     put('/tmp/'+ PROJECT +'.zip', '/tmp/')
 
     # extract tar file
@@ -49,5 +47,6 @@ def deploy(env='staging', remote_project_path=None):
 @hosts(live_hosts)
 def deploy_live():
   env = 'live'
-  remote_project_path = REMOTE_PROJECT_PATH
-  deploy(env, remote_project_path)
+  prepare_deploy()
+  for project_path in REMOTE_PROJECT_PATHS:
+    deploy(env, project_path)
