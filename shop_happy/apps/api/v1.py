@@ -14,6 +14,7 @@ from authorization import OAuthAuthorization
 from shop_happy.apps.product.models import Product
 from shop_happy.apps.customer.models import Customer
 
+from facebook_user.apps.person.models import Person
 
 
 v1_public_api = Api(api_name='v1')
@@ -55,6 +56,15 @@ class CustomerResource(ShopHappyBaseModelResource):
         resource_name = 'customers'
         serializer = Serializer(formats=available_formats)
 
+class PersonResource(ShopHappyBaseModelResource):
+    class Meta:
+        queryset = Person.objects.all()
+        resource_name = 'persons'
+        serializer = Serializer(formats=available_formats)
+
 """ Register the api resources """
 v1_public_api.register(ProductResource())
 v1_public_api.register(CustomerResource())
+
+""" Facebook Users """
+v1_public_api.register(PersonResource())

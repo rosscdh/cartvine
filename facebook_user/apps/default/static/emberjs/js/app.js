@@ -1,10 +1,13 @@
 var App = Em.Application.create(Em.Facebook);
 App.set('appId', '209234305864956');
 
+//# ----- DATA STORE ----- #//
 
-// App.store = DS.Store.create({
-//   revision: 4
-// });
+App.store = DS.Store.create({
+  revision: 4,
+  adapter: DS.RESTAdapter.create(),
+  namespace: '/api/v1'
+});
 
 //# ----- OVERRIDES & EXTENSIONS ----- #//
 
