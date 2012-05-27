@@ -5,8 +5,8 @@ App.set('appId', '209234305864956');
 
 App.store = DS.Store.create({
   revision: 4,
-  adapter: DS.RESTAdapter.create(),
-  namespace: '/api/v1'
+  adapter: DS.DjangoTastypieAdapter.create()
+  //namespace: 'http://dev.tweeqa.net:8000'
 });
 
 //# ----- OVERRIDES & EXTENSIONS ----- #//
@@ -25,6 +25,7 @@ App.reopen({
 
 //# ----- MODELS ----- #//
 Person = Ember.Object.extend({
+    url: 'persons',
     FBUser: void 0,
     is_valid: void 0,
     shops: void 0,
