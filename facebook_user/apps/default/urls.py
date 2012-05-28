@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
-from shop_happy.decorators import shop_login_required
+from cartvine.decorators import shop_login_required
 
 from views import DefaultView,LoginView,LogoutView
 

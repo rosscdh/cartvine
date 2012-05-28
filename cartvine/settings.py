@@ -80,7 +80,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '83*y+10iga$i58z3pnv2h!i0wqgue!*fxw5#vc5m=ezj73jqn^('
+SECRET_KEY = '+!&amp;e%aq9_qkjbyrneg@h#aum!u)2ug@s!m8vyugzvjvopkk%eq'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -96,6 +96,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
+    # shopify
+    'cartvine.context_processors.current_shop',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -106,15 +108,14 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # Django Facebook
-    #'django_facebook.middleware.FacebookMiddleware',
-    #'django_facebook.middleware.DjangoFacebook',
+    # shopify
+    'cartvine.middleware.LoginProtection',
 )
 
-ROOT_URLCONF = 'facebook_user.urls'
+ROOT_URLCONF = 'cartvine.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'facebook_user.wsgi.application'
+WSGI_APPLICATION = 'cartvine.wsgi.application'
 
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates'),
@@ -122,7 +123,7 @@ TEMPLATE_DIRS = (
 
 AUTHENTICATION_BACKENDS  = (
     'django.contrib.auth.backends.ModelBackend',
-    'facebook_user.apps.person.backends.PersonFacebookBackend',
+    'cartvine.backends.ShopifyUserBackend',
 )
 
 BASE_APPS = (
@@ -140,10 +141,7 @@ HELPER_APPS = (
     # Addons
     'djcelery',
     'sorl.thumbnail',
-    #'django_facebook',
-    'templatetag_handlebars',
-    'socialregistration',
-    'socialregistration.contrib.facebook',
+    'tastypie',
     # helpers
     'django_extensions',
     'annoying',
@@ -152,41 +150,34 @@ HELPER_APPS = (
 
 PROJECT_APPS = (
     # Default - Install the shopify app
-    'facebook_user.apps.default',
-    # Facebook User to Customer Handler
-    'facebook_user.apps.person',
-)
-
-CO_DEPENDENT_APPS = (
-    # Shop so we can have people related to shops
+    'cartvine.apps.default',
+    # Product email
+    'cartvine.apps.mail',
+    # Application Settings - Allow user to modify the settings
+    'cartvine.apps.app_settings',
+    # Shop
     'cartvine.apps.shop',
+    # Customer - People who come to review after purchasing a product from the Shop
+    'cartvine.apps.customer',
+    # Product
+    'cartvine.apps.product',
+    # Product reviews
+    'cartvine.apps.product_review',
+    # Webhook
+    'cartvine.apps.webhook',
+    # API
+    'cartvine.apps.api',
 )
-
 
 # Assemble them all together
-INSTALLED_APPS = BASE_APPS + HELPER_APPS + PROJECT_APPS + CO_DEPENDENT_APPS
+INSTALLED_APPS = BASE_APPS + HELPER_APPS + PROJECT_APPS
 
-LOGIN_URL = '/'
-
-FACEBOOK_APP_ID = '209234305864956'
-FACEBOOK_SECRET_KEY = 'd0875d1310c3708181b5b9d2092593d8'
-
-# Optionally set default permissions to request, e.g: ['email', 'user_about_me']
-FACEBOOK_PERMS = ['email','read_stream', 'publish_stream', 'publish_actions']
+LOGIN_URL = '/login/'
+CUSTOMER_LOGIN_URL_NAME = '/customer/login/'
 
 # Django Debug Toolbar
 if DEBUG:
-    # And for local debugging, use one of the debug middlewares and set:
-    FACEBOOK_DEBUG_TOKEN = ''
-    FACEBOOK_DEBUG_UID = ''
-    FACEBOOK_DEBUG_COOKIE = ''
-    FACEBOOK_DEBUG_SIGNEDREQ = ''
-
-    MIDDLEWARE_CLASSES += (
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-        'django_facebook.middleware.FacebookDebugCanvasMiddleware',
-        'django_facebook.middleware.FacebookDebugCookieMiddleware',
-    )
+    MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
     INSTALLED_APPS += ('debug_toolbar',)
     INTERNAL_IPS = ('127.0.0.1', '172.16.37.128')
     DEBUG_TOOLBAR_CONFIG = {
@@ -227,7 +218,7 @@ LOGGING = {
         'lumberjack': {
             'level': 'DEBUG',
             'class': 'logging.handlers.WatchedFileHandler',
-            'filename': os.path.join(SITE_ROOT, 'log/facebook_user.log'),
+            'filename': os.path.join(SITE_ROOT, 'log/cartvine.log'),
             'formatter': 'verbose',
         },
     },
@@ -237,7 +228,7 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-        'facebook_user': {
+        'happy_log': {
             'handlers': ['lumberjack'],
             'level': 'DEBUG',
             'propagate': True,
@@ -263,12 +254,10 @@ TEMPLATED_EMAIL_DJANGO_SUBJECTS = {
 }
 
 # Custom test runner for this project
-TEST_RUNNER = 'facebook_user.test_runner.CartvineAppTestRunner'
+TEST_RUNNER = 'cartvine.test_runner.CartvineAppTestRunner'
 
 # Remote images are downloaded and stored in this folder relative to the MEDIA_ROOT
 REMOTE_IMAGE_STORAGE_PATH = 'remote'
-
-USE_EMBER_STYLE_ATTRS = True
 
 try:
     from shopify_settings import *
@@ -279,5 +268,3 @@ try:
     from local_settings import *
 except ImportError:
     pass
-
-

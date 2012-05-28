@@ -57,6 +57,7 @@ class PersonValidationView(View):
                 raise Http404
             else:
                 user.data = body
+                save()
 
                 # @TODO make this dynamic when more than jsut FB is supported
                 # Abstract into seperate class

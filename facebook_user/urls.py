@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from shop_happy.apps.api.v1 import v1_public_api
+from cartvine.apps.api.v1 import v1_public_api
 
 from django.contrib import admin
 admin.autodiscover()

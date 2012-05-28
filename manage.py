@@ -2,10 +2,10 @@
 import os
 import sys
 from django.core.exceptions import ImproperlyConfigured
-from shop_happy.utils import get_namedtuple_choices
+from cartvine.utils import get_namedtuple_choices
 
 VALID_APPLICATIONS = get_namedtuple_choices('VALID_APPLICATIONS', (
-    (['shop_happy', 'core', 'sh', 's'], 'shop_happy', 'shop_happy'),
+    (['cartvine', 'core', 'cv', 'c'], 'cartvine', 'cartvine'),
     (['facebook_user', 'fbu', 'fb', 'f'], 'facebook_user', 'facebook_user'),
 ))
 

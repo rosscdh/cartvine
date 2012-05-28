@@ -6,7 +6,7 @@ from time import gmtime, strftime
 
 debug = True
 
-PROJECT = 'shop_happy'
+PROJECT = 'cartvine'
 PROJECT_PATH = '/home/rossc/Projects/Personal/%s' % (PROJECT,)
 PROJECT_DEPLOY_INSTANCE = ('cartvine_app', 'cartvine_shoppers',)
 

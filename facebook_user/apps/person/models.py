@@ -2,9 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from jsonfield import JSONField
-from shop_happy.utils import get_namedtuple_choices
+from cartvine.utils import get_namedtuple_choices
 
-from shop_happy.apps.shop.models import Shop
+from cartvine.apps.shop.models import Shop
 
 
 class Person(models.Model):

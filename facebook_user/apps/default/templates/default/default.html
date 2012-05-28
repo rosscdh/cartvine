@@ -1,5 +1,6 @@
 {% extends 'base-facebook_user.html' %}
 {% load facebook templatetag_handlebars %}
+{% load url from future %}
 
 {% block content-head %}
 <div id="page-title"></div>
@@ -33,7 +34,7 @@
   {% tplhandlebars "title" %}
       {{#if App.FBUser}}
       <h1>Hi there {{App.FBUser.first_name}}...</h1>
-      <a href="#" {{action "logout" target="FB"}}>Logout</a>
+      <a href="{% url 'default:logout' %}" {{action "logout" target="FB"}}>Logout</a>
       {{else}}
       <h1>Connect to shop</h1>
       {{/if}}

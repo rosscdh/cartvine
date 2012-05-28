@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
-from shop_happy.decorators import shop_login_required
+from cartvine.decorators import shop_login_required
 
 from views import PersonValidationView
 
