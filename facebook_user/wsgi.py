@@ -17,6 +17,7 @@ import os, sys, site
 
 # Tell wsgi to add the Python site-packages to its path. 
 site.addsitedir('/home/stard0g101/.virtualenvs/cartvine_shoppers/lib/python2.6/site-packages')
+site.addsitedir('/home/stard0g101/webapps/cartvine_shoppers/cartvine')
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'facebook_user.settings'
 
