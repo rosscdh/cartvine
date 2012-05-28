@@ -8,7 +8,7 @@ debug = True
 
 PROJECT = 'shop_happy'
 PROJECT_PATH = '/home/rossc/Projects/Personal/%s' % (PROJECT,)
-PROJECT_DEPLOY_INSTANCE = ('shop_happy', 'facebook_user',)
+PROJECT_DEPLOY_INSTANCE = ('cartvine_app', 'cartvine_shoppers',)
 
 REMOTE_PROJECT_PATHS = []
 for p in PROJECT_DEPLOY_INSTANCE:
