@@ -2,13 +2,13 @@
 {% load i18n %}
 {% load url from future %}
 
-{% block title %}{{ super }} - Login and Shop Happy{% endblock %}
+{% block title %}{{ block.super }}Install CartVine on your shopify.com Store{% endblock %}
 
 {% block content-head %}
 {% if not current_shop %}
-<h1>Login and Shop Happy</h1>
+<h1>Install CartVine on your shopify.com Store</h1>
 {% else %}
-<h1>Welcome to Shop Happy</h1>
+<h1>Welcome to CartVine</h1>
 {% endif %}
 {% endblock %}
 
@@ -25,7 +25,7 @@
         </div>
     </form>
 {% else %}
-    <h3>You have successfully installed the Shop Happy App</h3>
+    <h3>You have successfully installed the CartVine App</h3>
     <p>Now you can:</p>
     <ul>
         <li><i class="icon-ok-circle"></i><a href="{% url 'my_app:settings' %}">Setup your app settings</a></li>

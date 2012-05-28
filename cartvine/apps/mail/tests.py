@@ -1,5 +1,5 @@
 """
-Test the Mail app for SHop Happy
+Test the Mail app for CartVine
 """
 
 from django.test import TestCase

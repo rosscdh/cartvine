@@ -1,6 +1,6 @@
-### SHOP HAPPY ###
+### CartVine ###
 
-Shop Happy is a shopify app designed to allow shopify shops to post sale market and interact with their customers.
+CartVine is a shopify app designed to allow shopify shops to post sale market and interact with their customers.
 
 The app flow is:
 
