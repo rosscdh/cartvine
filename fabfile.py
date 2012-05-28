@@ -36,7 +36,7 @@ def deploy(env, project_name, app_name, remote_project_path):
       run('unzip /tmp/%s.zip'%(PROJECT,))
       run('unlink /tmp/%s.zip'%(PROJECT,))
       cd( '%s/%s'%(remote_project_path, project_name,))
-      run('cp %s/%s/conf/%s/%s.local_settings.py %s/%s/%s/local_settings.py'%(remote_project_path,app_name,project_name,env, remote_project_path,project_name,app_name,))
+      run('cp %s/%s/conf/%s/%s.local_settings.py %s/%s/local_settings.py'%(remote_project_path,app_name,project_name,env, remote_project_path,app_name,))
       run('rm -Rf %s/%s/media'%(remote_project_path,project_name,))
       run('rm -Rf %s/%s/static'%(remote_project_path,project_name,))
       run('%s/apache2/bin/restart'%(remote_project_path,))

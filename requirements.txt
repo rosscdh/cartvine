@@ -2,6 +2,7 @@ django
 django_annoying
 django_extensions
 Werkzeug
+mysql-python
 
 # http://www.mattjmorrison.com/2011/09/mocking-django.html
 # http://www.voidspace.org.uk/python/mock/index.html#installing
