@@ -1,5 +1,6 @@
+
 var App = Em.Application.create(Em.Facebook);
-App.set('appId', '209234305864956');
+App.set('appId', facebookAppId);
 
 //# ----- DATA STORE ----- #//
 
