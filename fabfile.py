@@ -8,11 +8,11 @@ debug = True
 
 PROJECT = 'cartvine'
 PROJECT_PATH = '/home/rossc/Projects/Personal/%s' % (PROJECT,)
-PROJECT_DEPLOY_INSTANCE = ( ('cartvine_app', 'cartvine'), ('cartvine_shoppers', 'facebook_user'),)
+PROJECT_DEPLOY_INSTANCE = ( ('cartvine', 'cartvine_app'), ('facebook_user', 'cartvine_shoppers'),)
 
 REMOTE_PROJECT_PATHS = []
-for project,app in PROJECT_DEPLOY_INSTANCE:
-  REMOTE_PROJECT_PATHS.append( (project, app, '/home/stard0g101/webapps/%s' % (project)) )
+for app, project in PROJECT_DEPLOY_INSTANCE:
+  REMOTE_PROJECT_PATHS.append( (app, project, '/home/stard0g101/webapps/%s' % (project)) )
 
 live_hosts = ('stard0g101@stard0g101.webfactional.com')
 
@@ -33,12 +33,12 @@ def prepare_deploy():
 def conclude_deploy():
     run('unlink /tmp/%s.zip'%(PROJECT,))
 
-def deploy(env, project_name, app_name, remote_project_path):
+def deploy(env, app_name, project_name, remote_project_path):
     # extract project zip file
     with cd('%s/'%(remote_project_path,)):
       run('unzip /tmp/%s.zip'%(PROJECT,))
       cd( '%s/%s'%(remote_project_path, project_name,))
-      run('cp %s/%s/conf/%s/%s.local_settings.py %s/%s/local_settings.py'%(remote_project_path,app_name,project_name,env, remote_project_path,app_name,))
+      run('cp %s/%s/conf/%s/%s.local_settings.py %s/%s/%s/local_settings.py'%(remote_project_path,PROJECT,project_name,env, remote_project_path,PROJECT,app_name,))
       run('rm -Rf %s/%s/media'%(remote_project_path,project_name,))
       run('rm -Rf %s/%s/static'%(remote_project_path,project_name,))
       run('%s/apache2/bin/restart'%(remote_project_path,))
@@ -49,8 +49,8 @@ def deploy_live():
   env = 'live'
   prepare_deploy()
 
-  for project, app_name, project_path in REMOTE_PROJECT_PATHS:
-    deploy(env, project, app_name, project_path)
+  for app_name, project, project_path in REMOTE_PROJECT_PATHS:
+    deploy(env, app_name, project, project_path)
 
   conclude_deploy()
 
