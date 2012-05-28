@@ -30,11 +30,13 @@ def prepare_deploy():
     put('/tmp/'+ PROJECT +'.zip', '/tmp/')
 
 
+def conclude_deploy():
+    run('unlink /tmp/%s.zip'%(PROJECT,))
+
 def deploy(env, project_name, app_name, remote_project_path):
     # extract project zip file
     with cd('%s/'%(remote_project_path,)):
       run('unzip /tmp/%s.zip'%(PROJECT,))
-      run('unlink /tmp/%s.zip'%(PROJECT,))
       cd( '%s/%s'%(remote_project_path, project_name,))
       run('cp %s/%s/conf/%s/%s.local_settings.py %s/%s/local_settings.py'%(remote_project_path,app_name,project_name,env, remote_project_path,app_name,))
       run('rm -Rf %s/%s/media'%(remote_project_path,project_name,))
@@ -46,5 +48,9 @@ def deploy(env, project_name, app_name, remote_project_path):
 def deploy_live():
   env = 'live'
   prepare_deploy()
+
   for project, app_name, project_path in REMOTE_PROJECT_PATHS:
     deploy(env, project, app_name, project_path)
+
+  conclude_deploy()
+
