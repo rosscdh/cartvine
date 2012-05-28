@@ -18,7 +18,7 @@ def sync_webhook(webhook_callback_address, shop, shopify_session):
     shop.activate_shopify_session()
 
     webhook = shopify.Webhook.find(address=webhook_callback_address)
-
+    logger.info('Shopify Webhook response for %s is: %s'%(webhook_callback_address, webhook,))
     if not webhook:
         # Create it
         logger.info('No Shopify Webhook found for %s %s'%(shop,webhook_callback_address,))
@@ -27,7 +27,10 @@ def sync_webhook(webhook_callback_address, shop, shopify_session):
         new_webhook.topic = 'orders/create'
         new_webhook.address = webhook_callback_address
         new_webhook.format = 'json'
-        new_webhook.save()
+        try:
+            new_webhook.save()
+        except:
+            logger.error('Could not save orders/create Webhook for: %s '%(shop,webhook_callback_address,))
 
         # Try to get the newly created webhook again
         webhook = shopify.Webhook.find(address=webhook_callback_address)
