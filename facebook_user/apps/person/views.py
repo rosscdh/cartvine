@@ -59,8 +59,8 @@ class PersonValidationView(View):
                     logger.error('Person was meant to be created, but was not: application_type: %s, uid: %s, access_token: %s'%(application_type, uid, access_token))
                     raise Http404
                 else:
-                    user.data = body
-                    user.save()
+                    user.person.data = body
+                    user.person.save()
 
                     # @TODO make this dynamic when more than jsut FB is supported
                     # Abstract into seperate class
