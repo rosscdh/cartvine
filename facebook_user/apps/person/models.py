@@ -29,6 +29,6 @@ class Person(models.Model):
                 'uid': self.uid,
                 'is_valid': True,
                 'user': self.data,
-                'shops': [{'id': 1, 'name': 'shop_1'}, ],
-                'products': [],
+                'shops': [{'id': 1, 'name': 'shop_1'}, ], #@TODO remove not required
+                'products': [], #@TODO remove not required
             }

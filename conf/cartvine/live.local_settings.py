@@ -2,6 +2,17 @@ import os
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__+ '/../'))
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'stard0g101_cvine',
+        'USER': 'stard0g101_cvine',
+        'PASSWORD': '90aa508a',
+        'HOST': '127.0.0.1',
+        'PORT': '',
+    }
+}
+
 STATIC_URL = '/static/cartvine/'
 
 STATIC_ROOT = '/home/stard0g101/webapps/static/cartvine/'
