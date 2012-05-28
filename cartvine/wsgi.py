@@ -16,15 +16,15 @@ framework.
 import os, sys, site
 
 # Tell wsgi to add the Python site-packages to its path. 
-site.addsitedir('/home/stard0g101/.virtualenvs/cartvine/lib/python2.6/site-packages')
+site.addsitedir('/home/stard0g101/.virtualenvs/cartvine_app/lib/python2.6/site-packages')
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'cartvine.settings'
 
-activate_this = os.path.expanduser("~/.virtualenvs/cartvine/bin/activate_this.py")
+activate_this = os.path.expanduser("~/.virtualenvs/cartvine_app/bin/activate_this.py")
 execfile(activate_this, dict(__file__=activate_this))
 
 # Calculate the path based on the location of the WSGI script
-project = '/home/stard0g101/webapps/cartvine/cartvine/'
+project = '/home/stard0g101/webapps/cartvine_app/cartvine/cartvine/'
 workspace = os.path.dirname(project)
 sys.path.append(workspace)
 
