@@ -10,6 +10,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     # Api
     url(r'^api/', include(v1_public_api.urls)),
+    # Widget JS Loader
+    url(r'^widgets/', include('cartvine.apps.widget.urls', namespace='widgets')),
     # Core Application
     url(r'^webhook/', include('cartvine.apps.webhook.urls', namespace='webhook')),
     url(r'^mail/', include('cartvine.apps.mail.urls', namespace='mail')),

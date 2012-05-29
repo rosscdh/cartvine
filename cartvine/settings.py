@@ -108,6 +108,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Allow Remote Json Requests
+    'cartvine.middleware.XsSharing',
     # shopify
     'cartvine.middleware.LoginProtection',
 )
@@ -165,6 +167,8 @@ PROJECT_APPS = (
     'cartvine.apps.product_review',
     # Webhook
     'cartvine.apps.webhook',
+    # Widgets JS
+    'cartvine.apps.widget',
     # API
     'cartvine.apps.api',
 )
