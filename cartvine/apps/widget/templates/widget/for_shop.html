@@ -1,6 +1,6 @@
 {
-    "shop": "{{ shop.name }}",
-    "cartvine_shop_id": "{{ shop.pk }}",
-    "slug": "{{ shop.slug }}",
+    "shop": "{{ object.name }}",
+    "cartvine_shop_id": "{{ object.pk }}",
+    "slug": "{{ object.slug }}",
     "widgets": [{% for s in scripts %}"{{ s }}"{% if not forloop.last %},{% endif %}{% endfor %}]
 }

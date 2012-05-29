@@ -14,11 +14,10 @@ class WidgetsForShopView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(WidgetsForShopView, self).get_context_data(**kwargs)
-        widget_list = Widget.objects.filter(shop=self.object)
-        script_list = [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': s.slug})),) for s in widget_list ]
 
-        context['shop'] = self.object
-        context['scripts'] = script_list
+        widget_list = Widget.objects.filter(shop=self.object)
+
+        context['scripts'] = [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': s.slug})),) for s in widget_list ]
 
         return context
 
