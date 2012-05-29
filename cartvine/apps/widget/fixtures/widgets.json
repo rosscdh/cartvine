@@ -1,0 +1,1 @@
+[{"pk": 1, "model": "widget.widget", "fields": {"widget_type": "js", "shop": [1], "data": "{u'templates': [u'widget/handlebars/facebook-login.html']}", "name": "Facebook Auth", "slug": "widget-auth-facebook"}}]
