@@ -1,11 +1,6 @@
-{% load url from future %}
-//# ----- DATA STORE ----- #//
-}
-$.getScript('{{ request.build_absolute_uri }}{{ STATIC_URL }}emberjs/js/libs/ember-facebook.js', function(data, textStatus, jqxhr) {
-});
 
 var App = Em.Application.create(Em.Facebook);
-App.set('appId', '{{ FACEBOOK_APP_ID }}');
+App.set('appId', facebookAppId);
 
 //# ----- DATA STORE ----- #//
 
@@ -131,9 +126,3 @@ var shops_partial_view = Em.View.create({
 var products_partial_view = Em.View.create({
   templateName: 'products',
 });
-
-//# ----- VIEWS ----- #//
-fb_login_title_view.appendTo('body');
-fb_login_nav_view.appendTo('body');
-fb_login_view.appendTo('body'); 
-shops_partial_view.appendTo('body'); 

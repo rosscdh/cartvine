@@ -11,8 +11,7 @@ $.getJSON(widget_list_object, function(data) {
     $.each(data.widgets, function(index) {
         $('<script/>', {
             src: data.widgets[index]
-        }).appendTo('head');
-        console.log(data.widgets[index])
+        }).appendTo('body');
     });
 });
 

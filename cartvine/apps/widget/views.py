@@ -15,17 +15,20 @@ class WidgetsForShopView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(WidgetsForShopView, self).get_context_data(**kwargs)
 
-        widget_list = Widget.objects.filter(shop=self.object)
+        static_url = self.request.build_absolute_uri(settings.STATIC_URL)
 
-        static_url = settings.STATIC_URL
         default_scripts = [
             '%semberjs/js/libs/ember-0.9.8.1.min.js'%(static_url),
             '%semberjs/js/libs/ember-data-latest.min.js'%(static_url),
-            '%semberjs/js/libs/emberjs/js/libs/tastypie_adapter.js'%(static_url),
+            '%semberjs/js/libs/tastypie_adapter.js'%(static_url),
         ]
-        context['scripts'] = default_scripts + [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': s.slug})),) for s in widget_list ]
+
+        widget_list = Widget.objects.filter(shop=self.object)
+
+        context['scripts'] = default_scripts + [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': widget.slug})),) for widget in widget_list ]
 
         return context
+
 
 class SpecificWidgetForShopView(DetailView):
     model = Widget
@@ -34,7 +37,7 @@ class SpecificWidgetForShopView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(SpecificWidgetForShopView, self).get_context_data(**kwargs)
 
-        context['shop'] = shop = get_object_or_404(Shop.objects.get(slug=self.kwargs['shop_slug']))
+        context['shop'] = get_object_or_404(Shop, slug=self.kwargs['shop_slug'])
 
         script_name = '%s%s.js' %('widget/', self.object.slug,)
         self.template_name = script_name

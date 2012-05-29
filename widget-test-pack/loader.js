@@ -9,10 +9,11 @@ widget_list_object = url_scheme + 'localhost:8000/widget/'+ shop_slug +'/'
 
 $.getJSON(widget_list_object, function(data) {
     $.each(data.widgets, function(index) {
-        $('<script/>', {
-            src: data.widgets[index]
-        }).appendTo('head');
-        console.log(data.widgets[index])
+		// $('<script/>', {
+		// 	src: data.widgets[index]
+		// }).appendTo('head');
+		$.getScript(data.widgets[index], function(data, textStatus, jqxhr) {
+		});
     });
 });
 

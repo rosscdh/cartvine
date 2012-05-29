@@ -1,5 +1,4 @@
 {% extends 'base-facebook_user.html' %}
-{% load facebook templatetag_handlebars %}
 {% load url from future %}
 
 {% block content-head %}
@@ -18,60 +17,7 @@
 
 {% block ember-view %}
 
-  {% tplhandlebars "nav" %}
-      {{#if App.FBUser}}
-      <ul class="nav nav-tabs">
-        <li class="active"><a href="#">About you!</a></li>
-        <li><a href="#">Messages</a></li>
-        <li><a href="#">Purchases</a></li>
-        <li><a href="#">Comments</a></li>
-      </ul>
-      {{else}}
-      &nbsp;
-      {{/if}}
-  {% endtplhandlebars %}
-
-  {% tplhandlebars "title" %}
-      {{#if App.FBUser}}
-      <h1>Hi there {{App.FBUser.first_name}}...</h1>
-      <a href="{% url 'default:logout' %}" {{action "logout" target="FB"}}>Logout</a>
-      {{else}}
-      <h1>Connect to shop</h1>
-      {{/if}}
-  {% endtplhandlebars %}
-
-  {% tplhandlebars "fb_login" %}
-      {{#if App.FBUser}}
-
-            <div class="">
-                {{App.FBUser.name}}
-            </div>
-            <img {{bindAttr src="App.FBUser.picture" alt="App.FBUser.name"}} />
-
-      {{else}}
-        {{#view Em.FacebookView type="login-button" data-size="xlarge" data-scope="email, read_stream, publish_stream, offline_access"}}
-          Connect
-        {{/view}}
-      {{/if}}
-  {% endtplhandlebars %}
-
-  {% tplhandlebars "shops" %}
-      {{#if App.Person}}
-      <h3>Your Shops</h3>
-      <ul>
-        {{#each App.Person.shops}}
-          <li>
-            {{name}} ({{id}})
-            <ul>
-              <li>{{App.Person.products.length}}</li>
-            </ul>
-          </li>
-        {{/each}}
-      </ul>
-      {{else}}
-      &nbsp;
-      {{/if}}
-  {% endtplhandlebars %}
+{% include 'default/facebook-login.html' %}
 
 {% endblock %}
 

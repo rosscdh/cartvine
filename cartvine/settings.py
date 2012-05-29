@@ -96,6 +96,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
+    # Facebook Api Key Context Processor
+    'facebook_user.context_processors.facebook_app_id',
     # shopify
     'cartvine.context_processors.current_shop',
 )
@@ -256,6 +258,9 @@ TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django'
 TEMPLATED_EMAIL_DJANGO_SUBJECTS = {
     'welcome':'Thanks and are you happy with your purchased product?',
 }
+
+FACEBOOK_APP_ID = '209234305864956'
+FACEBOOK_SECRET_KEY = 'd0875d1310c3708181b5b9d2092593d8'
 
 # Custom test runner for this project
 TEST_RUNNER = 'cartvine.test_runner.CartvineAppTestRunner'
