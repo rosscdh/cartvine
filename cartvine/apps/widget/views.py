@@ -31,9 +31,7 @@ class SpecificWidgetForShopView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(SpecificWidgetForShopView, self).get_context_data(**kwargs)
 
-        script_name = '%s%s' %('widgets/', self.kwargs['script_name'],)
-        text = open(os.path.join(settings.STATIC_ROOT, script_name), 'rb').read()
-
-        context['script'] = text
+        script_name = '%s%s' %('widget/', self.kwargs['script_name'],)
+        self.template_name = script_name
 
         return context
