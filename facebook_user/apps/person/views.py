@@ -49,12 +49,12 @@ class PersonValidationView(View):
                 if not form.is_valid():
                     raise Http404
                 else:
-                    uid = body.get('uid')
-                    access_token = body.get('access_token')
-                    username = body.get('username')
-                    email = body.get('email')
-                    first_name = body.get('first_name')
-                    last_name = body.get('last_name')
+                    uid = form.cleaned_data['uid']
+                    access_token = form.cleaned_data['access_token']
+                    username = form.cleaned_data['username']
+                    email = form.cleaned_data['email']
+                    first_name = form.cleaned_data['first_name']
+                    last_name = form.cleaned_data['last_name']
                     logger.info('Person uid: %s access_token: %s' %(uid, access_token,) )
 
                     user, is_new = User.objects.get_or_create(username=username, email=email, first_name=first_name, last_name=last_name)
