@@ -65,6 +65,16 @@ The app flow is:
 
 ##### FACEBOOK LOGIN #####
 
+* client is on mystore.shopify.com
+* our generic loader widget loads… and passes the current sites details (obtained via the Shopify.site javacscript var which is available on the store by default)
+* our loader widget… idendifies which site is being looked at … and which of our paid for apps to load
+* each app loads in the designated html id specified in our setup page
+* and in teh case of fb widget  will install a "purchase with fb account" button
+* user click on the button.. it does the current process… creates a local Person object but not a Actual shopify object….*and this is important for us to discuss*
+* user clicks around… goes to checkout...
+* our widget is loaded constantly
+* and on the checkout/purchase page.. it detects the order form... and populates it with the details prescribed (as many as is made possible by the details that fb gives us) and then the user can complete the order.. in the normal shopify manner
+
 ### Perefer to use Assets api to store a javascript asset
 http://api.shopify.com/asset.html
 Allows us to load ssl version of our site if the shopify site is behind ssl without throwing ssl warnings
