@@ -7,6 +7,8 @@ from django.views.generic import DetailView, ListView
 
 from cartvine.apps.shop.models import Shop
 
+import os
+
 
 class WidgetsForShopView(DetailView):
     model = Shop
@@ -22,9 +24,16 @@ class WidgetsForShopView(DetailView):
 
         return context
 
-class SpecificWidgetForShopView(WidgetsForShopView):
+class SpecificWidgetForShopView(DetailView):
+    model = Shop
     template_name = 'widget/widget.js'
+
     def get_context_data(self, **kwargs):
         context = super(SpecificWidgetForShopView, self).get_context_data(**kwargs)
-        context['script'] = 'alert("hi there")'
+
+        script_name = '%s%s' %('widgets/', self.kwargs['script_name'],)
+        text = open(os.path.join(settings.STATIC_ROOT, script_name), 'rb').read()
+
+        context['script'] = text
+
         return context

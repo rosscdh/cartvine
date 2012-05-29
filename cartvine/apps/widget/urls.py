@@ -6,6 +6,6 @@ from views import WidgetsForShopView, SpecificWidgetForShopView
 
 
 urlpatterns = patterns('',
-    url(r'^(?P<slug>.*)/(?P<script_name>.*)/$', SpecificWidgetForShopView.as_view(), name='script'),
-    url(r'^(?P<slug>.*)/$', WidgetsForShopView.as_view(), name='for_shop'),
+    url(r'^(?P<slug>.+)/(?P<script_name>.+)/$', SpecificWidgetForShopView.as_view(), name='script'),
+    url(r'^(?P<slug>.+)/$', WidgetsForShopView.as_view(), name='for_shop'),
 )
