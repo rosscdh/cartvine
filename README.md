@@ -61,3 +61,19 @@ The app flow is:
 * Email sending should be done via Mailchimp? or similar.. am using https://github.com/bradwhittington/django-templated-email which hooks intomailchimp or whats better postageapp
 * @TODO will be abstracting the shopify interface at some point to allow for multiple endpoint providers other than just shopify
 
+
+
+##### FACEBOOK LOGIN #####
+
+### Perefer to use Assets api to store a javascript asset
+http://api.shopify.com/asset.html
+Allows us to load ssl version of our site if the shopify site is behind ssl without throwing ssl warnings
+
+### Can be used in worst case but loses ssl validity
+http://api.shopify.com/scripttag.html
+
+Have access to Shopify object on teh shopify site
+<script type="text/javascript">      var Shopify = Shopify || {};
+      Shopify.shop = "price-turcotte-and-gleichner1525.myshopify.com";
+      Shopify.theme = {"name":"radiance","id":3020382};
+</script>
