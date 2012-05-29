@@ -18,6 +18,7 @@ from django.utils import simplejson as json
 
 app_urls = {
     'validate': reverse('person:validate', kwargs={'application_type': 'facebook',}),
+    'validate_invalid': reverse('person:validate', kwargs={'application_type': 'monkey',}),
     }
 
 
@@ -37,8 +38,7 @@ class PersonTest(TestCase):
     def test_validation_view_get_invalid(self):
         """ test that invalid get options to the person validation url errors out """
         # invalid application_type
-        url = reverse('person:validate', kwargs={'application_type': 'monkey',})
-        response = self.client.get(url)
+        response = self.client.get(app_urls['validate_invalid'])
         self.assertEqual(response.status_code, 405)
         # get is invalid only post valid
         response = self.client.get(app_urls['validate'])
@@ -47,8 +47,7 @@ class PersonTest(TestCase):
     def test_validation_view_post_invalid(self):
         """ test that invalid post options to the person validation url errors out """
         # invalid application_type
-        url = reverse('person:validate', kwargs={'application_type': 'monkey',})
-        response = self.client.post(url)
+        response = self.client.post(app_urls['validate_invalid'])
         self.assertEqual(response.status_code, 404)
 
         response = self.client.post(app_urls['validate'], json.dumps(self.valid_post_body), content_type='application/json')
@@ -80,3 +79,5 @@ class PersonTest(TestCase):
 
         # test response data
         self.assertContains(response, '{"uid": 1234567890, "application_type": 1, "is_valid": true, "products": [], "user": {"username": "tester", "first_name": "Test", "last_name": "Me", "uid": "1234567890", "access_token": "ABCDEFGH", "email": "test@rulenoone.com"}, "shops": [{"id": 1, "name": "shop_1"}], "id": 1}')
+        print response['context']
+

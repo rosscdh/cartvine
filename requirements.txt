@@ -36,3 +36,6 @@ pil
 # Handlebar templates in django
 -e git+https://github.com/stard0g101/django-templatetag-handlebars.git#egg=django-templatetag-handlebars
 -e git+https://github.com/stard0g101/django-socialregistration.git#egg=django-socialregistration
+
+# Pretty django forms with bootstrap
+-e git+https://github.com/earle/django-bootstrap#egg=django-bootstrap
