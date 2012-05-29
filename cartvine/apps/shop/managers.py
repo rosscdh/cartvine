@@ -1,11 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 
 import shopify
+from urlparse import urlparse
 
-from django.contrib.auth.models import User
+
 
 
 class ShopManager(models.Manager):
@@ -24,7 +26,8 @@ class ShopManager(models.Manager):
         shop, is_new = self.get_or_create(shopify_id=current_shop.id)
         shop.data = current_shop.__dict__['attributes']
         shop.name = shop.data['name']
-        shop.slug = slugify(shop.name)
+        slug = urlparse(shop.data['myshopify_domain']).netloc.split('.')[0]
+        shop.slug = slug
         shop.shopify_access_token = shopify_session.token
         shop.url = 'http://%s' % (shop.data['myshopify_domain'],)
         shop.save()
@@ -39,7 +42,7 @@ class ShopManager(models.Manager):
         first_name = name.split(' ')[0]
         last_name = ' '.join(name.split(' ')[1:])
         # @TODO could be more than 1 john smith at shop id 129989
-        unique_id = '%d-%s' %(shop.data['id'], name,)
+        unique_id = '%d-%s' %(shop.data['id'], last_name,)
         username = slugify(unique_id)
         email = shop.data['email']
         user, is_new = User.objects.get_or_create(username=username, email=email, first_name=first_name, last_name=last_name)

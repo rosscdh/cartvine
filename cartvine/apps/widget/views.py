@@ -17,7 +17,13 @@ class WidgetsForShopView(DetailView):
 
         widget_list = Widget.objects.filter(shop=self.object)
 
-        context['scripts'] = [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': s.slug})),) for s in widget_list ]
+        static_url = settings.STATIC_URL
+        default_scripts = [
+            '%semberjs/js/libs/ember-0.9.8.1.min.js'%(static_url),
+            '%semberjs/js/libs/ember-data-latest.min.js'%(static_url),
+            '%semberjs/js/libs/emberjs/js/libs/tastypie_adapter.js'%(static_url),
+        ]
+        context['scripts'] = default_scripts + [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': s.slug})),) for s in widget_list ]
 
         return context
 
