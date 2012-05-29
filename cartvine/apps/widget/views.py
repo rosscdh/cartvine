@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.views.generic import DetailView, ListView
+from django.template import loader, Context
 
 from cartvine.apps.shop.models import Shop
 from models import Widget
@@ -27,6 +28,14 @@ class WidgetsForShopView(DetailView):
 
         context['scripts'] = default_scripts + [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': widget.slug})),) for widget in widget_list ]
 
+        # must be the last in this view as it needs a full context
+        c = Context(context)
+        templates = []
+        for widget in widget_list:
+            for template in widget.data['templates']:
+                templates.append(loader.get_template(template).render(c))
+
+        context['templates'] = templates
         return context
 
 

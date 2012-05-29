@@ -3,4 +3,5 @@
     "cartvine_shop_id": "{{ object.pk }}",
     "slug": "{{ object.slug }}",
     "widgets": [{% for s in scripts %}"{{ s }}"{% if not forloop.last %},{% endif %}{% endfor %}]
+    "templates": [{% for t in templates %}"{{ t }}"{% if not forloop.last %},{% endif %}{% endfor %}]
 }

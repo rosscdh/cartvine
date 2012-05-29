@@ -16,4 +16,5 @@ class Widget(models.Model):
     name = models.CharField(max_length=128)
     widget_type = models.CharField(max_length=5, choices=WIDGET_TYPE.get_choices())
     slug = models.SlugField()
+    data = JSONField()
     shop = models.ManyToManyField(Shop)
