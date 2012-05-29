@@ -1,13 +1,11 @@
 from django.conf import settings
-from django.contrib import messages
+from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import render_to_response, redirect
 from django.core.urlresolvers import reverse
 from django.views.generic import DetailView, ListView
 
 from cartvine.apps.shop.models import Shop
-
-import os
+from models import Widget
 
 
 class WidgetsForShopView(DetailView):
@@ -16,8 +14,8 @@ class WidgetsForShopView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(WidgetsForShopView, self).get_context_data(**kwargs)
-
-        script_list = [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'slug': self.object.slug, 'script_name': s})),) for s in ['widget-auth-facebook.js'] ]
+        widget_list = Widget.objects.filter(shop=self.object)
+        script_list = [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': s.slug})),) for s in widget_list ]
 
         context['shop'] = self.object
         context['scripts'] = script_list
@@ -25,13 +23,15 @@ class WidgetsForShopView(DetailView):
         return context
 
 class SpecificWidgetForShopView(DetailView):
-    model = Shop
+    model = Widget
     template_name = 'widget/widget.js'
 
     def get_context_data(self, **kwargs):
         context = super(SpecificWidgetForShopView, self).get_context_data(**kwargs)
 
-        script_name = '%s%s' %('widget/', self.kwargs['script_name'],)
+        context['shop'] = shop = get_object_or_404(Shop.objects.get(slug=self.kwargs['shop_slug']))
+
+        script_name = '%s%s.js' %('widget/', self.object.slug,)
         self.template_name = script_name
 
         return context
