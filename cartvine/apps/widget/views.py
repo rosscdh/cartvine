@@ -15,9 +15,16 @@ class WidgetsForShopView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(WidgetsForShopView, self).get_context_data(**kwargs)
 
-        script_list = [ '%s%s'%(self.request.build_absolute_uri(settings.STATIC_URL), s) for s in ['widget/widget-auth-facebook.js'] ]
+        script_list = [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'slug': self.object.slug, 'script_name': s})),) for s in ['widget-auth-facebook.js'] ]
 
         context['shop'] = self.object
         context['scripts'] = script_list
 
+        return context
+
+class SpecificWidgetForShopView(WidgetsForShopView):
+    template_name = 'widget/widget.js'
+    def get_context_data(self, **kwargs):
+        context = super(SpecificWidgetForShopView, self).get_context_data(**kwargs)
+        context['script'] = 'alert("hi there")'
         return context

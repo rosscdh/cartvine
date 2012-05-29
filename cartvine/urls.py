@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     # Api
     url(r'^api/', include(v1_public_api.urls)),
     # Widget JS Loader
-    url(r'^widget/', include('cartvine.apps.widget.urls', namespace='widgets')),
+    url(r'^widget/', include('cartvine.apps.widget.urls', namespace='widget')),
     # Core Application
     url(r'^webhook/', include('cartvine.apps.webhook.urls', namespace='webhook')),
     url(r'^mail/', include('cartvine.apps.mail.urls', namespace='mail')),
