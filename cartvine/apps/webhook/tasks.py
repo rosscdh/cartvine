@@ -46,3 +46,10 @@ def sync_webhook(webhook_callback_address, shop, shopify_session):
 
     return None
 
+
+@task(name="sync_shopify_assets")
+def sync_assets(shop, shopify_session):
+    """ syncs the template assets that need to be installed for this app (/static/widgets/widget-auth-facebook.js) """
+    # read in the local widget-auth-facebook.js
+    # create the shopify asset
+    pass

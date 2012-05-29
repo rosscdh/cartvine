@@ -18,6 +18,8 @@ from cartvine.utils import get_webhook_postback_url
 from cartvine.apps.product.tasks import sync_products
 from cartvine.apps.customer.tasks import sync_customers
 from cartvine.apps.webhook.tasks import sync_webhook
+from cartvine.apps.webhook.tasks import sync_assets
+
 
 import logging
 logger = logging.getLogger('happy_log')
@@ -97,6 +99,7 @@ class FinalizeInstallationView(RedirectView):
             except:
                 # Try the same calls without the celery async .delay()
                 sync_webhook(webhook_callback_address, shop, shopify_session)
+                sync_assets(shop, shopify_session)
                 sync_products(shopify_session, shop)
                 sync_customers(shopify_session, shop)
 
