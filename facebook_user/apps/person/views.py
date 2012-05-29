@@ -16,6 +16,7 @@ from socialregistration.contrib.facebook.client import Facebook as FacebookClien
 from socialregistration.contrib.facebook.models import FacebookProfile
 
 from models import Person
+from forms import PersonValidationPostForm
 
 import logging
 logger = logging.getLogger('facebook_user')
@@ -42,40 +43,45 @@ class PersonValidationView(View):
             logger.debug('Person Validation not necessary, user is logged in already : %s'%(request.user))    
         else:
 
-            if body.get('uid') is not None and body.get('access_token') is not None:
-
-                uid = body.get('uid')
-                access_token = body.get('access_token')
-                username = body.get('username')
-                email = body.get('email')
-                first_name = body.get('first_name')
-                last_name = body.get('last_name')
-                logger.info('Person uid: %s access_token: %s' %(uid, access_token,) )
-
-                user, is_new = User.objects.get_or_create(username=username, email=email, first_name=first_name, last_name=last_name)
-                user = authenticate(user=user, application_type=Person.APPLICATION_TYPES.facebook, uid=uid, access_token=access_token)
-
-                if user is None:
-                    logger.error('Person was meant to be created, but was not: application_type: %s, uid: %s, access_token: %s'%(application_type, uid, access_token))
+            if body.get('uid', None) is not None and body.get('access_token', None) is not None:
+                #@TODO make a form to validate this data
+                form = PersonValidationPostForm(initial=body)
+                if not form.is_valid():
                     raise Http404
                 else:
-                    user.person.data = body
-                    user.person.save()
+                    uid = body.get('uid')
+                    access_token = body.get('access_token')
+                    username = body.get('username')
+                    email = body.get('email')
+                    first_name = body.get('first_name')
+                    last_name = body.get('last_name')
+                    logger.info('Person uid: %s access_token: %s' %(uid, access_token,) )
 
-                    # @TODO make this dynamic when more than jsut FB is supported
-                    # Abstract into seperate class
-                    client = FacebookClient()
-                    profile, is_new = FacebookProfile.objects.get_or_create(user=user, uid=uid)
-                    logger.info('New Facebook Profile Person uid: %s access_token: %s' %(uid, access_token,) )
+                    user, is_new = User.objects.get_or_create(username=username, email=email, first_name=first_name, last_name=last_name)
+                    user = authenticate(user=user, application_type=Person.APPLICATION_TYPES.facebook, uid=uid, access_token=access_token)
 
-                    # @TODO bug here can pass and uid and or access token in.. need to call facebook to validate here
-                    if user is not None and hasattr(user, 'data'):
-                        user.data = body
+                    if user is None:
+                        logger.error('Person was meant to be created, but was not: application_type: %s, uid: %s, access_token: %s'%(application_type, uid, access_token))
+                        raise Http404
+                    else:
+                        user.person.data = body
+                        user.person.save()
 
-                    request.session['next'] = reverse('default:index')
+                        # @TODO make this dynamic when more than jsut FB is supported
+                        # Abstract into seperate class
+                        client = FacebookClient()
+                        profile, is_new = FacebookProfile.objects.get_or_create(user=user, uid=uid)
+                        logger.info('New Facebook Profile Person uid: %s access_token: %s' %(uid, access_token,) )
 
-                    login(request, user)
+                        # @TODO bug here can pass and uid and or access token in.. need to call facebook to validate here
+                        if user is not None and hasattr(user, 'data'):
+                            user.person.data = body
+                            user.person.save()
 
-                response_data = request.user.person.get_validated_json_response()
+                        request.session['next'] = reverse('default:index')
+
+                        login(request, user)
+
+                    response_data = request.user.person.get_validated_json_response()
 
         return HttpResponse(json.dumps(response_data), mimetype="application/json")
