@@ -53,4 +53,14 @@ class PersonTest(TestCase):
         response = self.client.post(app_urls['validate'], json.dumps(self.valid_post_body), content_type='application/json')
         self.assertEqual(response.status_code, 404)
 
+    def test_validation_view_post_valid(self):
+        self.valid_post_body['uid'] = '1234567890'
+        self.valid_post_body['access_token'] = 'ABCDEFGH'
+        self.valid_post_body['username'] = 'tester'
+        self.valid_post_body['email'] = 'test@rulenoone.com'
+        self.valid_post_body['first_name'] = 'Test'
+        self.valid_post_body['last_name'] = 'Me'
+        
+        response = self.client.post(app_urls['validate'], json.dumps(self.valid_post_body), content_type='application/json')
+        self.assertEqual(response.status_code, 404)
 

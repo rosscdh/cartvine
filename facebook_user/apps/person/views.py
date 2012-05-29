@@ -45,8 +45,9 @@ class PersonValidationView(View):
 
             if body.get('uid', None) is not None and body.get('access_token', None) is not None:
                 #@TODO make a form to validate this data
-                form = PersonValidationPostForm(initial=body)
+                form = PersonValidationPostForm(body)
                 if not form.is_valid():
+                    logger.error('Form validation errors: %s'%(form.errors,))
                     raise Http404
                 else:
                     uid = form.cleaned_data['uid']
