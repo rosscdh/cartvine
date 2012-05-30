@@ -2,12 +2,31 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-from django.views.generic import TemplateView, DetailView, ListView
+from django.views.generic import TemplateView, DetailView, ListView, FormView
 from django.template import loader, Context
 
 from cartvine.apps.shop.models import Shop
-from models import Widget, WidgetShop
 
+from models import Widget, WidgetShop
+from forms import CustomerWidgetEditForm
+
+
+class MyWidgetView(ListView):
+    model = Widget
+
+
+class MyWidgetEditView(FormView):
+    form_class = CustomerWidgetEditForm
+    template_name = 'widget/widget_edit.html'
+
+    def get_initial(self):
+        widget_config = get_object_or_404(WidgetShop.objects.filter(shop__pk=1), widget__slug=self.kwargs['slug'])
+        return widget_config.data
+
+    def get_context_data(self, **kwargs):
+        context = super(MyWidgetEditView, self).get_context_data(**kwargs)
+        context['widget'] = get_object_or_404(Widget, slug=self.kwargs['slug'])
+        return context
 
 class WidgetLoaderView(TemplateView):
     template_name = 'widget/cartvine-loader.js'

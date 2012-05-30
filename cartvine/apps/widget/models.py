@@ -19,6 +19,9 @@ class Widget(models.Model):
     data = JSONField()
     shop = models.ManyToManyField(Shop)
 
+    def __unicode__(self):
+        return u'%s' % (self.name,)
+
 
 class WidgetShop(models.Model):
     """ Overriden join table so we can store widget settings """

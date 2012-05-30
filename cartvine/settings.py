@@ -146,6 +146,7 @@ HELPER_APPS = (
     'djcelery',
     'sorl.thumbnail',
     'templatetag_handlebars',
+    'bootstrap',
     'tastypie',
     # helpers
     'django_extensions',

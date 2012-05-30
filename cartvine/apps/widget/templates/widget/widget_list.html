@@ -1,0 +1,11 @@
+{% extends 'widget/base.html' %}
+{% load url from future %}
+{% block body %}
+
+<ul id="list-my-widget" class="list">
+{% for w in object_list %}
+    <li><a href="{% url 'widget:edit' slug=w.slug %}">{{ w }}</a></li>
+{% endfor %}
+</ul>
+
+{% endblock %}
