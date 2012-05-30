@@ -16,9 +16,12 @@
           </div>
           <img {{bindAttr src="App.FBUser.picture" alt="App.FBUser.name"}} />
     {{else}}
+     {% comment %}
       {{#view Em.FacebookView type="login-button" data-size="xlarge" data-scope="email, read_stream, publish_stream, offline_access"}}
         Connect
       {{/view}}
+      {% endcomment %}
+      <a href="#" id="vine-fb-connect">Click here to Authorize with facebook</a>
     {{/if}}
 {% endtplhandlebars %}
 {% endspaceless %}

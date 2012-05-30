@@ -2,8 +2,10 @@
 
 //<!-- Check for http | https -- >
 var cartvine_is_ready = true;
-var shop_slug = window.Shopify.shop.replace('.myshopify.com','');
+
 var url_scheme = window.parent.document.location.protocol + '//';
+var shop_slug = window.Shopify.shop.replace('.myshopify.com','');
+var shoppers_url = url_scheme + 'shoppers.cartvine.com/?shop=' + shop_slug;
 
 widget_list_object = url_scheme + '{{ request.get_host }}/widget/'+ shop_slug +'/';
 

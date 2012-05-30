@@ -126,5 +126,9 @@ $(document).ready(function() {
         fb_login_title_view.appendTo('{{ config.target_id|default:"body" }}');
         fb_login_view.appendTo('{{ config.target_id|default:"body" }}');
 
+        $('a#vine-fb-connect').live('click', function (e) {
+            event.preventDefault();
+            document.location = shoppers_url;
+        });
     } // end cartvine_is_ready
 });
