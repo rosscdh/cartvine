@@ -18,3 +18,14 @@ class Widget(models.Model):
     slug = models.SlugField()
     data = JSONField()
     shop = models.ManyToManyField(Shop)
+
+
+class WidgetShop(models.Model):
+    """ Overriden join table so we can store widget settings """
+    widget = models.ForeignKey(Widget)
+    shop = models.ForeignKey(Shop)
+    data = JSONField(null=True)
+    class Meta:
+        db_table = 'widget_widget_shop'
+        verbose_name = _('Widget Configuration')
+        verbose_name_plural = 'Widget Configuration'

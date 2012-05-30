@@ -123,8 +123,8 @@ $(document).ready(function() {
 
 
         //# ----- VIEWS ----- #//
-        fb_login_title_view.appendTo('body');
-        fb_login_view.appendTo('body'); 
+        fb_login_title_view.appendTo('{{ config.target_id|default:"body" }}');
+        fb_login_view.appendTo('{{ config.target_id|default:"body" }}');
 
     } // end cartvine_is_ready
 });

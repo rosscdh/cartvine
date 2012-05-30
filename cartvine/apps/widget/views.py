@@ -6,7 +6,7 @@ from django.views.generic import TemplateView, DetailView, ListView
 from django.template import loader, Context
 
 from cartvine.apps.shop.models import Shop
-from models import Widget
+from models import Widget, WidgetShop
 
 
 class WidgetLoaderView(TemplateView):
@@ -51,8 +51,10 @@ class SpecificWidgetForShopView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(SpecificWidgetForShopView, self).get_context_data(**kwargs)
 
+        widget_shop_join = get_object_or_404(WidgetShop, widget=self.object)
+        context['config'] = widget_shop_join.data
         context['shop'] = get_object_or_404(Shop, slug=self.kwargs['shop_slug'])
-
+        
         script_name = '%s%s.js' %('widget/', self.object.slug,)
         self.template_name = script_name
 
