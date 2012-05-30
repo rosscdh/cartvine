@@ -39,6 +39,9 @@ class MyWidgetEditView(FormView):
     def post(self, request, *args, **kwargs):
         form = self.get_form(self.get_form_class())
         if form.is_valid():
+            if not type(self.widget_config.data).__name__ == 'dict':
+                self.widget_config.data = {}
+
             for field in form.fields:
                 self.widget_config.data[field] = form.cleaned_data[field]
             self.widget_config.save()
