@@ -3,16 +3,15 @@
 $(document).ready(function() {
     if (cartvine_is_ready) {
 
-        var App = Em.Application.create(Em.Facebook);
-        App.set('appId', '{{ FACEBOOK_APP_ID }}');
+        var App = Em.Application.create();
 
         //# ----- DATA STORE ----- #//
 
-        App.store = DS.Store.create({
-          revision: 4,
-          adapter: DS.DjangoTastypieAdapter.create(),
-        });
-        App.store.adapter.set('serverDomain', url_scheme + '{{ request.get_host }}/');
+        // App.store = DS.Store.create({
+        //   revision: 4,
+        //   adapter: DS.DjangoTastypieAdapter.create(),
+        // });
+        // App.store.adapter.set('serverDomain', url_scheme + '{{ request.get_host }}/');
 
         //# ----- OVERRIDES & EXTENSIONS ----- #//
 
@@ -29,24 +28,20 @@ $(document).ready(function() {
         });
 
         //# ----- MODELS ----- #//
-        App.Product = DS.Model.extend({
+        App.Product = Ember.Object.extend({
             url: 'products',
         });
-        App.Shop = DS.Model.extend({
+        App.Shop = Ember.Object.extend({
             url: 'shops',
-            slug: DS.attr('string'),
-            data: DS.attr('string'),
-            shopify_id: DS.attr('string')
         });
         // App.Customer = DS.Model.extend({
         //     url: 'customers',
         // });
-        Person = DS.Model.extend({
+        Person = Ember.Object.extend({
             url: 'persons',
             FBUser: void 0,
             is_valid: void 0,
             shops: void 0,
-            products: DS.hasMany('App.Product'),
 
             init: function() {
                 this._super();
@@ -92,8 +87,6 @@ $(document).ready(function() {
                         _this.set('is_valid', data.is_valid);
 
                         if (data.is_valid) {
-                            // _this.set('shops', data.shops);
-                            // _this.set('products', data.products);
                         }
                     })
                     .fail(function() { 
