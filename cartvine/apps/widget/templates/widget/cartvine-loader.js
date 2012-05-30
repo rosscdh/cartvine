@@ -15,11 +15,24 @@ $.getJSON(widget_list_object, function(data) {
     });
     // Install Scripts
     $.each(data.widgets, function(index) {
-        $.getScript(data.widgets[index])
-        .done(function(script, textStatus) {})
-        .fail(function(jqxhr, settings, exception) {
-            cartvine_is_ready = false;
-            // something happened and we cannto go on like this
+        $.ajax({
+            url: data.widgets[index],
+            dataType: 'script',
+            complete: function(xhr) { 
+                if (xhr.status == 304) return;
+                // or better: if (xhr.status != 200) return;
+                // your code goes here
+            },
+            error: function () {
+            // cartvine_is_ready = false;
+            // // something happened and we cannto go on like this
+            }
         });
+        // $.getScript(data.widgets[index])
+        // .done(function(script, textStatus) {})
+        // .fail(function(jqxhr, settings, exception) {
+        //     cartvine_is_ready = false;
+        //     // something happened and we cannto go on like this
+        // });
     });
 });
