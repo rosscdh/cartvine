@@ -1,0 +1,3 @@
+Using cartvine Application
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0"><object pk="1" model="widget.widget"><field type="CharField" name="name">Facebook Auth</field><field type="CharField" name="widget_type">js</field><field type="SlugField" name="slug">widget-auth-facebook</field><field type="TextField" name="data">{u'templates': [u'widget/handlebars/facebook-login.html']}</field><field to="shop.shop" name="shop" rel="ManyToManyRel"><object pk="1"></object></field></object></django-objects>
