@@ -15,8 +15,16 @@ $.getJSON(widget_list_object, function(data) {
     });
     // Install Scripts
     $.each(data.widgets, function(index) {
-        $('<script/>', {
-            src: data.widgets[index]
-        }).appendTo('head');
+        // $('<script/>', {
+        //     id: 'cartvine-loader-js-' + index,
+        //     src: data.widgets[index]
+        // }).appendTo('body');
+        $.getScript(data.widgets[index])
+        .done(function(script, textStatus) {
+            console.log( textStatus );
+        })
+        .fail(function(jqxhr, settings, exception) {
+            alert('error')
+        });  
     });
 });
