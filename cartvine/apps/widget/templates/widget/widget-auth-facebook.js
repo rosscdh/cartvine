@@ -1,18 +1,16 @@
 {% load url from future %}
 //# ----- DATA STORE ----- #//
-}
-$.getScript('{{ request.build_absolute_uri }}{{ STATIC_URL }}emberjs/js/libs/ember-facebook.js', function(data, textStatus, jqxhr) {
-});
 
-var App = Em.Application.create(Em.Facebook);
+var App = Em.Application.create();
 App.set('appId', '{{ FACEBOOK_APP_ID }}');
 
 //# ----- DATA STORE ----- #//
 
 App.store = DS.Store.create({
   revision: 4,
-  adapter: DS.DjangoTastypieAdapter.create()
+  adapter: DS.DjangoTastypieAdapter.create(),
 });
+App.store.adapter.set('serverDomain', '{{ request.build_absolute_uri }}');
 
 //# ----- OVERRIDES & EXTENSIONS ----- #//
 
@@ -115,25 +113,14 @@ App.personProfileController = Em.Object.create({
 
 
 //# ----- VIEWS ----- #//
-var fb_login_nav_view = Em.View.create({
-  templateName: 'nav',
-});
 var fb_login_title_view = Em.View.create({
-  templateName: 'title',
+  templateName: 'widget-auth-facebook-title',
 });
 var fb_login_view = Em.View.create({
-  templateName: 'fb_login',
-});
-var shops_partial_view = Em.View.create({
-  templateName: 'shops',
-  userNameBinding: Em.Binding.oneWay('App.Person.shops')
-});
-var products_partial_view = Em.View.create({
-  templateName: 'products',
+  templateName: 'widget-auth-facebookfb_login',
 });
 
+
 //# ----- VIEWS ----- #//
-fb_login_title_view.appendTo('body');
-fb_login_nav_view.appendTo('body');
-fb_login_view.appendTo('body'); 
-shops_partial_view.appendTo('body'); 
+// fb_login_title_view.appendTo('body');
+// fb_login_view.appendTo('body'); 

@@ -1,7 +1,7 @@
 {% load templatetag_handlebars %}
 {% load url from future %}
-
-{% tplhandlebars "title" %}
+{% spaceless %}
+{% tplhandlebars "widget-auth-facebook-title" %}
     {{#if App.FBUser}}
     <h1>Hi there {{App.FBUser.first_name}}...</h1>
     <a href="{% url 'default:logout' %}" {{action "logout" target="FB"}}>Logout</a>
@@ -9,8 +9,7 @@
     <h1>Connect to shop</h1>
     {{/if}}
 {% endtplhandlebars %}
-
-{% tplhandlebars "fb_login" %}
+{% tplhandlebars "widget-auth-facebook-fb_login" %}
     {{#if App.FBUser}}
           <div class="">
               {{App.FBUser.name}}
@@ -22,3 +21,4 @@
       {{/view}}
     {{/if}}
 {% endtplhandlebars %}
+{% endspaceless %}

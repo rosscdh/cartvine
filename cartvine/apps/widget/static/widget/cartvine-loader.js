@@ -9,16 +9,14 @@ url_scheme = '//';
 widget_list_object = url_scheme + 'localhost:8000/widget/'+ shop_slug +'/'
 
 $.getJSON(widget_list_object, function(data) {
+    // Install Templates
     $.each(data.templates, function(index) {
-        data.templates[index].appendTo('head');
-        //console.log(data.templates[index])
+        $(data.templates[index]).appendTo('head');
     });
+    // Install Scripts
     $.each(data.widgets, function(index) {
         $('<script/>', {
             src: data.widgets[index]
-        }).appendTo('body');
+        }).appendTo('head');
     });
 });
-
-var oHead = document.getElementsByTagName('BODY').item(0);
-var oScript = '';
