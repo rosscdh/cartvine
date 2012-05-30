@@ -3,7 +3,7 @@
 $(document).ready(function() {
     if (cartvine_is_ready) {
 
-        var App = Em.Application.create();
+        var App = Em.Application.create(Em.Facebook);
         App.set('appId', '{{ FACEBOOK_APP_ID }}');
 
         //# ----- DATA STORE ----- #//
