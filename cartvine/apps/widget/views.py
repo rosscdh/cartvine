@@ -14,6 +14,10 @@ from forms import CustomerWidgetEditForm
 class MyWidgetView(ListView):
     model = Widget
 
+    def get_queryset(self):
+        shop = Shop.objects.filter(users__in=[self.request.user])
+        return Widget.objects.filter(shop=shop)
+
 
 class MyWidgetEditView(FormView):
     form_class = CustomerWidgetEditForm
@@ -23,7 +27,8 @@ class MyWidgetEditView(FormView):
         return reverse('widget:edit', kwargs={'slug': self.kwargs['slug']})
 
     def get_initial(self):
-        self.widget_config = get_object_or_404(WidgetShop.objects.filter(shop__pk=1), widget__slug=self.kwargs['slug'])
+        shop = Shop.objects.filter(users__in=[self.request.user])
+        self.widget_config = get_object_or_404(WidgetShop.objects.filter(shop=shop), widget__slug=self.kwargs['slug'])
         return self.widget_config.data
 
     def get_context_data(self, **kwargs):

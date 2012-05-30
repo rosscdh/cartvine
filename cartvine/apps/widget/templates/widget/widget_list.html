@@ -13,6 +13,8 @@
 <ul id="list-my-widget" class="list">
 {% for w in object_list %}
     <li><a href="{% url 'widget:edit' slug=w.slug %}">{{ w }}</a></li>
+{% empty %}
+    {% trans 'You have no widgets installed.. probably need to buy one from us?' %}
 {% endfor %}
 </ul>
 
