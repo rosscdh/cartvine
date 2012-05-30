@@ -2,11 +2,15 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-from django.views.generic import DetailView, ListView
+from django.views.generic import TemplateView, DetailView, ListView
 from django.template import loader, Context
 
 from cartvine.apps.shop.models import Shop
 from models import Widget
+
+
+class WidgetLoaderView(TemplateView):
+    template_name = 'widget/cartvine-loader.js'
 
 
 class WidgetsForShopView(DetailView):

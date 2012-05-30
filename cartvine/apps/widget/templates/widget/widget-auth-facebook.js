@@ -11,7 +11,7 @@ $(document).ready(function() {
       revision: 4,
       adapter: DS.DjangoTastypieAdapter.create(),
     });
-    App.store.adapter.set('serverDomain', '{{ request.build_absolute_uri }}');
+    App.store.adapter.set('serverDomain', '{{ request.get_host }}');
 
     //# ----- OVERRIDES & EXTENSIONS ----- #//
 
