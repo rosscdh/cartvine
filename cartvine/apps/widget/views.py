@@ -89,10 +89,10 @@ class SpecificWidgetForShopView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(SpecificWidgetForShopView, self).get_context_data(**kwargs)
-
-        widget_shop_join = get_object_or_404(WidgetShop, widget=self.object)
+        shop = get_object_or_404(Shop, slug=self.kwargs['shop_slug'])
+        widget_shop_join = get_object_or_404(WidgetShop, widget=self.object, shop=shop)
         context['config'] = widget_shop_join.data
-        context['shop'] = get_object_or_404(Shop, slug=self.kwargs['shop_slug'])
+        context['shop'] = shop
         
         script_name = '%s%s.js' %('widget/', self.object.slug,)
         self.template_name = script_name
