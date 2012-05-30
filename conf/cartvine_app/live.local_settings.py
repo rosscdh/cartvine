@@ -15,13 +15,13 @@ DATABASES = {
     }
 }
 
-STATIC_URL = '/static/cartvine/'
+STATIC_URL = '/static/'
 
-STATIC_ROOT = '/home/stard0g101/webapps/static/cartvine/'
+STATIC_ROOT = '/home/stard0g101/webapps/cartvine_static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    '/home/stard0g101/webapps/static/cartvine/base/',
+    '/home/stard0g101/webapps/cartvine_static/base/',
 )
 
 # Shopify Key
