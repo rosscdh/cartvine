@@ -7,7 +7,7 @@ from models import Widget
 
 
 class CustomerWidgetEditForm(bootstrap.BootstrapForm):
-    target_id = forms.CharField(_('Target ID'), help_text=_('The div#id_name of the html element you want to inject the widget into'), widget=bootstrap_widgets.PrependedText)
+    target_id = forms.CharField(_('Target ID'), help_text=_('The div#id_name of the html element you want to inject the widget into'), required=True, widget=bootstrap_widgets.PrependedText)
 
     class Meta:
         layout = (bootstrap.Fieldset("Configure your widget", "target_id"),)

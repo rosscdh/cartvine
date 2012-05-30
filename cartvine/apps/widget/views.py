@@ -19,14 +19,26 @@ class MyWidgetEditView(FormView):
     form_class = CustomerWidgetEditForm
     template_name = 'widget/widget_edit.html'
 
+    def get_success_url(self):
+        return reverse('widget:edit', kwargs={'slug': self.kwargs['slug']})
+
     def get_initial(self):
-        widget_config = get_object_or_404(WidgetShop.objects.filter(shop__pk=1), widget__slug=self.kwargs['slug'])
-        return widget_config.data
+        self.widget_config = get_object_or_404(WidgetShop.objects.filter(shop__pk=1), widget__slug=self.kwargs['slug'])
+        return self.widget_config.data
 
     def get_context_data(self, **kwargs):
         context = super(MyWidgetEditView, self).get_context_data(**kwargs)
         context['widget'] = get_object_or_404(Widget, slug=self.kwargs['slug'])
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form(self.get_form_class())
+        if form.is_valid():
+            for field in form.fields:
+                self.widget_config.data[field] = form.cleaned_data[field]
+            self.widget_config.save()
+        return super(MyWidgetEditView, self).post(request, *args, **kwargs)
+
 
 class WidgetLoaderView(TemplateView):
     template_name = 'widget/cartvine-loader.js'
