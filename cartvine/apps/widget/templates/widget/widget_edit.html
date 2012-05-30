@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load url from future %}
 
+{% block title %}{% trans 'Configure' %} {{ widget.name }}{% endblock %}
+
 {% block content-head %}
 <h1>{{ widget.name }}</h1>
 {% endblock %}

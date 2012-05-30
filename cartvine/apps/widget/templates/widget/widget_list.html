@@ -1,5 +1,13 @@
 {% extends 'widget/base.html' %}
+{% load i18n %}
 {% load url from future %}
+
+{% block title %}{% trans 'Your installed Widgets' %}{% endblock %}
+
+{% block content-head %}
+<h1>{% trans 'Your installed Widgets' %}</h1>
+{% endblock %}
+
 {% block body %}
 
 <ul id="list-my-widget" class="list">
