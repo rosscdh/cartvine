@@ -115,19 +115,9 @@ $(document).ready(function() {
         //# ----- VIEWS ----- #//
         fb_login_view.appendTo('{{ config.target_id|default:"body" }}');
 
-        $('body').append($('<div style="display:none;" id="vine-fb-connect-modal"><iframe id="vine-target_iframe"></iframe></div>'))
-        $("#vine-fb-connect-modal").dialog({
-            modal: true,
-            autoOpen: false,
-            draggable: true,
-            resizeable: true,   
-            title: ''
-        });
-
         $('a#vine-fb-connect').live('click', function (e) {
             event.preventDefault();
-            $("#vine-target_iframe").attr('src',shoppers_url);
-            $("#vine-fb-connect-modal").dialog("open");
+            window.open(shoppers_url, "vine_widget_auth_facebook", "width=640, height=480");
             return false;
         });
     } // end cartvine_is_ready
