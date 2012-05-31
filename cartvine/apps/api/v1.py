@@ -69,7 +69,7 @@ class CustomerResource(ShopHappyBaseModelResource):
 class PersonResource(ShopHappyBaseModelResource):
     class Meta:
         queryset = Person.objects.all()
-        resource_name = 'persons'
+        resource_name = 'person'
         serializer = Serializer(formats=available_formats)
 
 
