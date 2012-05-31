@@ -11,17 +11,17 @@
 {% block body %}
 
 <div class="hero-unit">
-    <p>Once I have a widget from your store; how do I install it into my shopify store?</p>
+    <p>{% trans 'Once I have a widget from your store; how do I install it into my shopify store?' %}</p>
     <blockquote>
-        <strong>Place the following code into your primary liquid template (index.liquid)</strong><br/>
+        <strong>{% trans 'Place the following code into your primary liquid template (index.liquid)' %}</strong><br/>
         <code>
         &lt;script src="http://{{ request.get_host }}/widget/cartvine-loader.js"&gt;&lt;/script&gt;
         </code>
     </blockquote>
-    <p>Once that is done, the script will automatically take care of your widgets. But, remember to configure each widget if you want it to be injected into a specific HTML Element; otherwise it just gets appended to the body HTML element.</p>
+    <p>{% trans 'Once that is done, the script will automatically take care of your widgets. But, remember to configure each widget if you want it to be injected into a specific HTML Element; otherwise it just gets appended to the body HTML element.' %}</p>
 </div>
 
-<h2>{% trans 'Yoru Installed Widgets' %}</h2>
+<h2>{% trans 'Your Installed Widgets' %}</h2>
 <ul id="list-my-widget" class="list">
 {% for w in object_list %}
     <li>
@@ -37,11 +37,15 @@
 <ul id="list-available-widget" class="list">
 {% for w in available_widgets %}
     <li>
-        <a href="{% url 'widget:edit' slug=w.slug %}">{{ w }}</a>
+        <a href="{% url 'widget:info' slug=w.slug %}">{{ w }}</a>
+        {% if w not in object_list %}
         <button class="btn btn-info" href="#"><i class="icon-asterisk icon-white"></i>&nbsp;Install</button>
+        {% else %}
+        <button class="btn btn-success" href="#"><i class="icon-star icon-white"></i>&nbsp;Installed</button>
+        {% endif %}
     </li>
 {% empty %}
-    {% trans 'Strange.. we dont seem to have any widgets..' %}
+    {% trans 'Strange.. we dont seem to have any widgets available..' %}
 {% endfor %}
 </ul>
 

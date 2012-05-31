@@ -27,7 +27,7 @@ class MyWidgetView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MyWidgetView, self).get_context_data(**kwargs)
-        context['available_widgets'] = Widget.objects.exclude(shop=self.shop).all()
+        context['available_widgets'] = Widget.objects.all()
         return context
 
 

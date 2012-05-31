@@ -15,5 +15,6 @@ urlpatterns = patterns('',
     url(r'^(?P<shop_slug>.+)/(?P<slug>.+)/$', SpecificWidgetForShopView.as_view(), name='script'),
     url(r'^(?P<slug>.+)/$', WidgetsForShopView.as_view(), name='for_shop'),
 
+    url(r'^(?P<slug>.+)/info/$', login_required(MyWidgetEditView.as_view()), name='info'),
     url(r'^$', login_required(AvailableWidgetView.as_view()), name='default'),
 )
