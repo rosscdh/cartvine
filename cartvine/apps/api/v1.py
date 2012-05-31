@@ -14,7 +14,7 @@ from authorization import OAuthAuthorization
 from cartvine.apps.product.models import Product
 from cartvine.apps.shop.models import Shop
 from cartvine.apps.customer.models import Customer
-from cartvine.apps.widget.models import Widget
+from cartvine.apps.widget.models import Widget, WidgetShop
 
 from facebook_user.apps.person.models import Person
 
@@ -80,12 +80,19 @@ class WidgetResource(ShopHappyBaseModelResource):
         resource_name = 'widget'
         serializer = Serializer(formats=available_formats)
 
+class WidgetShopResource(ShopHappyBaseModelResource):
+    class Meta:
+        queryset = WidgetShop.objects.all()
+        resource_name = 'widget_config'
+        serializer = Serializer(formats=available_formats)
+
 
 """ Register the api resources """
 v1_public_api.register(ProductResource())
 v1_public_api.register(ShopResource())
 v1_public_api.register(CustomerResource())
 v1_public_api.register(WidgetResource())
+v1_public_api.register(WidgetShopResource())
 
 """ Facebook Users """
 v1_public_api.register(PersonResource())
