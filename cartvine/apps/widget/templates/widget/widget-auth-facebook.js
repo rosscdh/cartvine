@@ -115,9 +115,20 @@ $(document).ready(function() {
         //# ----- VIEWS ----- #//
         fb_login_view.appendTo('{{ config.target_id|default:"body" }}');
 
+        $('body').append($('<div style="display:none;" id="vine-fb-connect-modal"><iframe id="vine-target_iframe"></iframe></div>'))
+        $("#vine-fb-connect-modal").dialog({
+            modal: true,
+            autoOpen: false,
+            draggable: true,
+            resizeable: true,   
+            title: ''
+        });
+
         $('a#vine-fb-connect').live('click', function (e) {
             event.preventDefault();
-            document.location = shoppers_url;
+            $("#vine-target_iframe").attr('src',shoppers_url);
+            $("#vine-fb-connect-modal").dialog("open");
+            return false;
         });
     } // end cartvine_is_ready
 });

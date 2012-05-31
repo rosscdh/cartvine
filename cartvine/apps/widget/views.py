@@ -90,6 +90,7 @@ class WidgetsForShopView(DetailView):
             #'%semberjs/js/libs/ember-data-latest.min.js'%(static_url),
             #'%semberjs/js/libs/tastypie_adapter.js'%(static_url),
             #'%semberjs/js/libs/ember-facebook.js'%(static_url),
+            'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js',
         ]
 
         widget_list = Widget.objects.filter(shop=self.object)
