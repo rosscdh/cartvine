@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 
-from views import AvailableWidgetView, MyWidgetView, MyWidgetEditView
+from views import AvailableWidgetView, WidgetInfoView, MyWidgetView, MyWidgetEditView
 from views import WidgetLoaderView, WidgetsForShopView, SpecificWidgetForShopView
 
 
@@ -15,6 +15,6 @@ urlpatterns = patterns('',
     url(r'^(?P<shop_slug>.+)/(?P<slug>.+)/$', SpecificWidgetForShopView.as_view(), name='script'),
     url(r'^(?P<slug>.+)/$', WidgetsForShopView.as_view(), name='for_shop'),
 
-    url(r'^(?P<slug>.+)/info/$', login_required(MyWidgetEditView.as_view()), name='info'),
+    url(r'^(?P<slug>.+)/info/$', login_required(WidgetInfoView.as_view()), name='info'),
     url(r'^$', login_required(AvailableWidgetView.as_view()), name='default'),
 )

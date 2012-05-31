@@ -18,6 +18,7 @@ class AvailableWidgetView(ListView):
         shop = Shop.objects.filter(users__in=[self.request.user])
         return Widget.objects.exclude(shop=shop).all()
 
+
 class MyWidgetView(ListView):
     model = Widget
 
@@ -30,6 +31,10 @@ class MyWidgetView(ListView):
         context['available_widgets'] = Widget.objects.all()
         return context
 
+
+class WidgetInfoView(DetailView):
+    model = Widget
+    slug_field = 'slug'
 
 
 class MyWidgetEditView(FormView):
