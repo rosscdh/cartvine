@@ -6,7 +6,7 @@
     <h1>Hi there {{App.FBUser.first_name}}...</h1>
     <a href="{% url 'default:logout' %}" {{action "logout" target="FB"}}>Logout</a>
     {{else}}
-    <h1>Connect to shop</h1>
+    <strong>Authenticate with facebook</strong>
     {{/if}}
 {% endtplhandlebars %}
 {% tplhandlebars "widget-auth-facebook-fb_login" %}
@@ -21,7 +21,7 @@
         Connect
       {{/view}}
       {% endcomment %}
-      <a href="#" id="vine-fb-connect">Click here to Authorize with facebook</a>
+      <a href="#" id="vine-fb-connect">Connect</a>
     {{/if}}
 {% endtplhandlebars %}
 {% endspaceless %}

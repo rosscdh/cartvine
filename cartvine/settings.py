@@ -98,6 +98,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
     # Facebook Api Key Context Processor
     'facebook_user.context_processors.facebook_app_id',
+    # Get cartvine sites
+    'cartvine.context_processors.cartvine_sites',
     # shopify
     'cartvine.context_processors.current_shop',
 )
