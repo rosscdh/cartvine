@@ -9,8 +9,14 @@ def current_shop(request):
 
 def cartvine_sites(request):
     site_list = Site.objects.all()
-    return {
-        'shopify_app_domain': site_list[0].domain,
-        'shoppers_app_domain': site_list[1].domain,
-    }
+    try:
+        return {
+            'shopify_app_domain': site_list[0].domain,
+            'shoppers_app_domain': site_list[1].domain,
+        }
+    except IndexError:
+        return {
+            'shopify_app_domain': 'define.your.sites',
+            'shoppers_app_domain': 'define.your.sites',
+        }
 

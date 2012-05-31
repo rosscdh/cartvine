@@ -11,12 +11,25 @@ from models import Widget, WidgetShop
 from forms import FacebookAuthWidgetForm
 
 
-class MyWidgetView(ListView):
+class AvailableWidgetView(ListView):
     model = Widget
 
     def get_queryset(self):
         shop = Shop.objects.filter(users__in=[self.request.user])
-        return Widget.objects.filter(shop=shop)
+        return Widget.objects.exclude(shop=shop).all()
+
+class MyWidgetView(ListView):
+    model = Widget
+
+    def get_queryset(self):
+        self.shop = Shop.objects.filter(users__in=[self.request.user])
+        return Widget.objects.filter(shop=self.shop)
+
+    def get_context_data(self, **kwargs):
+        context = super(MyWidgetView, self).get_context_data(**kwargs)
+        context['available_widgets'] = Widget.objects.exclude(shop=self.shop).all()
+        return context
+
 
 
 class MyWidgetEditView(FormView):
