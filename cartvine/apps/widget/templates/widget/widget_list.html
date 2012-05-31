@@ -26,7 +26,7 @@
 {% for w in object_list %}
     <li>
         <a href="{% url 'widget:edit' slug=w.slug %}">{{ w }}</a>
-        <button class="btn btn-success" href="#"><i class="icon-star icon-white"></i>&nbsp;Installed</button>
+        <button class="btn btn-info" href="#"><i class="icon-star icon-white"></i>&nbsp;Installed</button>
     </li>
 {% empty %}
     {% trans 'You have no widgets installed.. probably need to select one of ours?' %}
@@ -39,9 +39,9 @@
     <li>
         <a href="{% url 'widget:info' slug=w.slug %}">{{ w }}</a>
         {% if w not in object_list %}
-        <button class="btn btn-info" href="#"><i class="icon-asterisk icon-white"></i>&nbsp;Install</button>
+        <button class="btn btn-success" href="#"><i class="icon-asterisk icon-white"></i>&nbsp;$0.99</button>
         {% else %}
-        <button class="btn btn-success" href="#"><i class="icon-star icon-white"></i>&nbsp;Installed</button>
+        <button class="btn btn-info" href="#"><i class="icon-star icon-white"></i>&nbsp;Installed</button>
         {% endif %}
     </li>
 {% empty %}
