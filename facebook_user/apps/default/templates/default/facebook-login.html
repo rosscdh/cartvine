@@ -19,7 +19,7 @@
     <h1>Hi there {{App.FBUser.first_name}}...</h1>
     <a href="{% url 'default:logout' %}" {{action "logout" target="FB"}}>Logout</a>
     {{else}}
-    <h1>Connect to shop</h1>
+    &nbsp;
     {{/if}}
 {% endtplhandlebars %}
 
@@ -40,17 +40,7 @@
 
 {% tplhandlebars "shops" %}
     {{#if App.Person}}
-    <h3>Your Shops</h3>
-    <ul>
-      {{#each App.Person.shops}}
-        <li>
-          {{name}} ({{id}})
-          <ul>
-            <li>{{App.Person.products.length}}</li>
-          </ul>
-        </li>
-      {{/each}}
-    </ul>
+    &nbsp;
     {{else}}
     &nbsp;
     {{/if}}
