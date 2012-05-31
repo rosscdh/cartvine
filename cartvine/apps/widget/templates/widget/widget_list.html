@@ -64,10 +64,11 @@ $(document).ready(function(){
                 type: 'GET'
             })
             .done(function(data, textStatus, jqXHR) {
-                console.log(data)
+                // @TODO turn this into an emberjs app function that dynamically updates teh collection
+                document.location.reload();
             })
             .fail(function(data) { 
-                console.log(data)
+
             });
     });
 
