@@ -14,6 +14,7 @@ from authorization import OAuthAuthorization
 from cartvine.apps.product.models import Product
 from cartvine.apps.shop.models import Shop
 from cartvine.apps.customer.models import Customer
+from cartvine.apps.widget.models import Widget
 
 from facebook_user.apps.person.models import Person
 
@@ -70,6 +71,13 @@ class PersonResource(ShopHappyBaseModelResource):
     class Meta:
         queryset = Person.objects.all()
         resource_name = 'person'
+        serializer = Serializer(formats=available_formats)
+
+
+class WidgetResource(ShopHappyBaseModelResource):
+    class Meta:
+        queryset = Widget.objects.all()
+        resource_name = 'widget'
         serializer = Serializer(formats=available_formats)
 
 
