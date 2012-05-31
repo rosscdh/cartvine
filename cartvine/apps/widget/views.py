@@ -5,10 +5,10 @@ from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, DetailView, ListView, FormView
 from django.template import loader, Context
 
+from cartvine.utils import get_namedtuple_choices
 from cartvine.apps.shop.models import Shop
-
 from models import Widget, WidgetShop
-from forms import CustomerWidgetEditForm
+from forms import FacebookAuthWidgetForm
 
 
 class MyWidgetView(ListView):
@@ -20,8 +20,14 @@ class MyWidgetView(ListView):
 
 
 class MyWidgetEditView(FormView):
-    form_class = CustomerWidgetEditForm
+    WIDGET_FORMS = get_namedtuple_choices('WIDGET_FORMS', (
+        (FacebookAuthWidgetForm, 'widget_auth_facebook', 'Facebook Auth'),
+    ))
     template_name = 'widget/widget_edit.html'
+
+    def get_form_class(self):
+        form_type = self.kwargs['slug'].replace('-', '_')
+        return self.WIDGET_FORMS.get_value_by_name(form_type)
 
     def get_success_url(self):
         return reverse('widget:edit', kwargs={'slug': self.kwargs['slug']})

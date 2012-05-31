@@ -70,6 +70,12 @@ def get_namedtuple_choices(name, choices_tuple):
                     values.append(val)
             return values
 
+        def get_value_by_name(self, input_name):
+            for val,name,desc in choices_tuple:
+                if name == input_name:
+                    return val
+            return False
+
         def is_valid(self, selection):
             for val,name,desc in choices_tuple:
                 if val == selection or name == selection or desc == selection:

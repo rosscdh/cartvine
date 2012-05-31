@@ -4,7 +4,7 @@ DS.DjangoTastypieAdapter = DS.RESTAdapter.extend({
    * requests to the destination domain. Remember trailing slash
    */
 
-  serverDomain: "",
+  serverDomain: "http://localhost:8000/",
 
   /*
    * This is the default Tastypie url found in the documentation.
