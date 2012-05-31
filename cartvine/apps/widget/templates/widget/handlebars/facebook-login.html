@@ -1,14 +1,6 @@
 {% load templatetag_handlebars %}
 {% load url from future %}
 {% spaceless %}
-{% tplhandlebars "widget-auth-facebook-title" %}
-    {{#if App.FBUser}}
-    <h1>Hi there {{App.FBUser.first_name}}...</h1>
-    <a href="{% url 'default:logout' %}" {{action "logout" target="FB"}}>Logout</a>
-    {{else}}
-    <strong>Authenticate with facebook</strong>
-    {{/if}}
-{% endtplhandlebars %}
 {% tplhandlebars "widget-auth-facebook-fb_login" %}
     {{#if App.FBUser}}
           <div class="">
@@ -21,6 +13,9 @@
         Connect
       {{/view}}
       {% endcomment %}
+      <div>
+      <strong>Authenticate with facebook</strong>
+      </div>
       <a href="#" id="vine-fb-connect">Connect</a>
     {{/if}}
 {% endtplhandlebars %}

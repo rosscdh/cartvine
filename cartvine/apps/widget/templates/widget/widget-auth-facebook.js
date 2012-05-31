@@ -107,16 +107,12 @@ $(document).ready(function() {
 
 
         //# ----- VIEWS ----- #//
-        var fb_login_title_view = Em.View.create({
-          templateName: 'widget-auth-facebook-title',
-        });
         var fb_login_view = Em.View.create({
           templateName: 'widget-auth-facebook-fb_login',
         });
 
 
         //# ----- VIEWS ----- #//
-        fb_login_title_view.appendTo('{{ config.target_id|default:"body" }}');
         fb_login_view.appendTo('{{ config.target_id|default:"body" }}');
 
         $('a#vine-fb-connect').live('click', function (e) {
