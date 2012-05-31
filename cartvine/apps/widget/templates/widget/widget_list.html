@@ -39,7 +39,7 @@
     <li>
         <a href="{% url 'widget:info' slug=w.slug %}">{{ w }}</a>
         {% if w not in object_list %}
-        <button class="btn btn-info" href="#"><i class="icon-asterisk icon-white"></i>&nbsp;Install</button>
+        <button class="install-me btn btn-info" data-url="{% url 'widget:buy' slug=w.slug %}" href="#"><i class="icon-asterisk icon-white"></i>&nbsp;Install</button>
         {% else %}
         <button class="btn btn-success" href="#"><i class="icon-star icon-white"></i>&nbsp;Installed</button>
         {% endif %}
@@ -49,4 +49,29 @@
 {% endfor %}
 </ul>
 
+{% endblock %}
+
+
+{% block js %}
+<script>
+
+$(document).ready(function(){
+
+    $('button.install-me').live('click', function (e) {
+        event.preventDefault();
+        $.ajax({
+                url: $(this).attr('data-url'),
+                type: 'GET'
+            })
+            .done(function(data, textStatus, jqXHR) {
+                console.log(data)
+            })
+            .fail(function(data) { 
+                console.log(data)
+            });
+    });
+
+});
+
+</script>
 {% endblock %}
