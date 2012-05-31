@@ -85,6 +85,7 @@ class WidgetResource(ShopHappyBaseModelResource):
 v1_public_api.register(ProductResource())
 v1_public_api.register(ShopResource())
 v1_public_api.register(CustomerResource())
+v1_public_api.register(WidgetResource())
 
 """ Facebook Users """
 v1_public_api.register(PersonResource())
