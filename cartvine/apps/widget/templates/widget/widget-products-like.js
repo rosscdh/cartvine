@@ -6,9 +6,12 @@ $(document).ready(function() {
 
         //# ----- MODELS ----- #//
         App.Product = DS.Model.extend({
-            //url: 'product',
+            vendor_id: DS.attr('number'),
             name: DS.attr('string'),
-            slug: DS.attr('string')
+            slug: DS.attr('string'),
+            featured_image: DS.attr('string'),
+            tags: DS.attr('string'),
+            vendor: DS.attr('string'),
         });
 
         //# ----- CONTROLLERS ----- #//
