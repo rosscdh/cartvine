@@ -9,7 +9,7 @@ from cartvine.utils import get_namedtuple_choices
 from cartvine.apps.shop.models import Shop
 
 from models import Widget, WidgetShop
-from forms import FacebookAuthWidgetForm
+from forms import FacebookAuthWidgetForm, ProductsLikeWidgetForm
 
 
 class AvailableWidgetView(ListView):
@@ -41,6 +41,7 @@ class WidgetInfoView(DetailView):
 class MyWidgetEditView(FormView):
     WIDGET_FORMS = get_namedtuple_choices('WIDGET_FORMS', (
         (FacebookAuthWidgetForm, 'widget_auth_facebook', 'Facebook Auth'),
+        (ProductsLikeWidgetForm, 'widget_products_like', 'Products Like This One'),
     ))
     template_name = 'widget/widget_edit.html'
 

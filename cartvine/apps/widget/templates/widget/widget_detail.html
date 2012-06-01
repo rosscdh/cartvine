@@ -1,0 +1,17 @@
+{% extends 'widget/base.html' %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% trans 'Info for' %} {{ object.name }}{% endblock %}
+
+{% block content-head %}
+<h1>{{ object.name }}</h1>
+{% endblock %}
+
+{% block body %}
+
+<div class="hero-unit">
+Info here
+</div>
+
+{% endblock %}

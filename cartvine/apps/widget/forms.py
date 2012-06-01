@@ -14,3 +14,6 @@ class BaseWidgetEditForm(bootstrap.BootstrapForm):
 
 class FacebookAuthWidgetForm(BaseWidgetEditForm):
     pass
+
+class ProductsLikeWidgetForm(BaseWidgetEditForm):
+    pass

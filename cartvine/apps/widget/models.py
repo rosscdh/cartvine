@@ -22,6 +22,12 @@ class Widget(models.Model):
     def __unicode__(self):
         return u'%s' % (self.name,)
 
+    @property
+    def widget_list_image(self):
+        if 'icons' in self.data and 'widget_list' in self.data['icons']:
+            return '%s' % (self.data['icons']['widget_list'],)
+        else:
+            return None
 
 class WidgetShop(models.Model):
     """ Overriden join table so we can store widget settings """
