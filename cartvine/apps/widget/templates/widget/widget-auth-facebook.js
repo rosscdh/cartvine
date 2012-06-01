@@ -2,19 +2,7 @@
 //# ----- DATA STORE ----- #//
 $(document).ready(function() {
     if (cartvine_is_ready) {
-
-        App = Em.Application.create();
-
-        //# ----- DATA STORE ----- #//
-
-        App.store = DS.Store.create({
-          revision: 4,
-          adapter: DS.DjangoTastypieAdapter.create(),
-        });
-        App.store.adapter.set('serverDomain', url_scheme + '{{ request.get_host }}/');
-
-        //# ----- OVERRIDES & EXTENSIONS ----- #//
-
+        //# ----- APP OVERRIDES & EXTENSIONS ----- #//
         App.reopen({
             fBUserChanged: function() {
                 var _this = this;

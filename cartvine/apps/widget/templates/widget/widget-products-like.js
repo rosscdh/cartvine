@@ -2,19 +2,7 @@
 //# ----- DATA STORE ----- #//
 $(document).ready(function() {
     if (cartvine_is_ready) {
-
-        App = Em.Application.create();
-
-        //# ----- DATA STORE ----- #//
-
-        App.store = DS.Store.create({
-          revision: 4,
-          adapter: DS.DjangoTastypieAdapter.create(),
-        });
-        App.store.adapter.set('serverDomain', url_scheme + '{{ request.get_host }}/');
-
-        //# ----- OVERRIDES & EXTENSIONS ----- #//
-
+        //# ----- APP OVERRIDES & EXTENSIONS ----- #//
         App.reopen({
             fBUserChanged: function() {
                 var _this = this;
@@ -29,7 +17,6 @@ $(document).ready(function() {
         //# ----- MODELS ----- #//
         App.Person = DS.Model.extend({
             url: 'persons',
-
             access_token: DS.attr('string')
             //data: DS.attr('string')
         });
@@ -38,7 +25,7 @@ $(document).ready(function() {
 
         //# ----- VIEWS ----- #//
         var fb_login_view = Em.View.create({
-          templateName: '{{ object.slug }}-fb_login',
+          templateName: '{{ object.slug }}-products_like_this_one',
         });
 
         //# ----- INSTANTIATE VIEWS ----- #//
@@ -46,9 +33,6 @@ $(document).ready(function() {
 
         //# ----- HELPER JS ----- #//
         $('a#vine-fb-connect').live('click', function (e) {
-            event.preventDefault();
-            window.open(shoppers_url, "{{ object.slug }}-window", "width=640, height=480");
-            return false;
         });
     } // end cartvine_is_ready
 });
