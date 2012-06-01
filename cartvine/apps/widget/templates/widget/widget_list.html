@@ -27,7 +27,11 @@
     <li>
         <div class="widget-icon">
             <a href="{% url 'widget:info' slug=w.slug %}"><img src="{{ STATIC_URL }}{{ w.widget_list_image }}" border="0" /></a>
+            {% if w not in object_list %}
             <a href="{% url 'widget:info' slug=w.slug %}">{{ w }}</a>
+            {% else %}
+            <a href="{% url 'widget:edit' slug=w.slug %}">{{ w }}</a>
+            {% endif %}
         </div>
         {% if w not in object_list %}
         <button class="install-me btn btn-info" data-url="{% url 'widget:buy' slug=w.slug %}" href="#">FREE</button>
