@@ -4,13 +4,13 @@ from jsonfield import JSONField
 from cartvine.apps.shop.models import Shop
 from cartvine.apps.customer.models import Customer
 
-from managers import ShopHappyEmailManager
+from managers import CartvineEmailManager
 
 import datetime
 from dateutil import parser
 
 
-class ShopHappyEmail(models.Model):
+class CartvineEmail(models.Model):
     shop = models.ForeignKey(Shop)
     customer = models.ForeignKey(Customer, related_name='target_customer')
     email_to = models.EmailField()
@@ -18,7 +18,7 @@ class ShopHappyEmail(models.Model):
     sent_date = models.DateField(null=True,blank=True)
     data = JSONField()
 
-    objects = ShopHappyEmailManager()
+    objects = CartvineEmailManager()
 
     def __unicode__(self):
     	return u'%s on %s - set ' %(self.email_to, self.post_date,)

@@ -37,7 +37,7 @@ def sync_webhook(webhook_callback_address, shop, shopify_session):
 
     if webhook:
         webhook = webhook[0]
-        webhook, is_new = Webhook.objects.get_or_create(shop=shop, shopify_id=webhook.id, topic=webhook.topic, address=webhook.address, format=webhook.format)
+        webhook, is_new = Webhook.objects.get_or_create(shop=shop, provider_id=webhook.id, topic=webhook.topic, address=webhook.address, format=webhook.format)
         if is_new:
             logger.info('Created Shopify Webhook and Local Webhook for %s %s'%(shop,webhook_callback_address,))
     else:

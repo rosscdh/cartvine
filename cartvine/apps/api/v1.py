@@ -24,7 +24,7 @@ v1_public_api = Api(api_name='v1')
 available_formats = ['json','yaml']
 
 
-class ShopHappyBaseModelResource(ModelResource):
+class CartvineBaseModelResource(ModelResource):
     """
     Base Resource that all other api resources extend
     used to apply our filters and specific rulesets
@@ -43,44 +43,44 @@ class ShopHappyBaseModelResource(ModelResource):
         except AttributeError:
             pass
 
-        return super(ShopHappyBaseModelResource, self).get_object_list(request)
+        return super(CartvineBaseModelResource, self).get_object_list(request)
 
 
-class ProductResource(ShopHappyBaseModelResource):
+class ProductResource(CartvineBaseModelResource):
     class Meta:
         queryset = Product.objects.all()
         resource_name = 'products'
         serializer = Serializer(formats=available_formats)
 
 
-class ShopResource(ShopHappyBaseModelResource):
+class ShopResource(CartvineBaseModelResource):
     class Meta:
         queryset = Shop.objects.all()
         resource_name = 'shops'
         serializer = Serializer(formats=available_formats)
 
 
-class CustomerResource(ShopHappyBaseModelResource):
+class CustomerResource(CartvineBaseModelResource):
     class Meta:
         queryset = Customer.objects.all()
         resource_name = 'customers'
         serializer = Serializer(formats=available_formats)
 
 
-class PersonResource(ShopHappyBaseModelResource):
+class PersonResource(CartvineBaseModelResource):
     class Meta:
         queryset = Person.objects.all()
         resource_name = 'person'
         serializer = Serializer(formats=available_formats)
 
 
-class WidgetResource(ShopHappyBaseModelResource):
+class WidgetResource(CartvineBaseModelResource):
     class Meta:
         queryset = Widget.objects.all()
         resource_name = 'widget'
         serializer = Serializer(formats=available_formats)
 
-class WidgetShopResource(ShopHappyBaseModelResource):
+class WidgetShopResource(CartvineBaseModelResource):
     class Meta:
         queryset = WidgetShop.objects.all()
         resource_name = 'widget_config'

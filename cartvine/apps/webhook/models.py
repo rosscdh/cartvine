@@ -19,13 +19,13 @@ class Webhook(models.Model):
         ('json', _('json')),
     )
     shop = models.ForeignKey(Shop)
-    shopify_id = models.IntegerField(db_index=True)
+    provider_id = models.IntegerField(db_index=True)
     topic = models.CharField(max_length=64)
     address = models.URLField(max_length=255)
     format = models.CharField(max_length=6,choices=FORMATS)
 
     def __unicode__(self):
-        return u'%s - %d' % (self.topic, self.shopify_id,)
+        return u'%s - %d' % (self.topic, self.provider_id,)
 
 
 class OrderCreatePostback(models.Model):

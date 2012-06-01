@@ -9,7 +9,7 @@ import logging
 logger = logging.getLogger('happy_log')
 
 
-class ShopHappyEmailManager(models.Manager):
+class CartvineEmailManager(models.Manager):
 
     def create_email_from_callback(self, callback_order):
         """ Create an email record form the webhook order """

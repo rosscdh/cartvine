@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.template.defaultfilters import slugify
 from optparse import make_option
 
-from cartvine.apps.mail.models import ShopHappyEmail
+from cartvine.apps.mail.models import CartvineEmail
 
 from templated_email import send_templated_mail
 
@@ -42,7 +42,7 @@ class Command(BaseCommand):
             self.dateof = datetime.date.today()
 
 
-        email_list = ShopHappyEmail.objects.select_related('shop').filter(post_date=self.dateof)
+        email_list = CartvineEmail.objects.select_related('shop').filter(post_date=self.dateof)
 
         for email in email_list:
             send_templated_mail(

@@ -15,7 +15,7 @@ login_required_urls = [
 		reverse('product:info', kwargs={'slug': 'test-product'}), 
 		]
 
-class ShopHappyDefaultAppTest(TestCase):
+class CartvineDefaultAppTest(TestCase):
 	def setUp(self):
 		self.client = Client()
 

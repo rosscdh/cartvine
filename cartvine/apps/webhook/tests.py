@@ -24,7 +24,7 @@ class WebhookTest(TestCase):
         self.user_a = User.objects.get(username='usera')
 
         shop_domain = 'shop-a.myshopify.com'
-        Shop.objects.create(name='shop a',shopify_id=1234567, shopify_access_token=1234567,slug='shop-a',url='http://%s'%(shop_domain,))
+        Shop.objects.create(name='shop a',provider_id=1234567, shopify_access_token=1234567,slug='shop-a',url='http://%s'%(shop_domain,))
         self.shop = Shop.objects.get(slug='shop-a')
         self.shop.users.add(self.user_a)
 

@@ -17,7 +17,7 @@ class Widget(models.Model):
     widget_type = models.CharField(max_length=5, choices=WIDGET_TYPE.get_choices())
     slug = models.SlugField()
     data = JSONField()
-    shop = models.ManyToManyField(Shop)
+    shop = models.ManyToManyField(Shop, through='WidgetShop')
 
     def __unicode__(self):
         return u'%s' % (self.name,)

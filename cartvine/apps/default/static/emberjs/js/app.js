@@ -31,7 +31,7 @@ App.Shop = DS.Model.extend({
     url: 'shops',
     slug: DS.attr('string'),
     data: DS.attr('string'),
-    shopify_id: DS.attr('string')
+    provider_id: DS.attr('string')
 });
 // App.Customer = DS.Model.extend({
 //     url: 'customers',

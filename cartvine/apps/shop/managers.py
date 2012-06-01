@@ -23,7 +23,7 @@ class ShopManager(models.Manager):
 
         current_shop = shopify.Shop.current()
 
-        shop, is_new = self.get_or_create(shopify_id=current_shop.id)
+        shop, is_new = self.get_or_create(provider_id=current_shop.id)
         shop.data = current_shop.__dict__['attributes']
         shop.name = shop.data['name']
 
