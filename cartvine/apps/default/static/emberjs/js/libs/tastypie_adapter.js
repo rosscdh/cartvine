@@ -4,7 +4,7 @@ DS.DjangoTastypieAdapter = DS.RESTAdapter.extend({
    * requests to the destination domain. Remember trailing slash
    */
 
-  serverDomain: "http://localhost:8000/",
+  serverDomain: "",
 
   /*
    * This is the default Tastypie url found in the documentation.
@@ -40,7 +40,7 @@ DS.DjangoTastypieAdapter = DS.RESTAdapter.extend({
         }
 
       } else if (meta.kind === "hasMany") {
-        key = meta.options.key || Em.get(model, ' ').keyToJSONKey(key);
+        key = meta.options.key || Em.get(model, 'namingConvention').keyToJSONKey(key);
         value = jsonData[key] || [];
         $.each(value, function(i, item) {
           value[i] = self.getItemUrl(type, meta, item);
@@ -65,7 +65,7 @@ DS.DjangoTastypieAdapter = DS.RESTAdapter.extend({
     };
 
     var associations = Em.get(type, 'associationsByName');
-    console.log(associations)
+
     associations.forEach(function(key, meta) {
       meta = type.metaForProperty(key);
 
@@ -184,7 +184,7 @@ DS.DjangoTastypieAdapter = DS.RESTAdapter.extend({
   findAll: function(store, type) {
     var self = this;
     var root = this.rootForType(type);
-    alert(App.shop.url)
+
     this.ajax(root, "GET", {
       success: function(json) {
         json["objects"].forEach(function(item, i, collection) {

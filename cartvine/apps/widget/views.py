@@ -91,8 +91,10 @@ class WidgetsForShopView(DetailView):
 
         default_scripts = [
             '%semberjs/js/libs/ember-0.9.8.1.min.js'%(static_url),
-            '%semberjs/js/libs/ember-data-latest.min.js'%(static_url),
+            '%semberjs/js/libs/ember-data-latest.js'%(static_url),
             '%semberjs/js/libs/tastypie_adapter.js'%(static_url),
+            # 'https://raw.github.com/escalant3/ember-data-tastypie-adapter/master/tests/lib/ember-data.js',
+            # 'https://raw.github.com/escalant3/ember-data-tastypie-adapter/master/lib/tastypie_adapter.js',
             #'%semberjs/js/libs/ember-facebook.js'%(static_url),
             #'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js',
         ]

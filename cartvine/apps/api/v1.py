@@ -49,21 +49,21 @@ class CartvineBaseModelResource(ModelResource):
 class ProductResource(CartvineBaseModelResource):
     class Meta:
         queryset = Product.objects.all()
-        resource_name = 'products'
+        resource_name = 'product'
         serializer = Serializer(formats=available_formats)
 
 
 class ShopResource(CartvineBaseModelResource):
     class Meta:
         queryset = Shop.objects.all()
-        resource_name = 'shops'
+        resource_name = 'shop'
         serializer = Serializer(formats=available_formats)
 
 
 class CustomerResource(CartvineBaseModelResource):
     class Meta:
         queryset = Customer.objects.all()
-        resource_name = 'customers'
+        resource_name = 'customer'
         serializer = Serializer(formats=available_formats)
 
 

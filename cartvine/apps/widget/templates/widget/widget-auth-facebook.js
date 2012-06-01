@@ -4,14 +4,6 @@ $(document).ready(function() {
     if (cartvine_is_ready) {
         //# ----- APP OVERRIDES & EXTENSIONS ----- #//
         App.reopen({
-            fBUserChanged: function() {
-                var _this = this;
-
-                this.set('Person', Person.create({
-                    FBUser: this.FBUser
-                }));
-
-            }.observes('FBUser')
         });
 
         //# ----- MODELS ----- #//

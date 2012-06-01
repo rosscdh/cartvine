@@ -2,7 +2,7 @@
 
 //<!-- Check for http | https -- >
 var cartvine_is_ready = true;
-var App = false;
+var App = void 0;
 var url_scheme = window.parent.document.location.protocol + '//';
 var shop_slug = window.Shopify.shop.replace('.myshopify.com','');
 var shoppers_url = url_scheme + '{{ shoppers_app_domain }}/?shop=' + shop_slug;
@@ -16,21 +16,29 @@ $.getJSON(widget_list_object, function(data) {
     });
 
     // Install Scripts
-    $.ajaxSetup({ cache: true });
+//    $.ajaxSetup({ cache: true });
 
     $.each(data.widgets, function(index) {
         url = data.widgets[index];
         $.ajax({
             url: url,
             dataType: 'script',
-            cache: true,
+            //cache: true,
             complete: function(xhr) { 
-                console.log('loaded: ' + url)
-                if (Em != undefined) {
+                if (typeof Em != 'undefined') {
                     // Create the EmberJs Application which is shared between widgets
                     // @TODO create object with event handlers to initialize CartVine objects
                     App = Em.Application.create();
-                }
+                };
+                if (typeof App != 'undefined' && typeof DS != 'undefined' && typeof DS.DjangoTastypieAdapter != 'undefined') {
+                    App.store = DS.Store.create({
+                      revision: 4,
+                      adapter: DS.DjangoTastypieAdapter.create({
+                        serverDomain: url_scheme + "{{ request.get_host }}/",
+                        tastypieApiUrl: "api/v1/"
+                      })
+                    });
+                };
                 if (xhr.status == 304) return;
             },
             error: function () {
@@ -38,13 +46,4 @@ $.getJSON(widget_list_object, function(data) {
             }
         });
     });
-
-    if (cartvine_is_ready == true) {
-        //# ----- DATA STORE ----- #//
-        App.store = DS.Store.create({
-          revision: 4,
-          adapter: DS.DjangoTastypieAdapter.create(),
-        });
-        App.store.adapter.set('serverDomain', url_scheme + '{{ request.get_host }}/');
-    }
 });

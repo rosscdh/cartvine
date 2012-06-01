@@ -3,36 +3,68 @@
 $(document).ready(function() {
     if (cartvine_is_ready) {
         //# ----- APP OVERRIDES & EXTENSIONS ----- #//
-        App.reopen({
-            fBUserChanged: function() {
-                var _this = this;
-
-                this.set('Person', Person.create({
-                    FBUser: this.FBUser
-                }));
-
-            }.observes('FBUser')
-        });
 
         //# ----- MODELS ----- #//
-        App.Person = DS.Model.extend({
-            url: 'persons',
-            access_token: DS.attr('string')
-            //data: DS.attr('string')
+        App.Product = DS.Model.extend({
+            //url: 'product',
+            name: DS.attr('string'),
+            slug: DS.attr('string')
         });
 
         //# ----- CONTROLLERS ----- #//
+        /**
+         * The main application controller. Provides an interface
+         * for the views to interact with the models
+         */
+        App.productController = Em.ArrayController.create({
+          content: App.store.findAll(App.Product),
+          //content: null,
+
+          selectedProduct: undefined,
+
+          noEditable: Em.computed(function(){
+            return (this.get('selectedProduct') === undefined);
+          }).property('selectedProduct'),
+
+          getProduct: function(name){
+            for(var i=0;i<this.content.length;i++){
+              if (name===this.content.get(i).name){
+                return this.content.get(i);
+              }
+            }
+            return null;
+          },
+
+          saveChanges: function(){
+            //App.store.commit();
+          }
+        });
+
 
         //# ----- VIEWS ----- #//
-        var fb_login_view = Em.View.create({
-          templateName: '{{ object.slug }}-products_like_this_one',
+        /**
+         * The list of products
+         */
+        App.ProductsView = Em.CollectionView.extend({
+          contentBinding: 'App.productController.content',
+          tagName: "ul",
+
+          //NOTE Formerly known as itemView
+          itemViewClass: Em.View.extend({
+            classNames: ['product'],
+            // selected: Em.computed(function(){
+            // }).property('parentView.selectedProduct'),
+            template: Em.Handlebars.compile('{{ object.slug }}-products_like_this_one'),
+            mouseDown: function(evt) {
+            }
+          })
         });
 
         //# ----- INSTANTIATE VIEWS ----- #//
-        fb_login_view.appendTo('{{ config.target_id|default:"body" }}');
+        productsView = App.ProductsView.create({});
+        productsView.appendTo('{{ config.target_id|default:"body" }}');
 
         //# ----- HELPER JS ----- #//
-        $('a#vine-fb-connect').live('click', function (e) {
-        });
+        $('a#vine-fb-connect').live('click', function (e) {});
     } // end cartvine_is_ready
 });
