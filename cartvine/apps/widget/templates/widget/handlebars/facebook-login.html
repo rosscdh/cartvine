@@ -1,7 +1,4 @@
-{% load templatetag_handlebars %}
-{% load url from future %}
-{% spaceless %}
-{% tplhandlebars "widget-auth-facebook-fb_login" %}
+{% load templatetag_handlebars %}{% load url from future %}{% spaceless %}{% tplhandlebars "widget-auth-facebook-fb_login" %}
     {{#if App.FBUser}}
           <div class="">
               {{App.FBUser.name}}
@@ -18,5 +15,4 @@
       </div>
       <a href="#" id="vine-fb-connect">Connect</a>
     {{/if}}
-{% endtplhandlebars %}
-{% endspaceless %}
+{% endtplhandlebars %}{% endspaceless %}
