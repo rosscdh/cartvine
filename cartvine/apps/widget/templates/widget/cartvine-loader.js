@@ -7,7 +7,7 @@ var url_scheme = window.parent.document.location.protocol + '//';
 var shop_slug = window.Shopify.shop.replace('.myshopify.com','');
 var shoppers_url = url_scheme + '{{ shoppers_app_domain }}/?shop=' + shop_slug;
 
-widget_list_object = url_scheme + '{{ shopify_app_domain}}/widget/'+ shop_slug +'/';
+widget_list_object = url_scheme + '{{ shopify_app_domain}}/widget/script/'+ shop_slug +'/';
 
 $.getJSON(widget_list_object, function(data) {
     // Install Templates
