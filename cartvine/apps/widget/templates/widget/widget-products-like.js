@@ -16,15 +16,10 @@ $(document).ready(function() {
          * The main application controller. Provides an interface
          * for the views to interact with the models
          */
-        App.productController = Em.ArrayController.create({
+        productController = Em.ArrayController.create({
           content: App.store.findAll(App.Product),
-          //content: null,
 
           selectedProduct: undefined,
-
-          noEditable: Em.computed(function(){
-            return (this.get('selectedProduct') === undefined);
-          }).property('selectedProduct'),
 
           getProduct: function(name){
             for(var i=0;i<this.content.length;i++){
@@ -40,28 +35,34 @@ $(document).ready(function() {
           }
         });
 
-
         //# ----- VIEWS ----- #//
         /**
          * The list of products
          */
-        App.ProductsView = Em.CollectionView.extend({
-          contentBinding: 'App.productController.content',
-          tagName: "ul",
-
-          //NOTE Formerly known as itemView
-          itemViewClass: Em.View.extend({
-            classNames: ['product'],
-            // selected: Em.computed(function(){
-            // }).property('parentView.selectedProduct'),
-            template: Em.Handlebars.compile('{{ object.slug }}-products_like_this_one'),
-            mouseDown: function(evt) {
-            }
-          })
+        // productsView = Ember.CollectionView.create({
+        //   tagName: 'ul',
+        //   classNames: ['a-collection'],
+        //   content: [productController.content[0].name],
+        //   itemViewClass: Ember.View.extend({
+        //     template: Ember.Handlebars.compile("{{content}}")
+        //   })
+        // })
+        productsView = Em.View.create({
+          products: productController.content,
+          templateName: '{{ object.slug }}-product_list'
         });
+        // productsView = Em.CollectionView.create({
+        //   contentBinding: 'App.productController.content',
+        //   tagName: "ul",
+
+        //   //NOTE Formerly known as itemView
+        //   itemViewClass: Em.View.extend({
+        //     classNames: ['product'],
+        //     template: '{{ object.slug }}-product_list',
+        //   })
+        // });
 
         //# ----- INSTANTIATE VIEWS ----- #//
-        productsView = App.ProductsView.create({});
         productsView.appendTo('{{ config.target_id|default:"body" }}');
 
         //# ----- HELPER JS ----- #//

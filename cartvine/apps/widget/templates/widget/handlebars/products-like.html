@@ -1,5 +1,7 @@
-{% load templatetag_handlebars %}{% load url from future %}{% spaceless %}{% tplhandlebars "widget-products-like-products_like_this_one" %}
+{% load templatetag_handlebars %}{% load url from future %}{% spaceless %}{% tplhandlebars "widget-products-like-product_list" %}
 <ul>
-  <li>List of products goes here</li>
+{{#each products}}
+<li>{{name}}</li>
+{{/each}}
 <ul>
 {% endtplhandlebars %}{% endspaceless %}
