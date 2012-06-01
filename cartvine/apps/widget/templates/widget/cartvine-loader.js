@@ -16,14 +16,14 @@ $.getJSON(widget_list_object, function(data) {
     });
 
     // Install Scripts
-//    $.ajaxSetup({ cache: true });
+    $.ajaxSetup({ cache: true });
 
     $.each(data.widgets, function(index) {
         url = data.widgets[index];
         $.ajax({
             url: url,
             dataType: 'script',
-            //cache: true,
+            cache: true,
             complete: function(xhr) { 
                 if (typeof Em != 'undefined') {
                     // Create the EmberJs Application which is shared between widgets
