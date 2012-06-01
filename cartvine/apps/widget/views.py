@@ -2,11 +2,12 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-from django.views.generic import TemplateView, DetailView, ListView, FormView
+from django.views.generic import TemplateView, DetailView, ListView, FormView, RedirectView
 from django.template import loader, Context
 
 from cartvine.utils import get_namedtuple_choices
 from cartvine.apps.shop.models import Shop
+
 from models import Widget, WidgetShop
 from forms import FacebookAuthWidgetForm
 
@@ -77,6 +78,8 @@ class WidgetLoaderView(TemplateView):
 
 
 class WidgetsForShopView(DetailView):
+    """ View generates javascript response that is used to load widget js files 
+    should be public """
     model = Shop
     template_name = 'widget/for_shop.html'
 
@@ -123,3 +126,24 @@ class SpecificWidgetForShopView(DetailView):
         self.template_name = script_name
 
         return context
+
+
+class BuyWidgetView(DetailView):
+    """ View to allow widgets to be purchased 
+    @TODO apply groups logic here as decorator to ensure correct widgets 
+    have corect user group memberships gold/silver/bronze @TBD AH"""
+    model = Widget
+
+    def get_queryset(self):
+        self.shop = Shop.objects.filter(users__in=[self.request.user])[0]
+        return super(BuyWidgetView, self).get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super(BuyWidgetView, self).get_context_data(**kwargs)
+
+        # @TODO make this pretty and safe
+        if self.request.is_ajax:
+            join, is_new = WidgetShop.objects.get_or_create(widget=self.object, shop=self.shop)
+
+        return context
+

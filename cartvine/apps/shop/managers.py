@@ -23,14 +23,14 @@ class ShopManager(models.Manager):
 
         current_shop = shopify.Shop.current()
 
-        shop, is_new = self.get_or_create(shopify_id=current_shop.id)
+        shop, is_new = self.get_or_create(provider_id=current_shop.id)
         shop.data = current_shop.__dict__['attributes']
         shop.name = shop.data['name']
 
         slug = shop.data['myshopify_domain'].split('.')[0]
         shop.slug = slug
 
-        shop.shopify_access_token = shopify_session.token
+        shop.provider_access_token = shopify_session.token
         shop.url = 'http://%s' % (shop.data['myshopify_domain'],)
         shop.save()
 

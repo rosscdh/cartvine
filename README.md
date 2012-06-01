@@ -56,8 +56,8 @@ The app flow is:
 
 ###### Technical Notes ######
 
-* All shopify items are replicated locally and have a shopify_id field which is used for syncing_
-* On Owner login a task to sync each object is initialzed asynchronously and updates the local list using the .find(since_id=shopify_id)
+* All shopify items are replicated locally and have a provider_id field which is used for syncing_
+* On Owner login a task to sync each object is initialzed asynchronously and updates the local list using the .find(since_id=provider_id)
 * Email sending should be done via Mailchimp? or similar.. am using https://github.com/bradwhittington/django-templated-email which hooks intomailchimp or whats better postageapp
 * @TODO will be abstracting the shopify interface at some point to allow for multiple endpoint providers other than just shopify
 

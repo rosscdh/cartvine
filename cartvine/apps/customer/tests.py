@@ -24,6 +24,6 @@ class CustomerTest(TestCase):
         """
         Test that we get the full name of a generated customer
         """
-        customer = Customer.objects.create(shopify_id=1234567,first_name=self.customer_data['customer']['first_name'],last_name=self.customer_data['customer']['last_name'],email=self.customer_data['customer']['email'],data=self.customer_data)
+        customer = Customer.objects.create(provider_id=1234567,first_name=self.customer_data['customer']['first_name'],last_name=self.customer_data['customer']['last_name'],email=self.customer_data['customer']['email'],data=self.customer_data)
         test_name = u'%s %s' %(self.customer_data['customer']['first_name'],self.customer_data['customer']['last_name'],)
         self.assertEqual(customer.get_full_name, test_name)

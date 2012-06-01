@@ -7,7 +7,7 @@ from managers import ProductManager
 
 class Product(models.Model):
     shop = models.ForeignKey(Shop)
-    shopify_id = models.IntegerField(db_index=True)
+    provider_id = models.IntegerField(db_index=True)
     name = models.CharField(max_length=255)
     slug = models.SlugField()
     data = JSONField()
@@ -27,7 +27,7 @@ class Product(models.Model):
 
     @property
     def shopify_url(self):
-        return u'/admin/products/%d' % (self.shopify_id,)
+        return u'/admin/products/%d' % (self.provider_id,)
 
     @property
     def shopify_updated_at(self):

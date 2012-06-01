@@ -26,7 +26,7 @@ def sync_customers(shopify_session, shop):
         shopify_customers = shopify.Customer.find()
 
     if latest_customer:
-        shopify_customers = shopify.Customer.find(since_id=latest_customer.shopify_id)
+        shopify_customers = shopify.Customer.find(since_id=latest_customer.provider_id)
         if latest_customer.shopify_updated_at:
             shopify_customers += shopify.Customer.find(updated_at_min=latest_customer.shopify_updated_at)
 
@@ -37,7 +37,7 @@ def sync_customers(shopify_session, shop):
             safe_attribs = customer.__dict__['attributes']
             safe_attribs['addresses'] = None
 
-            c, is_new = Customer.objects.get_or_create(shopify_id=customer.id)
+            c, is_new = Customer.objects.get_or_create(provider_id=customer.id)
             c.first_name = customer.first_name
             c.last_name = customer.last_name
             c.email = customer.email

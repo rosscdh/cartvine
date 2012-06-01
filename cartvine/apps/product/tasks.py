@@ -24,7 +24,7 @@ def sync_products(shopify_session, shop):
     shop.activate_shopify_session()
 
     try:
-        latest_product = Product.objects.filter(shop=shop).latest('shopify_id')
+        latest_product = Product.objects.filter(shop=shop).latest('provider_id')
     except Product.DoesNotExist:
         # No Products stored locally so simple get them all from the shop
         logger.info('No Products stored locally for %s so get all from the Shopify API'%(shop,))
@@ -33,7 +33,7 @@ def sync_products(shopify_session, shop):
         shopify_products = shopify.Product.find()
 
     if latest_product:
-        shopify_products = shopify.Product.find(since_id=latest_product.shopify_id)
+        shopify_products = shopify.Product.find(since_id=latest_product.provider_id)
         if latest_product.shopify_updated_at:
             shopify_products += shopify.Product.find(updated_at_min=latest_product.shopify_updated_at)
 
@@ -53,7 +53,7 @@ def sync_products(shopify_session, shop):
                 for i in product.images:
                     safe_attribs['images'].append(i.attributes['src'])
 
-            p, is_new = Product.objects.get_or_create(shop=shop, shopify_id=product.id)
+            p, is_new = Product.objects.get_or_create(shop=shop, provider_id=product.id)
             p.data = safe_attribs
             p.name = product.title
             p.slug = slugify(product.title)

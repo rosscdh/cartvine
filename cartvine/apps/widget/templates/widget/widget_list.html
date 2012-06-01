@@ -21,27 +21,18 @@
     <p>{% trans 'Once that is done, the script will automatically take care of your widgets. But, remember to configure each widget if you want it to be injected into a specific HTML Element; otherwise it just gets appended to the body HTML element.' %}</p>
 </div>
 
-<h2>{% trans 'Your Installed Widgets' %}</h2>
-<ul id="list-my-widget" class="list">
-{% for w in object_list %}
-    <li>
-        <a href="{% url 'widget:edit' slug=w.slug %}">{{ w }}</a>
-        <button class="btn btn-info" href="#"><i class="icon-star icon-white"></i>&nbsp;Installed</button>
-    </li>
-{% empty %}
-    {% trans 'You have no widgets installed.. probably need to select one of ours?' %}
-{% endfor %}
-</ul>
-
 <h2>{% trans 'Available Widgets' %}</h2>
-<ul id="list-available-widget" class="list">
+<ul id="list-available-widget" class="widget-list pull-left">
 {% for w in available_widgets %}
     <li>
-        <a href="{% url 'widget:info' slug=w.slug %}">{{ w }}</a>
+        <div class="widget-icon">
+            <a href="{% url 'widget:info' slug=w.slug %}"><img src="{{ STATIC_URL }}widget/facebook-icon.jpg" border="0" /></a>
+            <a href="{% url 'widget:info' slug=w.slug %}">{{ w }}</a>
+        </div>
         {% if w not in object_list %}
-        <button class="btn btn-success" href="#"><i class="icon-asterisk icon-white"></i>&nbsp;$0.99</button>
+        <button class="install-me btn btn-info" data-url="{% url 'widget:buy' slug=w.slug %}" href="#">FREE</button>
         {% else %}
-        <button class="btn btn-info" href="#"><i class="icon-star icon-white"></i>&nbsp;Installed</button>
+        <button class="btn btn-success" href="#"><i class="icon-ok icon-white"></i>&nbsp;Installed</button>
         {% endif %}
     </li>
 {% empty %}
@@ -49,4 +40,52 @@
 {% endfor %}
 </ul>
 
+{% endblock %}
+
+{% block css %}
+<style>
+ul.widget-list{
+list-style:none;
+}
+ul.widget-list li{
+    text-align:center;
+}
+ul.widget-list li button.btn{
+    margin:2px 0px 15px 0px;
+}
+div.widget-icon{
+    width:80px;
+    min-height:80px;
+    padding:10px;
+    border:solid #3d3d3d 5px ;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -khtml-border-radius: 20px;
+    border-radius: 20px;
+}
+</style>
+{% endblock %}
+{% block js %}
+<script>
+
+$(document).ready(function(){
+
+    $('button.install-me').live('click', function (e) {
+        event.preventDefault();
+        $.ajax({
+                url: $(this).attr('data-url'),
+                type: 'GET'
+            })
+            .done(function(data, textStatus, jqXHR) {
+                // @TODO turn this into an emberjs app function that dynamically updates teh collection
+                document.location.reload();
+            })
+            .fail(function(data) { 
+
+            });
+    });
+
+});
+
+</script>
 {% endblock %}

@@ -11,7 +11,7 @@ import shopify
 import logging
 logger = logging.getLogger('happy_log')
 
-from cartvine.apps.mail.models import ShopHappyEmail
+from cartvine.apps.mail.models import CartvineEmail
 from cartvine.apps.shop.models import Shop
 
 from models import OrderCreatePostback
@@ -44,7 +44,7 @@ def CreateInvite(request):
             order = OrderCreatePostback.objects.create(data=body, shop=shop, shop_url=shop.url, content_type=request.META.get('CONTENT_TYPE'), recieved_from=request.META.get('REMOTE_HOST'), recieved_from_ip=request.META.get('REMOTE_ADDR'))
             logger.info('Webhook Callback from shopify body is valid. OrderCreatePostback was created')
 
-            email = ShopHappyEmail.objects.create_email_from_callback(order)
+            email = CartvineEmail.objects.create_email_from_callback(order)
 
 	return render_to_response('webhook/response.html', {
 		'response': [order.pk],
