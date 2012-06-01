@@ -16,7 +16,7 @@ class ShopTest(TestCase):
         User.objects.create_user('usera', 'usera@test.com', 'test')
         self.user_a = User.objects.get(username='usera')
 
-        Shop.objects.create(name='shop a',provider_id=1234567, shopify_access_token=1234567,slug='shop-a',url='shop-a.myshopify.com')
+        Shop.objects.create(name='shop a',provider_id=1234567, provider_access_token=1234567,slug='shop-a',url='shop-a.myshopify.com')
         self.shop = Shop.objects.get(slug='shop-a')
         self.shop.users.add(self.user_a)
 

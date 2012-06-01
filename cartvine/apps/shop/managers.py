@@ -30,7 +30,7 @@ class ShopManager(models.Manager):
         slug = shop.data['myshopify_domain'].split('.')[0]
         shop.slug = slug
 
-        shop.shopify_access_token = shopify_session.token
+        shop.provider_access_token = shopify_session.token
         shop.url = 'http://%s' % (shop.data['myshopify_domain'],)
         shop.save()
 

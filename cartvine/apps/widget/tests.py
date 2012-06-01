@@ -1,71 +1,55 @@
 """
 Test the default app views
 """
+from django.contrib.auth.models import User
 from django.test.client import Client
 from django.test import TestCase
-
+from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 
-from cartvine.apps.default.forms import ShopifyInstallForm
+from cartvine.apps.shop.models import Shop
+from cartvine.apps.widget.models import Widget, WidgetShop
+
 
 login_required_urls = [
-		reverse('my_app:settings'), 
-		reverse('my_app:design'), 
-		reverse('product:index'), 
-		reverse('product:info', kwargs={'slug': 'test-product'}), 
-		]
+		reverse('widget:edit', kwargs={'slug': 'test-widget'}),
+		reverse('widget:my'),
+		reverse('widget:info', kwargs={'slug': 'test-widget'}),
+		reverse('widget:buy', kwargs={'slug': 'test-widget'}),
+		reverse('widget:default'),
+]
+open_urls = [
+	reverse('widget:widget_loader'),
+	reverse('widget:for_shop', kwargs={'slug': 'test-shop'}),
+	reverse('widget:script', kwargs={'shop_slug': 'test-shop', 'slug': 'test-widget'}),
+]
 
 class CartVineWidgetTest(TestCase):
-	def setUp(self):
-		self.client = Client()
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user('usera', 'usera@test.com', 'test')
+        self.test_shop, is_new = Shop.objects.get_or_create(name='Test Shop', provider_id=1, provider_access_token=12345, slug='test-shop', url='')
+        self.test_shop.users.add(self.user)
+        self.test_shop.save()
+        self.test_widget, is_new = Widget.objects.get_or_create(name='Test JS Widget', widget_type=Widget.WIDGET_TYPE.text_javascript, slug='test-widget')
+        self.widget_config = WidgetShop.objects.get_or_create(widget=self.test_widget, shop=self.test_shop)
+#        self.test_widget.shop = self.test_shop
+        self.test_widget.save()
 
-	def test_login_screen_shows_by_default(self):
-		"""
-		The user should alwys be redirected to the login/signup screen
-		"""
-		for u in login_required_urls:
-			response = self.client.get(u, follow=True)
-			# Should only be 1 redirect
-			self.assertEqual(len(response.redirect_chain), 1)
-			# get the location and status code of each
-			location, status_code = response.redirect_chain[0]
-			self.assertEqual(status_code, 302)
-			# should contain ?next=/path/of/url
-			self.assertTrue('?next=%s'%(u,) in location)
+    def test_anonymous_cannot_access_logged_in_urls(self):
+        """ test primary logged in urls cannot be acessed unless logged in """
+        for u in login_required_urls:
+            response = self.client.get(u)
+            self.assertTrue(response.status_code in [302,404])
 
-	def test_invalid_url_404(self):
-		"""
-		Invalid pages should 404
-		"""
-		test_urls = ['/produkts/', '/monkey/test/page/']
-		for u in test_urls:
-			response = self.client.get(u)
-			self.assertEqual(response.status_code, 404)
+    def test_authenticated_and_anonymous_can_access_urls(self):
+        """ Test urls that are totally open """
+        # user = self.user
+        # authenticate(user=user, username='usera', password='test')
+        # login(self.client.request, user)
+        for u in open_urls:
+            response = self.client.get(u, follow=True)
+            print u
+            self.assertEqual(response.status_code, 200)
 
-	def test_redirect_with_shop_get_param(self, response=None):
-		""" if ?shop=XXX is specified then we redirect to shopify with oauth request and scope """
-		if not response:
-			response = self.client.get('/?shop=reebok-beats-nike-anyday', follow=True)
-
-		url, status_code = response.redirect_chain[0]
-
-		self.assertEqual(url , 'https://reebok-beats-nike-anyday.myshopify.com/admin/oauth/authorize?scope=write_content%2Cwrite_themes%2Cwrite_products%2Cwrite_customers%2Cwrite_orders%2Cwrite_script_tags%2Cwrite_shipping%2Cread_content%2Cread_themes%2Cread_products%2Cread_customers%2Cread_orders%2Cread_script_tags%2Cread_shipping&redirect_uri=http%3A%2F%2Ftestserver%2Ffinalize%2F&client_id=587b6f824f4a5d1d850a720f90f4a3b5')
-		self.assertEqual(status_code, 302)
-
-	def test_login(self):
-		response = self.client.get('/login/')
-		self.assertEqual(response.status_code, 200)
-		self.assertTrue(isinstance(response.context['form'], ShopifyInstallForm))
-
-		response = self.client.get('/', {'shop': 'reebok-beats-nike-anyday'}, follow=True)
-		# test using predefined method
-		self.test_redirect_with_shop_get_param(response)
-
-	def test_anonymous_cannot_access_logged_in_urls(self):
-		""" test primary logged in urls cannot be acessed unless logged in """
-		for u in login_required_urls:
-			response = self.client.get(u, follow=True)
-			self.assertEqual(response.status_code, 200)
-			self.assertEqual(response.context['current_shop'], None)
-			self.assertTrue(isinstance(response.context['form'], ShopifyInstallForm))
 

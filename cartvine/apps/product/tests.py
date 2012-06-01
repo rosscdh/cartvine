@@ -27,7 +27,7 @@ class ProductTest(TestCase):
         User.objects.create_user('usera', 'usera@test.com', 'test')
         self.user_a = User.objects.get(username='usera')
 
-        Shop.objects.create(name='shop a',provider_id=1234567, shopify_access_token=1234567,slug='shop-a',url='shop-a.myshopify.com')
+        Shop.objects.create(name='shop a',provider_id=1234567, provider_access_token=1234567,slug='shop-a',url='shop-a.myshopify.com')
         shop_a = Shop.objects.get(slug='shop-a')
         shop_a.users.add(self.user_a)
         # create user products and associate with user1
@@ -36,7 +36,7 @@ class ProductTest(TestCase):
         # create user b
         User.objects.create_user('userb', 'userb@test.com', 'test')
         self.user_b = User.objects.get(username='userb')
-        Shop.objects.create(name='shop b',provider_id=2345678, shopify_access_token=2345678,slug='shop-b',url='shop-b.myshopify.com')
+        Shop.objects.create(name='shop b',provider_id=2345678, provider_access_token=2345678,slug='shop-b',url='shop-b.myshopify.com')
         shop_b = Shop.objects.get(slug='shop-b')
         shop_b.users.add(self.user_b)
         # create second user products and assocaited with user2

@@ -78,6 +78,8 @@ class WidgetLoaderView(TemplateView):
 
 
 class WidgetsForShopView(DetailView):
+    """ View generates javascript response that is used to load widget js files 
+    should be public """
     model = Shop
     template_name = 'widget/for_shop.html'
 

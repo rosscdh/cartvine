@@ -16,7 +16,7 @@ class Widget(models.Model):
     name = models.CharField(max_length=128)
     widget_type = models.CharField(max_length=5, choices=WIDGET_TYPE.get_choices())
     slug = models.SlugField()
-    data = JSONField()
+    data = JSONField(null=True,default='{"templates": ["widget/handlebars/facebook-login.html"]}')
     shop = models.ManyToManyField(Shop, through='WidgetShop')
 
     def __unicode__(self):
@@ -27,7 +27,8 @@ class WidgetShop(models.Model):
     """ Overriden join table so we can store widget settings """
     widget = models.ForeignKey(Widget)
     shop = models.ForeignKey(Shop)
-    data = JSONField(null=True)
+    data = JSONField(null=True,default='{"target_id": "body"}')
+
     class Meta:
         db_table = 'widget_widget_shop'
         verbose_name = _('Widget Configuration')
