@@ -12,17 +12,18 @@ from cartvine.apps.widget.models import Widget, WidgetShop
 
 
 login_required_urls = [
-		reverse('widget:edit', kwargs={'slug': 'test-widget'}),
-		reverse('widget:my'),
-		reverse('widget:info', kwargs={'slug': 'test-widget'}),
-		reverse('widget:buy', kwargs={'slug': 'test-widget'}),
-		reverse('widget:default'),
+    reverse('widget:edit', kwargs={'slug': 'test-widget'}),
+    reverse('widget:my'),
+    reverse('widget:info', kwargs={'slug': 'test-widget'}),
+    reverse('widget:buy', kwargs={'slug': 'test-widget'}),
+    reverse('widget:default'),
 ]
 open_urls = [
-	reverse('widget:widget_loader'),
-	reverse('widget:for_shop', kwargs={'slug': 'test-shop'}),
-	reverse('widget:script', kwargs={'shop_slug': 'test-shop', 'slug': 'test-widget'}),
+    reverse('widget:widget_loader'),
+    reverse('widget:for_shop', kwargs={'slug': 'test-shop'}),
+    reverse('widget:script', kwargs={'shop_slug': 'test-shop', 'slug': 'test-widget'}),
 ]
+
 
 class CartVineWidgetTest(TestCase):
     def setUp(self):
@@ -33,7 +34,6 @@ class CartVineWidgetTest(TestCase):
         self.test_shop.save()
         self.test_widget, is_new = Widget.objects.get_or_create(name='Test JS Widget', widget_type=Widget.WIDGET_TYPE.text_javascript, slug='test-widget')
         self.widget_config = WidgetShop.objects.get_or_create(widget=self.test_widget, shop=self.test_shop)
-#        self.test_widget.shop = self.test_shop
         self.test_widget.save()
 
     def test_anonymous_cannot_access_logged_in_urls(self):
