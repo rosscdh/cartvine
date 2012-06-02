@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, DetailView, ListView, FormView, RedirectView
 from django.template import loader, Context
+from django.contrib.staticfiles import finders
 
 from cartvine.utils import get_namedtuple_choices
 from cartvine.apps.shop.models import Shop
@@ -94,8 +95,6 @@ class WidgetsForShopView(DetailView):
             '%semberjs/js/libs/ember-0.9.8.1.min.js'%(static_url),
             '%semberjs/js/libs/ember-data-latest.js'%(static_url),
             '%semberjs/js/libs/tastypie_adapter.js'%(static_url),
-            # 'https://raw.github.com/escalant3/ember-data-tastypie-adapter/master/tests/lib/ember-data.js',
-            # 'https://raw.github.com/escalant3/ember-data-tastypie-adapter/master/lib/tastypie_adapter.js',
             #'%semberjs/js/libs/ember-facebook.js'%(static_url),
             #'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js',
         ]
@@ -105,9 +104,11 @@ class WidgetsForShopView(DetailView):
 
         context['scripts'] = default_scripts #+ [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': widget.slug})),) for widget in widget_list ]
 
-        # context['scripts_script'] = []
+        context['scripts_script'] = []
         # for script in default_scripts:
-        #     context['scripts_script'].append(open(os.path.join(settings.STATIC_ROOT, script.replace(static_url,''), 'rb')))
+        #     path_to_script = finders.find(script.replace(static_url,''))
+        #     text = open(os.path.join(settings.STATIC_ROOT, path_to_script)).read()
+        #     context['scripts_script'].append(text)
 
         # must be the last in this view as it needs a full context
         c = Context(context)
