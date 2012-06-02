@@ -101,6 +101,7 @@ class WidgetsForShopView(DetailView):
         ]
 
         widget_list = Widget.objects.filter(shop=self.object)
+        context['widget_list'] = widget_list
 
         context['scripts'] = default_scripts #+ [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': widget.slug})),) for widget in widget_list ]
 
@@ -122,7 +123,7 @@ class WidgetsForShopView(DetailView):
             combined_widgets.append(loader.get_template(template).render(c))
         core_combined_widget = ''.join(combined_widgets)
         context['combined_widgets'] = core_combined_widget
-        
+
         return context
 
 

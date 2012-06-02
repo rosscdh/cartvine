@@ -1,5 +1,6 @@
 {% load url from future %}
-this.facebookPerson = function() {
+this.facebookPerson = function(DS) {
+    alert(DS)
     //# ----- WIDGET START {{ object.slug }} ----- #//
     //# ----- APP OVERRIDES & EXTENSIONS ----- #//
     //# ----- MODELS ----- #//

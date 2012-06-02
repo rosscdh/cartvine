@@ -6,15 +6,25 @@ var CartVine = function() {
     this.widgets = [{% for s in scripts %}"{{ s }}"{% if not forloop.last %},{% endif %}{% endfor %}],
     this.templates = [{% for t in templates %}"{{ t|escapejs }}"{% if not forloop.last %},{% endif %}{% endfor %}]
     this.App = void 0,
-    this.widgetInitializers = []
+    this.DS = void 0,
+
     {{ combined_widgets|safe }}
+
     this.init = function () {
     	var _this = this
+
+	    // Install Templates
+	    $.each(this.templates, function(index) {
+	        $(_this.templates[index]).appendTo('head');
+	    });
+
     	// Install Scripts
     	// @TODO combine this
     	$.each(this.widgets, function(index) {
     		var url = _this.widgets[index];
+
     		$.ajaxSetup({ cache: true });
+
 	        $.ajax({
 	            url: url,
 	            dataType: 'script',
@@ -25,7 +35,8 @@ var CartVine = function() {
 	                    // @TODO create object with event handlers to initialize CartVine objects
 	                    _this.App = Em.Application.create();
 	                };
-	                if (typeof App != 'undefined' && typeof DS != 'undefined' && typeof DS.DjangoTastypieAdapter != 'undefined') {
+	                if (typeof _this.App != 'undefined' && typeof DS != 'undefined' && typeof DS.DjangoTastypieAdapter != 'undefined') {
+	                	_this.DS = DS;
 	                    _this.App.store = DS.Store.create({
 	                      revision: 4,
 	                      adapter: DS.DjangoTastypieAdapter.create({
@@ -36,15 +47,17 @@ var CartVine = function() {
 	                };
 	                if (xhr.status == 304) return;
 	            },
-	            error: function () {
-	                cartvine_is_ready = false;
-	            }
+	            error: function () {}
 	        });
     	});
-	    // Install Templates
-	    $.each(this.templates, function(index) {
-	        $(_this.templates[index]).appendTo('body');
-	    });
+		// fix local vars
+		this.App = _this.App;
+		this.DS = _this.DS;
+    },
+    this.loadWidgets = function() {
+		// complete init @TODO find a way to make this dynamic
+		this.facebookPerson(this.DS);
+		this.productsLike(this.DS);
     }
 };
 

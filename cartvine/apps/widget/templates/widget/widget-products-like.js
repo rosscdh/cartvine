@@ -1,16 +1,17 @@
 {% load url from future %}
 this.productsLike = function() {
+    var _this = this;
     //# ----- WIDGET START {{ object.slug }} ----- #//
     //# ----- DATA STORE ----- #//
     //# ----- APP OVERRIDES & EXTENSIONS ----- #//
     //# ----- MODELS ----- #//
-    this.App.Product = DS.Model.extend({
-        vendor_id: DS.attr('number'),
-        name: DS.attr('string'),
-        slug: DS.attr('string'),
-        featured_image: DS.attr('string'),
-        tags: DS.attr('string'),
-        vendor: DS.attr('string'),
+    this.App.Product = this.DS.Model.extend({
+        vendor_id: this.DS.attr('number'),
+        name: this.DS.attr('string'),
+        slug: this.DS.attr('string'),
+        featured_image: this.DS.attr('string'),
+        tags: this.DS.attr('string'),
+        vendor: this.DS.attr('string'),
     });
 
     //# ----- CONTROLLERS ----- #//
@@ -19,8 +20,8 @@ this.productsLike = function() {
      * The list of products
      */
      productsView = Em.View.create({
-        products: this.App.store.findAll(this.App.Product),
-        templateName: '{{ object.slug }}-products_like_this_one',
+        products: _this.App.store.findAll(_this.App.Product),
+        templateName: 'cartvine-products_like_this_one',
      });
     //# ----- INSTANTIATE VIEWS ----- #//
     productsView.appendTo('{{ config.target_id|default:"body" }}');
