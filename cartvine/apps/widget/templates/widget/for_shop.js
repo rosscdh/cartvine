@@ -15,6 +15,16 @@ var CartVine = function() {
 
     {{ combined_widgets|safe }}
 
+    this.injectView = function(view, widget_name, target) {
+    	target_ob = $(target);
+	    if (target_ob.length <= 0) {
+	        // view insert target not found
+	        $('body').append('<p><strong>Please Note:</strong> You have specified ('+ target +') to insert this the "'+ widget_name +'" widget into, but it does not exist.</p>')
+			view.appendTo('body');
+	    }else{
+			view.appendTo(target_ob);
+	    }
+    },
     this.init = function () {
     	var _this = this
 

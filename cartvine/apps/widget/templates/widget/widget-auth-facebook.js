@@ -15,7 +15,8 @@ this.widget_auth_facebook = function() {
     });
 
     //# ----- INSTANTIATE VIEWS ----- #//
-    fb_login_view.appendTo('{{ config.target_id|default:"body" }}');
+    this.injectView(fb_login_view, 'widget_auth_facebook', '{{ config.target_id }}');
+
 
     //# ----- HELPER JS ----- #//
     $('a#vine-fb-connect').live('click', function (e) {

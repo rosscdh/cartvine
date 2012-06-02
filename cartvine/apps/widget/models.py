@@ -12,6 +12,7 @@ class Widget(models.Model):
     """ Widgets Purchased by a Shop """
     WIDGET_TYPE = get_namedtuple_choices('WIDGET_TYPE', (
         ('js', 'text_javascript', 'Javascript'),
+        ('app', 'application', 'Application'),
     ))
     name = models.CharField(max_length=128)
     widget_type = models.CharField(max_length=5, choices=WIDGET_TYPE.get_choices())

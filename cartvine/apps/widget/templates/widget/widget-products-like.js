@@ -24,7 +24,8 @@ this.widget_products_like = function() {
         templateName: 'cartvine-products_like_this_one',
      });
     //# ----- INSTANTIATE VIEWS ----- #//
-    productsView.appendTo('{{ config.target_id|default:"body" }}');
+
+    this.injectView(productsView, 'widget_products_like', '{{ config.target_id }}');
 
     //# ----- HELPER JS ----- #//
     $('a#vine-fb-connect').live('click', function (e) {});

@@ -99,7 +99,7 @@ class WidgetsForShopView(DetailView):
             #'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js',
         ]
 
-        widget_list = Widget.objects.filter(shop=self.object)
+        widget_list = Widget.objects.filter(shop=self.object, widget_type=Widget.WIDGET_TYPE.text_javascript)
         context['widget_list_init_names'] = [ w.slug.replace('-','_') for w in widget_list]
 
         context['scripts'] = default_scripts #+ [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': widget.slug})),) for widget in widget_list ]
