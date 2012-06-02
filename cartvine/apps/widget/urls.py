@@ -9,9 +9,8 @@ from views import WidgetLoaderView, WidgetsForShopView, SpecificWidgetForShopVie
 
 
 urlpatterns = patterns('',
-    url(r'^cartvine-loader\.js$', WidgetLoaderView.as_view(), name='widget_loader'),
-    #url(r'^script/(?P<slug>[-\w]+)/$', cache_page(60, WidgetsForShopView.as_view()), name='for_shop'),
-    url(r'^script/(?P<slug>[-\w]+)/$', WidgetsForShopView.as_view(), name='for_shop'),
+    url(r'^cartvine-loader\.js$', cache_page(1800, WidgetLoaderView.as_view()), name='widget_loader'),
+    url(r'^script/(?P<slug>[-\w]+)/$', cache_page(60, WidgetsForShopView.as_view()), name='for_shop'),
     url(r'^script/(?P<shop_slug>[-\w]+)/(?P<slug>[-\w]+)/$', SpecificWidgetForShopView.as_view(), name='script'),
 
     url(r'^my/(?P<slug>[-\w]+)/$', login_required(MyWidgetEditView.as_view()), name='edit'),

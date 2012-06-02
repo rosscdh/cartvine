@@ -67,6 +67,7 @@ class ProductResource(CartvineBaseModelResource):
 
     def dehydrate(self, bundle):
         data = ast.literal_eval(bundle.data['data'])
+        bundle.data['slug'] = data['handle'] # Override the local slug value as it is NOT the remote one necessarily, handle is always updated form teh shop
         bundle.data['vendor_id'] = data['id']
         bundle.data['featured_image'] = data['featured_image']
         bundle.data['tags'] = data['tags']

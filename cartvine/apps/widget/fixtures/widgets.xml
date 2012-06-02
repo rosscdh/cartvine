@@ -5,7 +5,14 @@ Using cartvine Application
         <field type="CharField" name="name">Facebook Auth</field>
         <field type="CharField" name="widget_type">js</field>
         <field type="SlugField" name="slug">widget-auth-facebook</field>
-        <field type="TextField" name="data">{"templates": ["widget/handlebars/facebook-login.html"]}</field>
+        <field type="TextField" name="data">{"templates": ["widget/handlebars/facebook-login.html"], "icons": {"widget_list": "widget/facebook-icon.jpg"}}</field>
+        <field to="shop.shop" name="shop" rel="ManyToManyRel"><object pk="1"></object></field>
+    </object>
+    <object pk="2" model="widget.widget">
+        <field type="CharField" name="name">Products Like</field>
+        <field type="CharField" name="widget_type">js</field>
+        <field type="SlugField" name="slug">widget-products-like</field>
+        <field type="TextField" name="data">{"templates": ["widget/handlebars/products-like.html"], "icons": {"widget_list": "widget/products-like-icon.jpg"}}</field>
         <field to="shop.shop" name="shop" rel="ManyToManyRel"><object pk="1"></object></field>
     </object>
 </django-objects>

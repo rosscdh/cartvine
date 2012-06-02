@@ -18,6 +18,7 @@ class Widget(models.Model):
     widget_type = models.CharField(max_length=5, choices=WIDGET_TYPE.get_choices())
     slug = models.SlugField()
     data = JSONField(null=True,default='{"templates": ["widget/handlebars/facebook-login.html"]}')
+    is_active = models.BooleanField(default=True,null=False)
     shop = models.ManyToManyField(Shop, through='WidgetShop')
 
     def __unicode__(self):
@@ -34,6 +35,7 @@ class WidgetShop(models.Model):
     """ Overriden join table so we can store widget settings """
     widget = models.ForeignKey(Widget)
     shop = models.ForeignKey(Shop)
+    is_active = models.BooleanField(default=True,null=False)
     data = JSONField(null=True,default='{"target_id": "body"}')
 
     class Meta:
