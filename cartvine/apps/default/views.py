@@ -18,7 +18,7 @@ from cartvine.utils import get_webhook_postback_url
 from cartvine.apps.product.tasks import sync_products
 from cartvine.apps.customer.tasks import sync_customers
 from cartvine.apps.webhook.tasks import sync_webhook
-from cartvine.apps.webhook.tasks import sync_assets
+from cartvine.apps.widget.tasks import sync_assets
 
 
 import logging
@@ -93,6 +93,7 @@ class FinalizeInstallationView(RedirectView):
             try:
                 # Create/Get Shopify Webhook
                 sync_webhook.delay(webhook_callback_address, shop, shopify_session)
+                sync_assets.delay(shop, shopify_session)
                 # Call Product Sync Task here
                 sync_products.delay(shopify_session, shop)
                 sync_customers.delay(shopify_session, shop)

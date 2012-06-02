@@ -1,4 +1,4 @@
-//<!-- """ Javascript Widget for widget-auth-facebook.js """ -->
+//<!-- """ {"last_updated": "2012-06-02 17:30:00"} """ -->
 
 //<!-- Check for http | https -- >
 var cartvine_is_ready = true;
