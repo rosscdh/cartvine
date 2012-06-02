@@ -113,15 +113,18 @@ class WidgetsForShopView(DetailView):
         # must be the last in this view as it needs a full context
         c = Context(context)
         templates = []
-        for widget in widget_list:
-            for template in widget.data['templates']:
-                templates.append(loader.get_template(template).render(c))
-        context['templates'] = templates
-
         combined_widgets = []
         for widget in widget_list:
+            widget_shop_join = get_object_or_404(WidgetShop, widget=widget, shop=self.object)
+            c['config'] = widget_shop_join.data
+
             template = '%s%s.js' %('widget/', widget.slug,)
             combined_widgets.append(loader.get_template(template).render(c))
+
+            for template in widget.data['templates']:
+                templates.append(loader.get_template(template).render(c))
+
+        context['templates'] = templates
         core_combined_widget = ''.join(combined_widgets)
         context['combined_widgets'] = core_combined_widget
 
