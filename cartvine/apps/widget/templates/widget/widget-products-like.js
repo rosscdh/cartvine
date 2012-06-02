@@ -1,5 +1,5 @@
 {% load url from future %}
-this.productsLike = function() {
+this.widget_products_like = function() {
     var _this = this;
     //# ----- WIDGET START {{ object.slug }} ----- #//
     //# ----- DATA STORE ----- #//

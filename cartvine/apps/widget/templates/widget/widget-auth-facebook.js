@@ -1,18 +1,17 @@
 {% load url from future %}
-this.facebookPerson = function(DS) {
-    alert(DS)
+this.widget_auth_facebook = function() {
     //# ----- WIDGET START {{ object.slug }} ----- #//
     //# ----- APP OVERRIDES & EXTENSIONS ----- #//
     //# ----- MODELS ----- #//
-    this.App.Person = DS.Model.extend({
+    this.App.Person = this.DS.Model.extend({
         url: 'persons',
-        access_token: DS.attr('string')
+        access_token: this.DS.attr('string')
         //data: DS.attr('string')
     });
     //# ----- CONTROLLERS ----- #//
     //# ----- VIEWS ----- #//
     var fb_login_view = Em.View.create({
-      templateName: '{{ object.slug }}-fb_login',
+      templateName: 'widget-auth-facebook-fb_login',
     });
 
     //# ----- INSTANTIATE VIEWS ----- #//
@@ -21,7 +20,7 @@ this.facebookPerson = function(DS) {
     //# ----- HELPER JS ----- #//
     $('a#vine-fb-connect').live('click', function (e) {
         event.preventDefault();
-        window.open(shoppers_url, "{{ object.slug }}-window", "width=640, height=480");
+        window.open(shoppers_url, "widget-auth-facebook-window", "width=640, height=480");
         return false;
     });
     //# ----- WIDGET END {{ object.slug }} ----- #//

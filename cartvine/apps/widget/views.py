@@ -101,7 +101,7 @@ class WidgetsForShopView(DetailView):
         ]
 
         widget_list = Widget.objects.filter(shop=self.object)
-        context['widget_list'] = widget_list
+        context['widget_list_init_names'] = [ w.slug.replace('-','_') for w in widget_list]
 
         context['scripts'] = default_scripts #+ [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': widget.slug})),) for widget in widget_list ]
 

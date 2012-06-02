@@ -44,6 +44,7 @@ var CartVine = function() {
 	                        tastypieApiUrl: "api/v1/"
 	                      })
 	                    });
+	                    _this.loadWidgets();
 	                };
 	                if (xhr.status == 304) return;
 	            },
@@ -56,8 +57,9 @@ var CartVine = function() {
     },
     this.loadWidgets = function() {
 		// complete init @TODO find a way to make this dynamic
-		this.facebookPerson(this.DS);
-		this.productsLike(this.DS);
+		{% for w in widget_list_init_names %}
+		this.{{ w }}();
+		{% endfor %}
     }
 };
 
