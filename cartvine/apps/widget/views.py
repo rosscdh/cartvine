@@ -1,3 +1,4 @@
+import os
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
@@ -82,7 +83,7 @@ class WidgetsForShopView(DetailView):
     """ View generates javascript response that is used to load widget js files 
     should be public """
     model = Shop
-    template_name = 'widget/for_shop.html'
+    template_name = 'widget/for_shop.js'
 
     def get_context_data(self, **kwargs):
         context = super(WidgetsForShopView, self).get_context_data(**kwargs)
@@ -101,7 +102,11 @@ class WidgetsForShopView(DetailView):
 
         widget_list = Widget.objects.filter(shop=self.object)
 
-        context['scripts'] = default_scripts + [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': widget.slug})),) for widget in widget_list ]
+        context['scripts'] = default_scripts #+ [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': widget.slug})),) for widget in widget_list ]
+
+        # context['scripts_script'] = []
+        # for script in default_scripts:
+        #     context['scripts_script'].append(open(os.path.join(settings.STATIC_ROOT, script.replace(static_url,''), 'rb')))
 
         # must be the last in this view as it needs a full context
         c = Context(context)
@@ -109,8 +114,15 @@ class WidgetsForShopView(DetailView):
         for widget in widget_list:
             for template in widget.data['templates']:
                 templates.append(loader.get_template(template).render(c))
-
         context['templates'] = templates
+
+        combined_widgets = []
+        for widget in widget_list:
+            template = '%s%s.js' %('widget/', widget.slug,)
+            combined_widgets.append(loader.get_template(template).render(c))
+        core_combined_widget = ''.join(combined_widgets)
+        context['combined_widgets'] = core_combined_widget
+        
         return context
 
 

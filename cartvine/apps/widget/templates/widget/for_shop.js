@@ -1,0 +1,53 @@
+// CV object
+var CartVine = function() {
+    this.shop = "{{ object.name }}",
+    this.cartvine_shop_id = "{{ object.pk }}",
+    this.slug = "{{ object.slug }}",
+    this.widgets = [{% for s in scripts %}"{{ s }}"{% if not forloop.last %},{% endif %}{% endfor %}],
+    this.templates = [{% for t in templates %}"{{ t|escapejs }}"{% if not forloop.last %},{% endif %}{% endfor %}]
+    this.App = void 0,
+    this.widgetInitializers = []
+    {{ combined_widgets|safe }}
+    this.init = function () {
+    	var _this = this
+    	// Install Scripts
+    	// @TODO combine this
+    	$.each(this.widgets, function(index) {
+    		var url = _this.widgets[index];
+    		$.ajaxSetup({ cache: true });
+	        $.ajax({
+	            url: url,
+	            dataType: 'script',
+	            cache: true,
+	            complete: function(xhr) { 
+	                if (typeof Em != 'undefined') {
+	                    // Create the EmberJs Application which is shared between widgets
+	                    // @TODO create object with event handlers to initialize CartVine objects
+	                    _this.App = Em.Application.create();
+	                };
+	                if (typeof App != 'undefined' && typeof DS != 'undefined' && typeof DS.DjangoTastypieAdapter != 'undefined') {
+	                    _this.App.store = DS.Store.create({
+	                      revision: 4,
+	                      adapter: DS.DjangoTastypieAdapter.create({
+	                        serverDomain: url_scheme + "{{ request.get_host }}/",
+	                        tastypieApiUrl: "api/v1/"
+	                      })
+	                    });
+	                };
+	                if (xhr.status == 304) return;
+	            },
+	            error: function () {
+	                cartvine_is_ready = false;
+	            }
+	        });
+    	});
+	    // Install Templates
+	    $.each(this.templates, function(index) {
+	        $(_this.templates[index]).appendTo('body');
+	    });
+    }
+};
+
+// cv instance
+var cartvine = new CartVine();
+cartvine.init();
