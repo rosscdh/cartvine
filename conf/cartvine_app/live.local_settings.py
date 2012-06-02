@@ -31,3 +31,10 @@ SHOPIFY_API_SECRET = 'faba2795c9cf719949c8c7d5b4a1bd9e'
 #Facebook App Id
 FACEBOOK_APP_ID = '209234305864956'
 FACEBOOK_APP_SECRET = '8a2b5757c513965faff0de2c35dcdbf2'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': 'unix:/home/stard0g101/webapps/cartvine_app/cartvine/memcached.sock',
+    }
+}
