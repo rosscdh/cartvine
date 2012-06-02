@@ -6,6 +6,7 @@ this.widget_products_like = function() {
     //# ----- APP OVERRIDES & EXTENSIONS ----- #//
     //# ----- MODELS ----- #//
     this.App.Product = this.DS.Model.extend({
+        shop_url: this.shop_url,
         vendor_id: this.DS.attr('number'),
         name: this.DS.attr('string'),
         slug: this.DS.attr('string'),

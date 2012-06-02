@@ -6,6 +6,7 @@
 // CV object
 var CartVine = function() {
     this.shop = "{{ object.name }}",
+    this.shop_url = "{{ object.url }}",
     this.cartvine_shop_id = "{{ object.pk }}",
     this.slug = "{{ object.slug }}",
     this.widgets = [{% for s in scripts %}"{{ s }}"{% if not forloop.last %},{% endif %}{% endfor %}],
