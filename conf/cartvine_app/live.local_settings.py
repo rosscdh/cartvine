@@ -4,6 +4,8 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__+ '/../'))
 
 SITE_ID = 1
 
+USE_ETAGS = True
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',

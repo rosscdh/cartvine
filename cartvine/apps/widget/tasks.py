@@ -8,7 +8,7 @@ from cartvine.apps.shop.models import Shop
 from models import Widget, WidgetShop
 
 import shopify
-import pyactiveresource
+from pyactiveresource.connection import ResourceNotFound
 import logging
 logger = logging.getLogger('happy_log')
 
@@ -29,7 +29,7 @@ def sync_assets(shop, shopify_session):
     shop.activate_shopify_session()
     try:
         cartvineloader_asset = shopify.Asset.find(key=key)
-    except pyactiveresource.connection.ResourceNotFound:
+    except ResourceNotFound:
         # not present so create it
         cartvineloader_asset = shopify.Asset()
         cartvineloader_asset.key = key
