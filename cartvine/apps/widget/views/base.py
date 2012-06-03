@@ -10,8 +10,8 @@ from django.contrib.staticfiles import finders
 from cartvine.utils import get_namedtuple_choices
 from cartvine.apps.shop.models import Shop
 
-from models import Widget, WidgetShop
-from forms import FacebookAuthWidgetForm, ProductsLikeWidgetForm
+from cartvine.apps.widget.models import Widget, WidgetShop
+from cartvine.apps.widget.forms import FacebookAuthWidgetForm, ProductsLikeWidgetForm
 
 
 class AvailableWidgetView(ListView):
@@ -127,23 +127,6 @@ class WidgetsForShopView(DetailView):
         context['templates'] = templates
         core_combined_widget = ''.join(combined_widgets)
         context['combined_widgets'] = core_combined_widget
-
-        return context
-
-
-class SpecificWidgetForShopView(DetailView):
-    model = Widget
-    template_name = 'widget/widget.js'
-
-    def get_context_data(self, **kwargs):
-        context = super(SpecificWidgetForShopView, self).get_context_data(**kwargs)
-        shop = get_object_or_404(Shop, slug=self.kwargs['shop_slug'])
-        widget_shop_join = get_object_or_404(WidgetShop, widget=self.object, shop=shop)
-        context['config'] = widget_shop_join.data
-        context['shop'] = shop
-        
-        script_name = '%s%s.js' %('widget/', self.object.slug,)
-        self.template_name = script_name
 
         return context
 
