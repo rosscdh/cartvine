@@ -175,8 +175,8 @@ PROJECT_APPS = (
     'cartvine.apps.customer',
     # Product
     'cartvine.apps.product',
-    # Product reviews
-    'cartvine.apps.product_review',
+    # Plans
+    'cartvine.apps.plan',
     # Webhook
     'cartvine.apps.webhook',
     # Widgets JS

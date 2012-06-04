@@ -105,16 +105,11 @@ class WidgetsForShopView(DetailView):
 
         context['scripts'] = default_scripts #+ [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': widget.slug})),) for widget in widget_list ]
 
-        context['scripts_script'] = []
-        # for script in default_scripts:
-        #     path_to_script = finders.find(script.replace(static_url,''))
-        #     text = open(os.path.join(settings.STATIC_ROOT, path_to_script)).read()
-        #     context['scripts_script'].append(text)
-
         # must be the last in this view as it needs a full context
         c = Context(context)
         templates = []
         combined_widgets = []
+
         for widget in widget_list:
             widget_shop_join = get_object_or_404(WidgetShop, widget=widget, shop=self.object)
             c['config'] = widget_shop_join.data
@@ -126,8 +121,7 @@ class WidgetsForShopView(DetailView):
                 templates.append(loader.get_template(template).render(c))
 
         context['templates'] = templates
-        core_combined_widget = ''.join(combined_widgets)
-        context['combined_widgets'] = core_combined_widget
+        context['combined_widgets'] = ''.join(combined_widgets)
 
         return context
 

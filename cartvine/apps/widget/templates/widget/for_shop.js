@@ -1,8 +1,3 @@
-// Required js files
-{% for s in scripts_script %}
-{{ s|safe }}
-{% endfor %}
-
 // CV object
 var CartVine = function() {
     this.shop = "{{ object.name }}",
