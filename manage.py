@@ -20,13 +20,13 @@ if __name__ == "__main__":
                 break
     except IndexError:
         app_names,application = VALID_APPLICATIONS.get_choices()[0]
-        print 'Using %s Application as you did not specify an application in %s'%(application, VALID_APPLICATIONS,)
+        #print 'Using %s Application as you did not specify an application in %s'%(application, VALID_APPLICATIONS,)
 
     if application not in VALID_APPLICATIONS.get_values():
-        print '%s is not a valid application %s'%(application, VALID_APPLICATIONS,)
+        #print '%s is not a valid application %s'%(application, VALID_APPLICATIONS,)
         application = VALID_APPLICATIONS.get_choices()[0]
     else:
-        print 'Using %s Application'%(application,)
+        #print 'Using %s Application'%(application,)
         try:
             sys.argv.pop(1)
         except IndexError:

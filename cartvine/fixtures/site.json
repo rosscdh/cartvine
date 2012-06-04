@@ -1,0 +1,1 @@
+[{"pk": 1, "model": "sites.site", "fields": {"domain": "dev.shopify.app.cartvine.com", "name": "Base Shopify App"}}, {"pk": 2, "model": "sites.site", "fields": {"domain": "dev.shoppers.app.cartvine.com", "name": "Cartvine Shoppers App"}}]

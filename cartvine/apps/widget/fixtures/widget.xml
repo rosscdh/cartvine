@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0"><object pk="1" model="widget.widget"><field type="CharField" name="name">Facebook Auth</field><field type="CharField" name="widget_type">js</field><field type="SlugField" name="slug">widget-auth-facebook</field><field type="TextField" name="data">{u'templates': [u'widget/widget-auth-facebook.js'], u'icons': {u'widget_list': u'widget/facebook-icon.jpg'}}</field><field type="BooleanField" name="is_active">True</field></object><object pk="2" model="widget.widget"><field type="CharField" name="name">Products Like</field><field type="CharField" name="widget_type">js</field><field type="SlugField" name="slug">widget-products-like</field><field type="TextField" name="data">{u'templates': [u'widget/widget-products-like.js'], u'icons': {u'widget_list': u'widget/products-like-icon.jpg'}}</field><field type="BooleanField" name="is_active">True</field></object><object pk="3" model="widget.widget"><field type="CharField" name="name">Shop Extend</field><field type="CharField" name="widget_type">app</field><field type="SlugField" name="slug">app-shop-extend</field><field type="TextField" name="data">{u'templates': [u''], u'icons': {u'widget_list': u''}}</field><field type="BooleanField" name="is_active">True</field></object><object pk="1" model="widget.widgetinfo"><field to="widget.widget" name="widget" rel="ManyToOneRel">1</field><field to="plan.plan" name="plan" rel="ManyToOneRel">1</field><field type="CharField" name="summary">The Basic Plan</field><field type="TextField" name="info">## Some cash is required
+
+** but not too much **
+
+Buy us a beer and well thank you for it!</field></object><object pk="2" model="widget.widgetinfo"><field to="widget.widget" name="widget" rel="ManyToOneRel">2</field><field to="plan.plan" name="plan" rel="ManyToOneRel">1</field><field type="CharField" name="summary">The Basic Plan</field><field type="TextField" name="info">## Some cash is required
+
+** but not too much **
+
+Buy us a beer and well thank you for it!</field></object><object pk="3" model="widget.widgetinfo"><field to="widget.widget" name="widget" rel="ManyToOneRel">3</field><field to="plan.plan" name="plan" rel="ManyToOneRel">1</field><field type="CharField" name="summary">The Basic Plan</field><field type="TextField" name="info">## Some cash is required
+
+** but not too much **
+
+Buy us a beer and well thank you for it!</field></object></django-objects>

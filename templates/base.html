@@ -44,7 +44,8 @@
           <div class="nav-collapse">
             <ul class="nav">
                 {% if user.is_authenticated %}
-                <li><a href="{% url 'widget:my' %}">My Widgets</a></li>
+                <li><a href="{% url 'widget:my' %}">Widgets</a></li>
+                <li><a href="{% url 'product:index' %}">Products</a></li>
                 {% endif %}
             </ul>
 

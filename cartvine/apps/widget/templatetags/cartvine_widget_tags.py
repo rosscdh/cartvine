@@ -16,9 +16,11 @@ def widget_details(context):
     Return the appropriate WidgetInfo object according to request users plan
     """
     details_list = WidgetInfo.objects.filter(widget=context['object'])
+    details = {'summary': '', 'detail': '' }
     for d in details_list:
-        if d.plan == 1:
-            details = d
+        if d.plan.slug == 'basic':
+            details['summary'] = d.summary
+            details['detail'] = d.info
             break
-    return {'summary': details.summary, 'detail': details.info }
+    return details
 widget_details.is_safe = True
