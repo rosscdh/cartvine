@@ -10,17 +10,6 @@
 
 {% block body %}
 
-<div class="hero-unit">
-    <p>{% trans 'Once I have a widget from your store; how do I install it into my shopify store?' %}</p>
-    <blockquote>
-        <strong>{% trans 'Place the following code into your primary liquid template (index.liquid)' %}</strong><br/>
-        <code>
-        &lt;script src="http://{{ request.get_host }}/widget/cartvine-loader.js"&gt;&lt;/script&gt;
-        </code>
-    </blockquote>
-    <p>{% trans 'Once that is done, the script will automatically take care of your widgets. But, remember to configure each widget if you want it to be injected into a specific HTML Element; otherwise it just gets appended to the body HTML element.' %}</p>
-</div>
-
 <h2>{% trans 'Available Widgets' %}</h2>
 <ul id="list-available-widget" class="widget-list thumbnails">
 {% for w in available_widgets %}

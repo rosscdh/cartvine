@@ -1,0 +1,18 @@
+{% load i18n %}
+{% load url from future %}
+<p>{% trans 'How do I install this widget into my shopify store?' %}</p>
+<blockquote>
+    <p><strong>Please Note:</strong> We automatically install the cartvine-loader.js script into your sites Assets folder; so all you need do is insert it into the base liquid file</p>
+    <br/>
+    <ol>
+        <li>Go the "Manage my Theme" in your shopify admin page (http://your_domain.myshopify.com/admin/theme).</li>
+        <li>Open the "theme.liquid" file.</li>
+        <li>Paste "-insert-script-here-" just before the end of the "&lt;body&gt;" tag</li>
+    </ol>
+    <p><strong>Please Note:</strong> If you have already done this for another of our widgets, then you dont need to do it again for this widget.</p>
+<!--     <strong>{% trans 'Place the following code into your primary liquid template (index.liquid)' %}</strong><br/>
+    <code>
+    &lt;script src="http://{{ request.get_host }}/widget/cartvine-loader.js"&gt;&lt;/script&gt;
+    </code> -->
+</blockquote>
+<!-- <p>{% trans 'Once that is done, the script will automatically take care of your widgets. But, remember to configure each widget if you want it to be injected into a specific HTML Element; otherwise it just gets appended to the body HTML element.' %}</p> -->

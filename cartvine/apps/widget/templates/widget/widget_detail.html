@@ -26,4 +26,14 @@
 	<button class="configure-me btn btn-success" data-url="{% url 'widget:edit' slug=object.slug %}" href="#"><i class="icon-ok icon-white"></i>{% trans 'Configure' %}</button>
 	<button class="install-me btn btn-info" data-url="{% url 'widget:buy' slug=object.slug %}" href="#">FREE</button>
 </div>
+
+
+{% if object.widget_type == 'js' %}
+<p>&nbsp;</p>
+
+<div class="clearfix">
+<h2>{% trans 'Installation' %}</h2>
+{% include 'widget/partials/widget-install.html' %}
+</div>
+{% endif %}
 {% endblock %}
