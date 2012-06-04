@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from jsonfield import JSONField
 from managers import ShopManager
 
+from cartvine.apps.plan.models import Plan
+
 import shopify
 import datetime
 
@@ -11,6 +13,7 @@ import datetime
 class Shop(models.Model):
     name = models.CharField(max_length=255)
     users = models.ManyToManyField(User, related_name='users')
+    plan = models.ForeignKey(Plan, default=1)
     provider_id = models.IntegerField(db_index=True)
     provider_access_token = models.CharField(max_length=255,db_index=True)
     slug = models.SlugField(db_index=True)

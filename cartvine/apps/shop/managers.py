@@ -7,6 +7,7 @@ from django.core.exceptions import ImproperlyConfigured
 import shopify
 from urlparse import urlparse
 
+from cartvine.apps.plan.models import Plan
 
 
 
@@ -29,6 +30,7 @@ class ShopManager(models.Manager):
 
         slug = shop.data['myshopify_domain'].split('.')[0]
         shop.slug = slug
+        shop.plan = Plan.objects.get(slug='basic')
 
         shop.provider_access_token = shopify_session.token
         shop.url = 'http://%s' % (shop.data['myshopify_domain'],)

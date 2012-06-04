@@ -8,7 +8,7 @@ def current_shop(request):
 
 
 def cartvine_sites(request):
-    site_list = Site.objects.all()
+    site_list = [s for s in Site.objects.all()]
     try:
         return {
             'shopify_app_domain': site_list[0].domain,
