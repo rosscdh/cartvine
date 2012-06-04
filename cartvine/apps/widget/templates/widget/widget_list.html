@@ -19,9 +19,9 @@
             <a href="{% url 'widget:info' slug=w.slug %}">{{ w }}</a>
         </div>
         {% if w not in object_list %}
-        <button class="install-me btn btn-info" data-url="{% url 'widget:buy' slug=w.slug %}" href="#">FREE</button>
+        <button class="install-me btn btn-info" data-slug="{{ w.slug }}" data-url="{% url 'widget:buy' slug=w.slug %}" href="#">FREE</button>
         {% else %}
-        <button class="configure-me btn btn-success" data-url="{% url 'widget:edit' slug=w.slug %}" href="#"><i class="icon-ok icon-white"></i>&nbsp;{% trans 'Configure' %}</button>
+        <button class="configure-me btn btn-success" data-slug="{{ w.slug }}" data-url="{% url 'widget:edit' slug=w.slug %}" href="#"><i class="icon-ok icon-white"></i>&nbsp;{% trans 'Configure' %}</button>
         {% endif %}
     </li>
 {% empty %}
@@ -67,17 +67,21 @@ $(document).ready(function(){
 
     $('button.install-me').live('click', function (e) {
         event.preventDefault();
+        var _thisElement = $(this);
         $.ajax({
                 url: $(this).attr('data-url'),
                 type: 'GET'
             })
             .done(function(data, textStatus, jqXHR) {
                 // @TODO turn this into an emberjs app function that dynamically updates teh collection
-                document.location.reload();
+                _thisElement.removeClass('btn-info').addClass('btn-success');
+                _thisElement.html('<i class="icon-ok icon-white"></i>&nbsp;{% trans "Configure" %}');
+                parentButton = _thisElement.closest('button');
+                slug = parentButton.attr('data-slug');
+                parentButton.attr('data-url', "{% url 'widget:edit' slug='no-slug-here' %}".replace('no-slug-here', slug));
+                parentButton.removeClass('install-me').addClass('configure-me');
             })
-            .fail(function(data) { 
-
-            });
+            .fail(function(data) {});
     });
 
     $('button.configure-me').live('click', function (e) {

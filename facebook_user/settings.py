@@ -164,6 +164,7 @@ PROJECT_APPS = (
 CO_DEPENDENT_APPS = (
     # Shop so we can have people related to shops
     'cartvine.apps.shop',
+    'cartvine.apps.plan',
 )
 
 
