@@ -22,7 +22,7 @@ var CartVine = function() {
 	    }
     },
     this.init = function () {
-    	var _this = this
+    	var _this = this;
 
 	    // Install Templates
 	    $.each(this.templates, function(index) {
