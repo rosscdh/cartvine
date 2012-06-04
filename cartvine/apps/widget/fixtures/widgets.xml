@@ -1,11 +1,24 @@
-Using cartvine Application
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
     <object pk="1" model="widget.widget">
         <field type="CharField" name="name">Facebook Auth</field>
         <field type="CharField" name="widget_type">js</field>
         <field type="SlugField" name="slug">widget-auth-facebook</field>
-        <field type="TextField" name="data">{"templates": ["widget/handlebars/facebook-login.html"]}</field>
-        <field to="shop.shop" name="shop" rel="ManyToManyRel"><object pk="1"></object></field>
+        <field type="TextField" name="data">{"templates": ["widget/handlebars/facebook-login.html"], "icons": {"widget_list": "widget/facebook-icon.jpg"}}</field>
+        <field type="BooleanField" name="is_active">False</field>
+    </object>
+    <object pk="2" model="widget.widget">
+        <field type="CharField" name="name">Products Like</field>
+        <field type="CharField" name="widget_type">js</field>
+        <field type="SlugField" name="slug">widget-products-like</field>
+        <field type="TextField" name="data">{"templates": ["widget/handlebars/products-like.html"], "icons": {"widget_list": "widget/products-like-icon.jpg"}}</field>
+        <field type="BooleanField" name="is_active">True</field>
+    </object>
+    <object pk="3" model="widget.widget">
+        <field type="CharField" name="name">Shop Prop</field>
+        <field type="CharField" name="widget_type">app</field>
+        <field type="SlugField" name="slug">app-shop-prop</field>
+        <field type="TextField" name="data">{"templates": [], "icons": {"widget_list": "widget/shop-prop-icon.jpg"}}</field>
+        <field type="BooleanField" name="is_active">True</field>
     </object>
 </django-objects>

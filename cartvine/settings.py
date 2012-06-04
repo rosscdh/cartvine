@@ -48,6 +48,8 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
+USE_ETAGS = True
+
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
@@ -105,17 +107,20 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Allow Remote Json Requests
     'cartvine.middleware.XsSharing',
     # shopify
     'cartvine.middleware.LoginProtection',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 ROOT_URLCONF = 'cartvine.urls'
@@ -140,6 +145,7 @@ BASE_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'django.contrib.markup',
 )
 
 
@@ -169,8 +175,8 @@ PROJECT_APPS = (
     'cartvine.apps.customer',
     # Product
     'cartvine.apps.product',
-    # Product reviews
-    'cartvine.apps.product_review',
+    # Plans
+    'cartvine.apps.plan',
     # Webhook
     'cartvine.apps.webhook',
     # Widgets JS
@@ -243,6 +249,13 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
     }
 }
 

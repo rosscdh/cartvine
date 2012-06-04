@@ -21,7 +21,7 @@ login_required_urls = [
 open_urls = [
     reverse('widget:widget_loader'),
     reverse('widget:for_shop', kwargs={'slug': 'test-shop'}),
-    reverse('widget:script', kwargs={'shop_slug': 'test-shop', 'slug': 'test-widget'}),
+    # reverse('widget:script', kwargs={'shop_slug': 'test-shop', 'slug': 'test-widget'}),
 ]
 
 
@@ -32,7 +32,7 @@ class CartVineWidgetTest(TestCase):
         self.test_shop, is_new = Shop.objects.get_or_create(name='Test Shop', provider_id=1, provider_access_token=12345, slug='test-shop', url='')
         self.test_shop.users.add(self.user)
         self.test_shop.save()
-        self.test_widget, is_new = Widget.objects.get_or_create(name='Test JS Widget', widget_type=Widget.WIDGET_TYPE.text_javascript, slug='test-widget')
+        self.test_widget, is_new = Widget.objects.get_or_create(name='Test JS Widget', widget_type=Widget.WIDGET_TYPE.text_javascript, slug='widget-auth-facebook')
         self.widget_config = WidgetShop.objects.get_or_create(widget=self.test_widget, shop=self.test_shop)
         self.test_widget.save()
 
@@ -49,7 +49,6 @@ class CartVineWidgetTest(TestCase):
         # login(self.client.request, user)
         for u in open_urls:
             response = self.client.get(u, follow=True)
-            print u
             self.assertEqual(response.status_code, 200)
 
 

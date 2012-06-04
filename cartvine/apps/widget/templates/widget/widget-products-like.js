@@ -1,71 +1,36 @@
 {% load url from future %}
-//# ----- DATA STORE ----- #//
-$(document).ready(function() {
-    if (cartvine_is_ready) {
-        //# ----- APP OVERRIDES & EXTENSIONS ----- #//
+this.widget_products_like = function() {
+    var _this = this;
+    //# ----- WIDGET START {{ object.slug }} ----- #//
+    //# ----- DATA STORE ----- #//
+    //# ----- APP OVERRIDES & EXTENSIONS ----- #//
+    //# ----- MODELS ----- #//
+    this.App.Product = this.DS.Model.extend({
+        shop_url: this.shop_url,
+        vendor_id: this.DS.attr('number'),
+        name: this.DS.attr('string'),
+        slug: this.DS.attr('string'),
+        featured_image: this.DS.attr('string'),
+        tags: this.DS.attr('string'),
+        vendor: this.DS.attr('string'),
+    });
 
-        //# ----- MODELS ----- #//
-        App.Product = DS.Model.extend({
-            //url: 'product',
-            name: DS.attr('string'),
-            slug: DS.attr('string')
-        });
+    //# ----- CONTROLLERS ----- #//
+    //# ----- VIEWS ----- #//
+    /**
+     * The list of products
+     */
+     productsView = Em.View.create({
+        products: _this.App.store.findAll(_this.App.Product),
+        templateName: 'cartvine-products_like_this_one',
+     });
+    //# ----- INSTANTIATE VIEWS ----- #//
 
-        //# ----- CONTROLLERS ----- #//
-        /**
-         * The main application controller. Provides an interface
-         * for the views to interact with the models
-         */
-        productController = Em.ArrayController.create({
-          content: App.store.findAll(App.Product),
+    this.injectView(productsView, 'widget_products_like', '{{ config.target_id }}');
 
-          selectedProduct: undefined,
+    //# ----- HELPER JS ----- #//
+    $('a#vine-fb-connect').live('click', function (e) {});
 
-          getProduct: function(name){
-            for(var i=0;i<this.content.length;i++){
-              if (name===this.content.get(i).name){
-                return this.content.get(i);
-              }
-            }
-            return null;
-          },
+    //# ----- WIDGET END {{ object.slug }} ----- #//
+},
 
-          saveChanges: function(){
-            //App.store.commit();
-          }
-        });
-
-        //# ----- VIEWS ----- #//
-        /**
-         * The list of products
-         */
-        // productsView = Ember.CollectionView.create({
-        //   tagName: 'ul',
-        //   classNames: ['a-collection'],
-        //   content: [productController.content[0].name],
-        //   itemViewClass: Ember.View.extend({
-        //     template: Ember.Handlebars.compile("{{content}}")
-        //   })
-        // })
-        productsView = Em.View.create({
-          products: productController.content,
-          templateName: '{{ object.slug }}-product_list'
-        });
-        // productsView = Em.CollectionView.create({
-        //   contentBinding: 'App.productController.content',
-        //   tagName: "ul",
-
-        //   //NOTE Formerly known as itemView
-        //   itemViewClass: Em.View.extend({
-        //     classNames: ['product'],
-        //     template: '{{ object.slug }}-product_list',
-        //   })
-        // });
-
-        //# ----- INSTANTIATE VIEWS ----- #//
-        productsView.appendTo('{{ config.target_id|default:"body" }}');
-
-        //# ----- HELPER JS ----- #//
-        $('a#vine-fb-connect').live('click', function (e) {});
-    } // end cartvine_is_ready
-});

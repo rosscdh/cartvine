@@ -1,15 +1,17 @@
+import os
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, DetailView, ListView, FormView, RedirectView
 from django.template import loader, Context
+from django.contrib.staticfiles import finders
 
 from cartvine.utils import get_namedtuple_choices
 from cartvine.apps.shop.models import Shop
 
-from models import Widget, WidgetShop
-from forms import FacebookAuthWidgetForm, ProductsLikeWidgetForm
+from cartvine.apps.widget.models import Widget, WidgetShop
+from cartvine.apps.widget.forms import FacebookAuthWidgetForm, ProductsLikeWidgetForm, ShopPropsWidgetForm
 
 
 class AvailableWidgetView(ListView):
@@ -42,6 +44,7 @@ class MyWidgetEditView(FormView):
     WIDGET_FORMS = get_namedtuple_choices('WIDGET_FORMS', (
         (FacebookAuthWidgetForm, 'widget_auth_facebook', 'Facebook Auth'),
         (ProductsLikeWidgetForm, 'widget_products_like', 'Products Like This One'),
+        (ShopPropsWidgetForm, 'app_shop_prop', 'Shop Props'),
     ))
     template_name = 'widget/widget_edit.html'
 
@@ -82,7 +85,7 @@ class WidgetsForShopView(DetailView):
     """ View generates javascript response that is used to load widget js files 
     should be public """
     model = Shop
-    template_name = 'widget/for_shop.html'
+    template_name = 'widget/for_shop.js'
 
     def get_context_data(self, **kwargs):
         context = super(WidgetsForShopView, self).get_context_data(**kwargs)
@@ -93,40 +96,32 @@ class WidgetsForShopView(DetailView):
             '%semberjs/js/libs/ember-0.9.8.1.min.js'%(static_url),
             '%semberjs/js/libs/ember-data-latest.js'%(static_url),
             '%semberjs/js/libs/tastypie_adapter.js'%(static_url),
-            # 'https://raw.github.com/escalant3/ember-data-tastypie-adapter/master/tests/lib/ember-data.js',
-            # 'https://raw.github.com/escalant3/ember-data-tastypie-adapter/master/lib/tastypie_adapter.js',
             #'%semberjs/js/libs/ember-facebook.js'%(static_url),
             #'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js',
         ]
 
-        widget_list = Widget.objects.filter(shop=self.object)
+        widget_list = Widget.objects.filter(shop=self.object, widget_type=Widget.WIDGET_TYPE.text_javascript)
+        context['widget_list_init_names'] = [ w.slug.replace('-','_') for w in widget_list]
 
-        context['scripts'] = default_scripts + [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': widget.slug})),) for widget in widget_list ]
+        context['scripts'] = default_scripts #+ [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': widget.slug})),) for widget in widget_list ]
 
         # must be the last in this view as it needs a full context
         c = Context(context)
         templates = []
+        combined_widgets = []
+
         for widget in widget_list:
+            widget_shop_join = get_object_or_404(WidgetShop, widget=widget, shop=self.object)
+            c['config'] = widget_shop_join.data
+
+            template = '%s%s.js' %('widget/', widget.slug,)
+            combined_widgets.append(loader.get_template(template).render(c))
+
             for template in widget.data['templates']:
                 templates.append(loader.get_template(template).render(c))
 
         context['templates'] = templates
-        return context
-
-
-class SpecificWidgetForShopView(DetailView):
-    model = Widget
-    template_name = 'widget/widget.js'
-
-    def get_context_data(self, **kwargs):
-        context = super(SpecificWidgetForShopView, self).get_context_data(**kwargs)
-        shop = get_object_or_404(Shop, slug=self.kwargs['shop_slug'])
-        widget_shop_join = get_object_or_404(WidgetShop, widget=self.object, shop=shop)
-        context['config'] = widget_shop_join.data
-        context['shop'] = shop
-        
-        script_name = '%s%s.js' %('widget/', self.object.slug,)
-        self.template_name = script_name
+        context['combined_widgets'] = ''.join(combined_widgets)
 
         return context
 

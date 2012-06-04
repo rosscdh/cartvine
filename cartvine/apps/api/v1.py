@@ -1,4 +1,6 @@
 from django.conf.urls.defaults import url
+from django.utils import simplejson as json
+import ast
 
 from tastypie.resources import ModelResource
 from tastypie.validation import FormValidation
@@ -46,18 +48,33 @@ class CartvineBaseModelResource(ModelResource):
         return super(CartvineBaseModelResource, self).get_object_list(request)
 
 
-class ProductResource(CartvineBaseModelResource):
-    class Meta:
-        queryset = Product.objects.all()
-        resource_name = 'product'
-        serializer = Serializer(formats=available_formats)
-
-
 class ShopResource(CartvineBaseModelResource):
     class Meta:
         queryset = Shop.objects.all()
         resource_name = 'shop'
         serializer = Serializer(formats=available_formats)
+
+
+class ProductResource(CartvineBaseModelResource):
+    shop = fields.ForeignKey(ShopResource, 'shop')
+    class Meta:
+        queryset = Product.objects.all()
+        resource_name = 'product'
+        serializer = Serializer(formats=available_formats)
+        filtering = {
+            'shop': ['exact'],
+        }
+
+    def dehydrate(self, bundle):
+        data = ast.literal_eval(bundle.data['data'])
+        bundle.data['slug'] = data['handle'] # Override the local slug value as it is NOT the remote one necessarily, handle is always updated form teh shop
+        bundle.data['vendor_id'] = data['id']
+        bundle.data['featured_image'] = data['featured_image']
+        bundle.data['tags'] = data['tags']
+        bundle.data['product_type'] = data['product_type']
+        bundle.data['vendor'] = data['vendor']
+        del(bundle.data['data'])
+        return bundle
 
 
 class CustomerResource(CartvineBaseModelResource):

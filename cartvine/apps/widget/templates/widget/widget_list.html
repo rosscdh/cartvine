@@ -22,21 +22,17 @@
 </div>
 
 <h2>{% trans 'Available Widgets' %}</h2>
-<ul id="list-available-widget" class="widget-list pull-left">
+<ul id="list-available-widget" class="widget-list thumbnails">
 {% for w in available_widgets %}
     <li>
         <div class="widget-icon">
-            <a href="{% url 'widget:info' slug=w.slug %}"><img src="{{ STATIC_URL }}{{ w.widget_list_image }}" border="0" /></a>
-            {% if w not in object_list %}
+            <a href="{% url 'widget:info' slug=w.slug %}"><img class="thumb" src="{{ STATIC_URL }}{{ w.widget_list_image }}" border="0" /></a>
             <a href="{% url 'widget:info' slug=w.slug %}">{{ w }}</a>
-            {% else %}
-            <a href="{% url 'widget:edit' slug=w.slug %}">{{ w }}</a>
-            {% endif %}
         </div>
         {% if w not in object_list %}
         <button class="install-me btn btn-info" data-url="{% url 'widget:buy' slug=w.slug %}" href="#">FREE</button>
         {% else %}
-        <button class="btn btn-success" href="#"><i class="icon-ok icon-white"></i>&nbsp;Installed</button>
+        <button class="configure-me btn btn-success" data-url="{% url 'widget:edit' slug=w.slug %}" href="#"><i class="icon-ok icon-white"></i>&nbsp;{% trans 'Configure' %}</button>
         {% endif %}
     </li>
 {% empty %}
@@ -48,6 +44,10 @@
 
 {% block css %}
 <style>
+img.thumb{
+    width:60px;
+    height:60px;
+}
 ul.widget-list{
 list-style:none;
 }
@@ -59,7 +59,9 @@ ul.widget-list li button.btn{
 }
 div.widget-icon{
     width:80px;
-    min-height:80px;
+    height:100px;
+    min-height:100px;
+    max-height:100px;
     padding:10px;
     border:solid #3d3d3d 5px ;
     -moz-border-radius: 20px;
@@ -87,6 +89,11 @@ $(document).ready(function(){
             .fail(function(data) { 
 
             });
+    });
+
+    $('button.configure-me').live('click', function (e) {
+        event.preventDefault();
+        document.location = $(this).attr('data-url');
     });
 
 });

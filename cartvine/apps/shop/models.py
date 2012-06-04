@@ -15,6 +15,7 @@ class Shop(models.Model):
     provider_access_token = models.CharField(max_length=255,db_index=True)
     slug = models.SlugField(db_index=True)
     url = models.URLField(db_index=True)
+    etag_updated_at = models.DateTimeField(auto_now=True, auto_now_add=False) # Used in 34 response generation for served scripts
     data = JSONField(null=True)
 
     objects = ShopManager()

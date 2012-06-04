@@ -1,5 +1,5 @@
 {% extends 'widget/base.html' %}
-{% load i18n %}
+{% load i18n markup cartvine_widget_tags %}
 {% load url from future %}
 
 {% block title %}{% trans 'Info for' %} {{ object.name }}{% endblock %}
@@ -8,10 +8,22 @@
 <h1>{{ object.name }}</h1>
 {% endblock %}
 
+
 {% block body %}
 
-<div class="hero-unit">
-Info here
+{% widget_details as info %}
+
+<blockquote>
+{{ info.summary|markdown:"safe" }}
+</blockquote>
+
+
+<div>
+{{ info.detail|markdown:"safe" }}
 </div>
 
+<div>
+	<button class="configure-me btn btn-success" data-url="{% url 'widget:edit' slug=object.slug %}" href="#"><i class="icon-ok icon-white"></i>{% trans 'Configure' %}</button>
+	<button class="install-me btn btn-info" data-url="{% url 'widget:buy' slug=object.slug %}" href="#">FREE</button>
+</div>
 {% endblock %}
