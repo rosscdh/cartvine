@@ -25,7 +25,7 @@ class ShopExtendView(FormView):
     def get_initial(self):
         shop = Shop.objects.filter(users__in=[self.request.user])
         self.widget_config = get_object_or_404(WidgetShop.objects.filter(shop=shop), widget__slug=self.kwargs['slug'])
-        return self.widget_config.data['extended_props']['product']
+        return self.widget_config.data['extended_props']['product'] if 'extended_props' in self.widget_config.data and 'product' in self.widget_config.data['extended_props'] else {}
 
     def get_context_data(self, **kwargs):
         context = super(ShopExtendView, self).get_context_data(**kwargs)
