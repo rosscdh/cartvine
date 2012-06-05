@@ -26,8 +26,8 @@ logger = logging.getLogger('happy_log')
 
 
 def _return_address(request):
-    if request.get('next', None) is not None:
-        return request.get('next')
+    if request.GET.get('next', None) is not None:
+        return request.GET.get('next')
     else:
         return request.session.get('return_to') or reverse('default:index')
 
