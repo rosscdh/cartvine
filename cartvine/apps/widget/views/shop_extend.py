@@ -67,6 +67,12 @@ class ShopExtendApplyView(ShopExtendConfigView):
         self.object = self.model.objects.get(provider_id=self.provider_pk)
 
         if 'extended_props' in self.widget_config.data and 'product' in self.widget_config.data['extended_props']:
+            if 'widget' in self.object.data and 'app-shop-prop' in self.object.data['widget']:
+                for key in self.widget_config.data['extended_props']['product']:
+                    for i in self.object.data['widget']['app-shop-prop']:
+                        if i['name'] == key['name']:
+                            key['value'] = i['value']
+
             return self.widget_config.data['extended_props']['product']
         else:
             return {}
