@@ -16,6 +16,8 @@ from cartvine.apps.widget.views.base import MyWidgetEditView
 from cartvine.apps.shop.models import Shop
 from cartvine.apps.product.models import Product
 
+from cartvine.apps.widget.tasks import sync_product_metadata
+
 
 class ShopExtendConfigView(FormView):
     template_name = 'widget/shop_prop/widget_config.html'
@@ -86,6 +88,10 @@ class ShopExtendApplyView(ShopExtendConfigView):
             messages.success(request, _('You have Successfully saved your config settings'))
             for f in form:
                 f.save(self.object)
+            try:
+                sync_product_metadata.delay(self.shop, self.object)
+            except:
+                sync_product_metadata(self.shop, self.object)
 
         return super(FormView, self).post(request, *args, **kwargs)
 

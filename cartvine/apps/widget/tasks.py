@@ -39,3 +39,9 @@ def sync_assets(shop):
     logger.info('Updated Shopify Asset cartvine-loader.js %s'%(shop,))
 
     return None
+
+@task(name="sync_product_metadata")
+def sync_product_metadata(shop, product=None):
+    shop.activate_shopify_session()
+    
+    return None

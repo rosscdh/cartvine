@@ -75,8 +75,15 @@ class ShopPropsWidgetApplyForm(ShopPropsWidgetForm):
         name = self.cleaned_data['name']
         value = self.cleaned_data['value']
 
-        product.data['widget']['app-shop-prop'].append({'name': name, 'value': value})
+        found = False
+        for i in product.data['widget']['app-shop-prop']:
+            if i['name'] == name:
+                i['value'] = value
+                found = True
+                break
 
-        product.data['widget']['app-shop-prop'] = list(self.uniquiefy(product.data['widget']['app-shop-prop']))
+        if found == False:
+            product.data['widget']['app-shop-prop'].append({'name': name, 'value': value})
+            product.data['widget']['app-shop-prop'] = list(self.uniquiefy(product.data['widget']['app-shop-prop']))
 
         return product.save()
