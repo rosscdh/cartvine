@@ -10,11 +10,14 @@ from django.forms.formsets import formset_factory
 
 from cartvine.apps.widget.forms import ShopPropsWidgetForm
 from cartvine.apps.widget.models import Widget, WidgetShop
+from cartvine.apps.widget.views.base import MyWidgetEditView
+
 from cartvine.apps.shop.models import Shop
+from cartvine.apps.product.models import Product
 
 
-class ShopExtendView(FormView):
-    template_name = 'widget/shop_prop/widget_edit.html'
+class ShopExtendConfigView(FormView):
+    template_name = 'widget/shop_prop/widget_config.html'
 
     def get_form_class(self):
         return formset_factory(ShopPropsWidgetForm, extra=3)
@@ -25,11 +28,10 @@ class ShopExtendView(FormView):
     def get_initial(self):
         shop = Shop.objects.filter(users__in=[self.request.user])
         self.widget_config = get_object_or_404(WidgetShop.objects.filter(shop=shop), widget__slug=self.kwargs['slug'])
-        return self.widget_config.data['extended_props']['product']
-
-    def get_context_data(self, **kwargs):
-        context = super(ShopExtendView, self).get_context_data(**kwargs)
-        return context
+        try:
+            return self.widget_config.data['extended_props']['product']
+        except KeyError:
+            return {}
 
     def post(self, request, *args, **kwargs):
         form = self.get_form(self.get_form_class())
@@ -41,3 +43,17 @@ class ShopExtendView(FormView):
 
         return super(ShopExtendView, self).post(request, *args, **kwargs)
     
+class ShopExtendApplyView(DetailView):
+    model = Product
+    template_name = 'widget/shop_prop/product_edit.html'
+
+    def get_object(self):
+        shop = Shop.objects.filter(users__in=[self.request.user])
+        self.widget_config = get_object_or_404(WidgetShop.objects.filter(shop=shop), widget__slug=self.kwargs['slug'])
+        return self.model.objects.get(provider_id=self.request.GET.get('id'))
+
+    def get_context_data(self, **kwargs):
+        context = super(ShopExtendApplyView, self).get_context_data(**kwargs)
+        context['widget_slug'] = self.kwargs['slug']
+        context['widget_config'] = self.widget_config
+        return context

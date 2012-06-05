@@ -26,7 +26,7 @@ class ProductsLikeWidgetForm(BaseJavascriptWidgetEditForm):
 
 class ShopPropsWidgetForm(bootstrap.BootstrapForm):
     name = forms.CharField(_('Property Name'),help_text=_('eg. Color, Size, Type...'),required=True)
-    value = forms.CharField(_('Property Value'),help_text=_('Green;Red;Blue ... use ; to seperate. or leave blank'),required=True)
+    value = forms.CharField(_('Property Value'),help_text=_('Green;Red;Blue ... use ; to seperate. or leave blank'),required=False)
 
     class Meta:
         layout = (bootstrap.Fieldset("Custom Properties", "name", "value"),)

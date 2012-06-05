@@ -1,0 +1,41 @@
+{% extends 'widget/widget_edit.html' %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% trans 'Info for' %} {{ object.name }}{% endblock %}
+
+{% block content-head %}
+<h1>{% trans 'Properties for ' %}{{ object.name }}</h1>
+{% endblock %}
+
+{% block body %}
+<h2>{% trans 'Current Options' %}</h2>
+<ul>
+{% for option in object.data.options %}
+<li>{{ option }}</li>
+{% empty %}
+<li>None Configured</li>
+{% endfor %}
+</ul>
+
+<h2>{% trans 'Extended Options' %}</h2>
+<a href="{% url 'widget:custom_config' slug=widget_slug %}">{% trans 'Configure more' %}</a>
+<form action="." method="post" class="form-inline">{% csrf_token %}
+    <ul>
+    {% for option in widget_config.data.extended_props.product %}
+    <li>
+        <label for="">{{ option.name }}</label> {{ option.value }}
+    </li>
+    {% empty %}
+    <li>None Configured</li>
+    {% endfor %}
+    </ul>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
+
+<div class="span5 pull-right">
+    
+</div>
+{% endblock %}
