@@ -9,7 +9,7 @@ from django.template import loader, Context
 from django.contrib.admin.views.main import ChangeList
 from django.forms.formsets import formset_factory
 
-from cartvine.apps.widget.forms import ShopPropsWidgetForm
+from cartvine.apps.widget.forms import ShopPropsWidgetForm, ShopPropsWidgetApplyForm
 from cartvine.apps.widget.models import Widget, WidgetShop
 from cartvine.apps.widget.views.base import MyWidgetEditView
 
@@ -45,17 +45,47 @@ class ShopExtendConfigView(FormView):
         return super(ShopExtendConfigView, self).post(request, *args, **kwargs)
 
 
-class ShopExtendApplyView(DetailView):
+class ShopExtendApplyView(ShopExtendConfigView):
     model = Product
     template_name = 'widget/shop_prop/product_edit.html'
 
-    def get_object(self):
-        shop = Shop.objects.filter(users__in=[self.request.user])
-        self.widget_config = get_object_or_404(WidgetShop.objects.filter(shop=shop), widget__slug=self.kwargs['slug'])
-        return self.model.objects.get(provider_id=self.request.GET.get('id'))
+    def get_form_class(self):
+        return formset_factory(ShopPropsWidgetApplyForm, extra=0, can_delete=False)
+
+    def get_success_url(self):
+        return reverse('widget:custom_apply_post', kwargs={'slug': self.kwargs['slug'], 'provider_pk': self.kwargs['provider_pk']})
+
+    def get_initial(self):
+        self.shop = Shop.objects.filter(users__in=[self.request.user])
+        self.widget_config = get_object_or_404(WidgetShop.objects.filter(shop=self.shop), widget__slug=self.kwargs['slug'])
+
+        self.provider_pk = self.request.GET.get('id') if 'id' in self.request.GET else self.kwargs['provider_pk']
+        self.kwargs['provider_pk'] = int(self.provider_pk)
+
+        self.object = self.model.objects.get(provider_id=self.provider_pk)
+
+        if 'widget' in self.object.data and 'app-shop-prop' in self.object.data['widget']:
+            return self.object.data['widget']['app-shop-prop']
+        else:
+            return {}
 
     def get_context_data(self, **kwargs):
-        context = super(ShopExtendApplyView, self).get_context_data(**kwargs)
+        context = super(ShopExtendApplyView, self).get_context_data(**kwargs)        
+        context['object'] = self.object
         context['widget_slug'] = self.kwargs['slug']
+        context['provider_pk'] = self.kwargs['provider_pk']
         context['widget_config'] = self.widget_config
+
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form(self.get_form_class())
+        self.object = self.model.objects.get(provider_id=self.kwargs['provider_pk'])
+
+        if form.is_valid():
+            messages.success(request, _('You have Successfully saved your config settings'))
+            for f in form:
+                f.save(self.object)
+
+        return super(FormView, self).post(request, *args, **kwargs)
+

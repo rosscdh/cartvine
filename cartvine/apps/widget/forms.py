@@ -25,7 +25,7 @@ class ProductsLikeWidgetForm(BaseJavascriptWidgetEditForm):
 
 class ShopPropsWidgetForm(bootstrap.BootstrapForm):
     name = forms.CharField(_('Property Name'),help_text=_('eg. Color, Size, Type...'),required=True)
-    value = forms.CharField(_('Property Value'),help_text=_('Green;Red;Blue ... use ; to seperate. or leave blank'),required=False)
+    value = forms.CharField(_('Default Value'),help_text=_('Leave blank if there is no default value'),required=False)
     DELETE = forms.BooleanField(required=False)
 
     class Meta:
@@ -42,7 +42,7 @@ class ShopPropsWidgetForm(bootstrap.BootstrapForm):
         if 'name' in self.cleaned_data and 'value' in self.cleaned_data:
             if 'extended_props' not in widget_shop_config.data:
                 widget_shop_config.data['extended_props'] = {}
-            widget_shop_config.data['extended_props']['product'] = []
+                widget_shop_config.data['extended_props']['product'] = []
 
             #safe_name = slugify(self.cleaned_data['name'])
             name = self.cleaned_data['name']
@@ -60,3 +60,23 @@ class ShopPropsWidgetForm(bootstrap.BootstrapForm):
         else:
             return False
 
+class ShopPropsWidgetApplyForm(ShopPropsWidgetForm):
+    def __init__(self, *args, **kwargs):
+        super(ShopPropsWidgetApplyForm,self).__init__(*args, **kwargs)
+        self.fields['name'].widget = forms.widgets.HiddenInput()
+        self.fields.pop('DELETE')
+
+    def save(self, product, commit=True):
+        if 'widget' not in product.data:
+            product.data['widget'] = {}
+        if 'app-shop-prop' not in product.data['widget']:
+            product.data['widget']['app-shop-prop'] = []
+
+        name = self.cleaned_data['name']
+        value = self.cleaned_data['value']
+
+        product.data['widget']['app-shop-prop'].append({'name': name, 'value': value})
+
+        product.data['widget']['app-shop-prop'] = list(self.uniquiefy(product.data['widget']['app-shop-prop']))
+
+        return product.save()

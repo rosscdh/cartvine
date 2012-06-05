@@ -9,34 +9,40 @@
 {% endblock %}
 
 {% block body %}
-<h2>{% trans 'Current Options' %}</h2>
-<ul>
-{% for option in object.data.options %}
-<li>{{ option }}</li>
-{% empty %}
-<li>None Configured</li>
-{% endfor %}
-</ul>
-
-<h2>{% trans 'Extended Options' %}</h2>
-<a href="{% url 'widget:custom_config' slug=widget_slug %}">{% trans 'Configure more' %}</a>
-<form action="." method="post" class="form-inline">{% csrf_token %}
+<div class="span5">
+    <h2>{% trans 'Current Properties' %}</h2>
     <ul>
-    {% for option in widget_config.data.extended_props.product %}
-    <li>
-        <label for="">{{ option.name }}</label> {{ option.value }}
-        <button class="install-me btn btn-inverse" href="#">Apply</button>
-    </li>
+    {% for option in object.data.options %}
+    <li>{{ option }}</li>
     {% empty %}
     <li>None Configured</li>
     {% endfor %}
     </ul>
-    <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Save</button>
-    </div>
-</form>
 
-<div class="span5 pull-right">
-    
+    <h2>{% trans 'Custom Properties' %}</h2>
+
+    <p class="pull-right"><a class="btn btn-inverse" href="{% url 'widget:custom_config' slug=widget_slug %}">{% trans 'Add Properties' %}</a></p>
+    <div clas="clearfix">&nbsp;</div>
+
+    <form action="{% url 'widget:custom_apply_post' slug=widget_slug provider_pk=provider_pk %}" method="post" class="form-horizontal">{% csrf_token %}
+        {{ form.management_form }}
+        {% for form_item in form %}
+        {{ form_item.name }}
+        <div class="control-group">
+            <label class="control-label" for="{{ form_item.value.auto_id }}">{{ form_item.name.value }}</label>
+            <div class="controls">
+                {{ form_item.value }}
+            </div>
+        </div>
+        {% empty %}
+            {% trans 'No Properties Configured' %}
+            <a class="btn btn-success" href="{% url 'widget:custom_config' slug=widget_slug %}">{% trans 'Add Properties' %}</a>
+        {% endfor %}
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+        
 </div>
 {% endblock %}
