@@ -36,7 +36,6 @@
         </div>
         {% empty %}
             {% trans 'No Properties Configured' %}
-            <a class="btn btn-success" href="{% url 'widget:custom_config' slug=widget_slug %}">{% trans 'Add Properties' %}</a>
         {% endfor %}
         
         <div class="form-actions">
