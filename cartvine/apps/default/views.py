@@ -26,7 +26,10 @@ logger = logging.getLogger('happy_log')
 
 
 def _return_address(request):
-    return request.session.get('return_to') or reverse('default:index')
+    if request.REQUEST.get('next', None) is not None:
+        return request.REQUEST.get('next')
+    else:
+        return request.session.get('return_to') or reverse('default:index')
 
 
 class DefaultView(TemplateView):
