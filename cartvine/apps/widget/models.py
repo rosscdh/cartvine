@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from jsonfield import JSONField
 from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse
 
 from cartvine.utils import get_namedtuple_choices
 from cartvine.apps.plan.models import Plan

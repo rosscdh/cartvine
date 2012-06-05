@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, DetailView, ListView, FormView, RedirectView
 from django.template import loader, Context
 from django.contrib.staticfiles import finders
+from django.contrib import messages
 
 from cartvine.utils import get_namedtuple_choices
 from cartvine.apps.shop.models import Shop
@@ -74,6 +75,8 @@ class MyWidgetEditView(FormView):
             for field in form.fields:
                 self.widget_config.data[field] = form.cleaned_data[field]
             self.widget_config.save()
+            messages.success(request, _('Successfully updated Widget'))
+
         return super(MyWidgetEditView, self).post(request, *args, **kwargs)
 
 
