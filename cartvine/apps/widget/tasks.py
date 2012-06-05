@@ -14,7 +14,7 @@ logger = logging.getLogger('happy_log')
 
 
 @task(name="sync_assets")
-def sync_assets(shop, shopify_session):
+def sync_assets(shop):
     """ Task to sync the assets installed on the remote client with 
     Ours """
     site_list = Site.objects.all()

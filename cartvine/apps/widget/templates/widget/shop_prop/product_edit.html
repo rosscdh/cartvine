@@ -25,6 +25,7 @@
     {% for option in widget_config.data.extended_props.product %}
     <li>
         <label for="">{{ option.name }}</label> {{ option.value }}
+        <button class="install-me btn btn-inverse" href="#">Apply</button>
     </li>
     {% empty %}
     <li>None Configured</li>

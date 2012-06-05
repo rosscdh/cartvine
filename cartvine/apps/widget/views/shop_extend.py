@@ -1,5 +1,6 @@
 import os
 from django.conf import settings
+from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
@@ -20,29 +21,30 @@ class ShopExtendConfigView(FormView):
     template_name = 'widget/shop_prop/widget_config.html'
 
     def get_form_class(self):
-        return formset_factory(ShopPropsWidgetForm, extra=3)
+        return formset_factory(ShopPropsWidgetForm, extra=1, can_delete=True)
 
     def get_success_url(self):
-        return reverse('widget:custom_edit', kwargs={'slug': self.kwargs['slug']})
+        return reverse('widget:custom_config', kwargs={'slug': self.kwargs['slug']})
 
     def get_initial(self):
         shop = Shop.objects.filter(users__in=[self.request.user])
         self.widget_config = get_object_or_404(WidgetShop.objects.filter(shop=shop), widget__slug=self.kwargs['slug'])
-        try:
+        if 'extended_props' in self.widget_config.data and 'product' in self.widget_config.data['extended_props']:
             return self.widget_config.data['extended_props']['product']
-        except KeyError:
+        else:
             return {}
 
     def post(self, request, *args, **kwargs):
         form = self.get_form(self.get_form_class())
 
         if form.is_valid():
-
+            messages.success(request, _('You have Successfully saved your config settings'))
             for f in form:
                 f.save(self.widget_config)
 
-        return super(ShopExtendView, self).post(request, *args, **kwargs)
-    
+        return super(ShopExtendConfigView, self).post(request, *args, **kwargs)
+
+
 class ShopExtendApplyView(DetailView):
     model = Product
     template_name = 'widget/shop_prop/product_edit.html'

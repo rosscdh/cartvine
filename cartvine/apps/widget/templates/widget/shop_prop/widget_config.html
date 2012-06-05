@@ -5,7 +5,7 @@
 {% block body %}
 <div class="span5">
     <form action="." method="post" class="form-horizontal">{% csrf_token %}
-        {{form.management_form }}
+        {{ form.management_form }}
         {% for form_item in form %}
             {{ form_item }}
         {% endfor %}

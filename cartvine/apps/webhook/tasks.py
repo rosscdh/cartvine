@@ -11,7 +11,7 @@ logger = logging.getLogger('happy_log')
 
 
 @task(name="sync_shopify_webhook")
-def sync_webhook(webhook_callback_address, shop, shopify_session):
+def sync_webhook(webhook_callback_address, shop):
     """ Task to sync the products listed in Shopify shop with local database 
     Called on login/install """
 

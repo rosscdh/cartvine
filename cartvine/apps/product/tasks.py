@@ -17,7 +17,7 @@ logger = logging.getLogger('happy_log')
 
 
 @task(name="sync_products")
-def sync_products(shopify_session, shop):
+def sync_products(shop):
     """ Task to sync the products listed in Shopify shop with local database 
     Called on login/install """
 
@@ -44,14 +44,13 @@ def sync_products(shopify_session, shop):
         for product in shopify_products:
             # should use get_or_create here?
             safe_attribs = product.__dict__['attributes']
-            safe_attribs['variants'] = None
-            safe_attribs['options'] = None
+            safe_attribs['variants'] = [v.attributes for v in product.variants]
+            safe_attribs['options'] = [o.attributes for o in product.options]
             safe_attribs['featured_image'] = product.attributes['images'][0].attributes['src'] if len(product.attributes['images']) > 0 else None
-            safe_attribs['images'] = []
-
             if len(product.attributes['images']) > 0:
-                for i in product.images:
-                    safe_attribs['images'].append(i.attributes['src'])
+                safe_attribs['images'] = [i.attributes['src'] for i in product.attributes['images']]
+            else:
+                safe_attribs['images'] = []
 
             p, is_new = Product.objects.get_or_create(shop=shop, provider_id=product.id)
             p.data = safe_attribs

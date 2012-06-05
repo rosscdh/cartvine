@@ -53,9 +53,11 @@ def deploy(hard_deploy, env, app_name, project_name, remote_project_path):
 
 
 @hosts(live_hosts)
-def deploy_live(hard_deploy):
-  if hard_deploy in ['True', 'true', True]:
+def deploy_live(hard):
+  if hard in ['True', 'true', True]:
     hard_deploy = True
+  else:
+    hard_deploy = False
 
   env = 'live'
   prepare_deploy()
