@@ -2,6 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from bootstrap import forms as bootstrap
 from bootstrap import widgets as bootstrap_widgets
+from django.template.defaultfilters import slugify
 
 from cartvine.utils import get_namedtuple_choices
 
@@ -24,14 +25,22 @@ class ProductsLikeWidgetForm(BaseJavascriptWidgetEditForm):
 
 
 class ShopPropsWidgetForm(bootstrap.BootstrapForm):
-    PROPERTY_TYPES = get_namedtuple_choices('PROPERTY_TYPES', (
-        ('string', 'string_single_input', 'Single Choice'),
-        ('string', 'string_multiple_input', 'Multiple Choice'),
-        ('string', 'string_user_defined', 'User Defined'),
-    ))
-    property_name = forms.CharField(_('Property Name'),help_text=_('eg. Color, Size, Type...'),required=True)
-    property_type = forms.ChoiceField(label=_('Property Type'), choices=PROPERTY_TYPES.get_choices(),required=True)
-    property_value = forms.CharField(_('Property Value'),help_text=_('Green;Red;Blue ... use ; to seperate. or leave blank'),required=True)
+    name = forms.CharField(_('Property Name'),help_text=_('eg. Color, Size, Type...'),required=True)
+    value = forms.CharField(_('Property Value'),help_text=_('Green;Red;Blue ... use ; to seperate. or leave blank'),required=True)
 
     class Meta:
-        layout = (bootstrap.Fieldset("Configure your Application", "property_name", "property_value", "property_type"),)
+        layout = (bootstrap.Fieldset("Custom Properties", "name", "value"),)
+
+    def save(self, widget_shop_config, commit=True):
+        if 'name' in self.cleaned_data and 'value' in self.cleaned_data:
+            if 'extended_props' not in widget_shop_config.data:
+                widget_shop_config.data['extended_props'] = dict({})
+                widget_shop_config.data['extended_props']['product'] = []
+
+            #safe_name = slugify(self.cleaned_data['name'])
+            widget_shop_config.data['extended_props']['product'].append({'name': self.cleaned_data['name'], 'value': self.cleaned_data['value']})
+
+            return widget_shop_config.save()
+        else:
+            return False
+

@@ -4,14 +4,17 @@
 
 {% block body %}
 <div class="span5">
-    <form action="" method="post" class="form-horizontal">{% csrf_token %}
-        {{ form }}
+    <form action="." method="post" class="form-horizontal">{% csrf_token %}
+        {{form.management_form }}
+        {% for form_item in form %}
+            {{ form_item }}
+        {% endfor %}
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Save</button>
         </div>
     </form>
 </div>
 <div class="span5 pull-right">
-    {% include 'widget/shop_prop/change_list.html' %}
+    
 </div>
 {% endblock %}
