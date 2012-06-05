@@ -29,7 +29,7 @@ class ShopExtendConfigView(FormView):
         return reverse('widget:custom_config', kwargs={'slug': self.kwargs['slug']})
 
     def get_initial(self):
-        shop = Shop.objects.filter(users__in=[self.request.user])
+        shop = Shop.objects.filter(users__in=[self.request.user])[0]
         self.widget_config = get_object_or_404(WidgetShop.objects.filter(shop=shop), widget__slug=self.kwargs['slug'])
         if 'extended_props' in self.widget_config.data and 'product' in self.widget_config.data['extended_props']:
             return self.widget_config.data['extended_props']['product']
@@ -58,7 +58,7 @@ class ShopExtendApplyView(ShopExtendConfigView):
         return reverse('widget:custom_apply_post', kwargs={'slug': self.kwargs['slug'], 'provider_pk': self.kwargs['provider_pk']})
 
     def get_initial(self):
-        self.shop = Shop.objects.filter(users__in=[self.request.user])
+        self.shop = Shop.objects.filter(users__in=[self.request.user])[0]
         self.widget_config = get_object_or_404(WidgetShop.objects.filter(shop=self.shop), widget__slug=self.kwargs['slug'])
 
         self.provider_pk = self.request.GET.get('id') if 'id' in self.request.GET else self.kwargs['provider_pk']
