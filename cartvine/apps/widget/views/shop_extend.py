@@ -10,6 +10,7 @@ from django.contrib.admin.views.main import ChangeList
 from django.forms.formsets import formset_factory
 
 from cartvine.apps.widget.forms import ShopPropsWidgetForm, ShopPropsWidgetApplyForm
+from cartvine.apps.product.forms import ProductVariantForm
 from cartvine.apps.widget.models import Widget, WidgetShop
 from cartvine.apps.widget.views.base import MyWidgetEditView
 
@@ -81,6 +82,10 @@ class ShopExtendApplyView(ShopExtendConfigView):
     def get_context_data(self, **kwargs):
         context = super(ShopExtendApplyView, self).get_context_data(**kwargs)        
         context['object'] = self.object
+        context['variants'] = self.object.productvariant_set.all()
+        variants = [v.data for v in context['variants']]
+        variant_formset = formset_factory(ProductVariantForm, extra=0, can_delete=False)
+        context['variant_form'] = variant_formset(initial=variants)
         context['widget_slug'] = self.kwargs['slug']
         context['provider_pk'] = self.kwargs['provider_pk']
         context['widget_config'] = self.widget_config

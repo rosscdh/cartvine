@@ -37,11 +37,20 @@
         {% empty %}
             {% trans 'No Properties Configured' %}
         {% endfor %}
-        
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Save</button>
         </div>
     </form>
-        
+
+    <form action="{% url 'widget:custom_apply_post' slug=widget_slug provider_pk=provider_pk %}" method="post" class="form-horizontal">{% csrf_token %}
+        {{ variant_form.management_form }}
+        {% for form in variant_form %}
+        {{ form }}
+        {% empty %}
+        {% endfor %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
 </div>
 {% endblock %}
