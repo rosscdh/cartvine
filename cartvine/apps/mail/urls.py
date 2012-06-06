@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.conf.urls import patterns, include, url
-from django.contrib.auth.decorators import login_required
+from cartvine.utils import login_required
 from django.views.generic import ListView, TemplateView, DetailView
 
 from models import CartvineEmail
