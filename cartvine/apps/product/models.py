@@ -44,7 +44,7 @@ class Product(models.Model):
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product)
     provider_id = models.IntegerField(db_index=True)
-    sku = models.CharField(max_length=128,db_index=True)
+    sku = models.CharField(max_length=128,null=True,db_index=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
     inventory_quantity = models.IntegerField(default=0)
     data = JSONField()
