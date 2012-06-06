@@ -118,7 +118,7 @@ class FinalizeInstallationView(RedirectView):
 
             # Setup the shopify session and show message
             request.session['shopify'] = shopify_session
-            messages.info(request, _('Sucessfully logged into your shopify store.'))
+            messages.info(request, _('You have successfully, logged into Cartvine'))
 
         response = redirect(_return_address(request))
         request.session.pop('return_to', None)
