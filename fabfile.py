@@ -37,8 +37,8 @@ def deploy(hard_deploy, env, app_name, project_name, remote_project_path):
 
     if hard_deploy == True:
       print 'IS A HARD DEPLOY'
-      run('rm -Rf %s/%s' %(remote_project_path,app_name,))
-      run('mkdir -p %s/%s' %(remote_project_path,app_name,))
+      run('rm -Rf %s/%s' %(remote_project_path,project_name,))
+      run('mkdir -p %s/%s' %(remote_project_path,project_name,))
     else:
       print 'IS A SOFT DEPLOY'
 

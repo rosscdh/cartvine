@@ -11,7 +11,6 @@ class ProductVariantForm(bootstrap.BootstrapForm):
     grams = forms.CharField()
     title = forms.CharField()
     inventory_policy = forms.CharField()
-    requires_shipping = forms.BooleanField()
     created_at = forms.CharField(widget=forms.widgets.HiddenInput())
     updated_at = forms.CharField(widget=forms.widgets.HiddenInput())
     inventory_quantity = forms.IntegerField()
@@ -23,6 +22,7 @@ class ProductVariantForm(bootstrap.BootstrapForm):
     option1 = forms.CharField()
     option2 = forms.CharField()
     option3 = forms.CharField()
+    requires_shipping = forms.BooleanField()
     taxable = forms.BooleanField()
     compare_at_price = forms.BooleanField()
 
