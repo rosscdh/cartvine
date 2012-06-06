@@ -26,8 +26,11 @@ logger = logging.getLogger('happy_log')
 
 
 def _return_address(request):
+    url_append = None
     if request.GET.get('next', None) is not None:
-        return request.GET.get('next')
+        if request.GET.get('id', None) is not None:
+            url_append = '?id=%s' %(request.GET.get('id'),)
+        return request.GET.get('next') + url_append
     else:
         return request.session.get('return_to') or reverse('default:index')
 
@@ -40,6 +43,12 @@ class DefaultView(TemplateView):
 
         if shop:
             redirect_uri = request.build_absolute_uri(reverse('default:finalize'))
+            if request.GET.get('next', None) is not None:
+                url_append = '?next=%s' %(request.GET.get('next'))
+                if request.GET.get('id', None) is not None:
+                    url_append = '%s&id=%s' %(url_append, request.GET.get('id'))
+                redirect_uri += url_append
+
             permission_url = shopify.Session.create_permission_url(shop.strip(), scope=settings.SHOPIFY_ACCESS_SCOPE, redirect_uri=redirect_uri)
             return redirect(permission_url)
 
