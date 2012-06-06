@@ -14,7 +14,7 @@ logger = logging.getLogger('happy_log')
 
 
 @task(name="sync_assets")
-def sync_assets(shop, shopify_session):
+def sync_assets(shop):
     """ Task to sync the assets installed on the remote client with 
     Ours """
     site_list = Site.objects.all()
@@ -38,4 +38,10 @@ def sync_assets(shop, shopify_session):
     cartvineloader_asset.save()
     logger.info('Updated Shopify Asset cartvine-loader.js %s'%(shop,))
 
+    return None
+
+@task(name="sync_product_metadata")
+def sync_product_metadata(shop, product=None):
+    shop.activate_shopify_session()
+    
     return None

@@ -33,7 +33,15 @@ def prepare_deploy():
 def conclude_deploy():
     run('unlink /tmp/%s.zip'%(PROJECT,))
 
-def deploy(env, app_name, project_name, remote_project_path):
+def deploy(hard_deploy, env, app_name, project_name, remote_project_path):
+
+    if hard_deploy == True:
+      print 'IS A HARD DEPLOY'
+      run('rm -Rf %s/%s' %(remote_project_path,app_name,))
+      run('mkdir -p %s/%s' %(remote_project_path,app_name,))
+    else:
+      print 'IS A SOFT DEPLOY'
+
     # extract project zip file
     with cd('%s/'%(remote_project_path,)):
       run('unzip /tmp/%s.zip'%(PROJECT,))
@@ -45,12 +53,17 @@ def deploy(env, app_name, project_name, remote_project_path):
 
 
 @hosts(live_hosts)
-def deploy_live():
+def deploy_live(hard=True):
+  if hard in ['True', 'true', True]:
+    hard_deploy = True
+  else:
+    hard_deploy = False
+
   env = 'live'
   prepare_deploy()
 
   for app_name, project, project_path in REMOTE_PROJECT_PATHS:
-    deploy(env, app_name, project, project_path)
+    deploy(hard_deploy, env, app_name, project, project_path)
 
   conclude_deploy()
 

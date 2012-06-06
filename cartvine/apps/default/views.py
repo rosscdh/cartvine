@@ -26,7 +26,10 @@ logger = logging.getLogger('happy_log')
 
 
 def _return_address(request):
-    return request.session.get('return_to') or reverse('default:index')
+    if request.GET.get('next', None) is not None:
+        return request.GET.get('next')
+    else:
+        return request.session.get('return_to') or reverse('default:index')
 
 
 class DefaultView(TemplateView):
@@ -92,17 +95,17 @@ class FinalizeInstallationView(RedirectView):
 
             try:
                 # Create/Get Shopify Webhook
-                sync_webhook.delay(webhook_callback_address, shop, shopify_session)
-                sync_assets.delay(shop, shopify_session)
+                sync_webhook.delay(webhook_callback_address, shop)
+                sync_assets.delay(shop)
                 # Call Product Sync Task here
-                sync_products.delay(shopify_session, shop)
-                sync_customers.delay(shopify_session, shop)
+                sync_products.delay(shop)
+                sync_customers.delay(shop)
             except:
                 # Try the same calls without the celery async .delay()
-                sync_webhook(webhook_callback_address, shop, shopify_session)
-                sync_assets(shop, shopify_session)
-                sync_products(shopify_session, shop)
-                sync_customers(shopify_session, shop)
+                sync_webhook(webhook_callback_address, shop)
+                sync_assets(shop)
+                sync_products(shop)
+                sync_customers(shop)
 
             # Setup the shopify session and show message
             request.session['shopify'] = shopify_session

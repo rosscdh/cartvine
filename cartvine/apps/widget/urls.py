@@ -1,18 +1,21 @@
 from django.conf import settings
 from django.conf.urls import patterns, include, url
-from django.contrib.auth.decorators import login_required
+from cartvine.utils import login_required
 from django.core.urlresolvers import reverse
 from django.views.decorators.cache import cache_page
 
 from views.base import AvailableWidgetView, WidgetInfoView, MyWidgetView, MyWidgetEditView
 from views.base import WidgetLoaderView, WidgetsForShopView, BuyWidgetView
-from views.shop_extend import ShopExtendView
+from views.shop_extend import ShopExtendConfigView, ShopExtendApplyView
 
 urlpatterns = patterns('',
     url(r'^cartvine-loader\.js$', cache_page(1800, WidgetLoaderView.as_view()), name='widget_loader'),
     url(r'^script/(?P<slug>[-\w]+)/$', cache_page(60, WidgetsForShopView.as_view()), name='for_shop'),
 
-    url(r'^my/(?P<slug>[-\w]+)/custom/$', login_required(ShopExtendView.as_view()), name='custom_edit'),# #TODO MAKE LESS HARDCODED
+    url(r'^my/app/(?P<slug>[-\w]+)/config/$', login_required(ShopExtendConfigView.as_view()), name='custom_config'),
+	url(r'^my/app/(?P<slug>[-\w]+)/apply/(?P<provider_pk>\d+)/$', login_required(ShopExtendApplyView.as_view()), name='custom_apply_post'),
+    url(r'^my/app/(?P<slug>[-\w]+)/apply/$', login_required(ShopExtendApplyView.as_view()), name='custom_apply'),
+
     url(r'^my/(?P<slug>[-\w]+)/$', login_required(MyWidgetEditView.as_view()), name='edit'),
     url(r'^my/$', login_required(MyWidgetView.as_view()), name='my'),
 

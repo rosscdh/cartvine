@@ -11,7 +11,7 @@ logger = logging.getLogger('happy_log')
 
 
 @task(name="sync_customers")
-def sync_customers(shopify_session, shop):
+def sync_customers(shop):
     """ Task to sync the products listed in Shopify shop with local database 
     Called on login/install """
 
