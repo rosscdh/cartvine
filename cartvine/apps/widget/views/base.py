@@ -120,7 +120,7 @@ class WidgetsForShopView(DetailView):
             template = '%s%s.js' %('widget/', widget.slug,)
             combined_widgets.append(loader.get_template(template).render(c))
 
-            if 'templates' in widget.data:
+            if 'templates' in widget.data and len(widget.data['templates']) > 0:
                 for template in widget.data['templates']:
                     templates.append(loader.get_template(template).render(c))
 
