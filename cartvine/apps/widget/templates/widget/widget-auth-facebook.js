@@ -1,5 +1,6 @@
 {% load url from future %}
-this.widget_auth_facebook = function() {
+//this.widget_auth_facebook = function() {
+this.{{ widget.widget_js_name }} = function() {
     //# ----- WIDGET START {{ object.slug }} -----
     //# ----- APP OVERRIDES & EXTENSIONS -----
     //# ----- MODELS -----

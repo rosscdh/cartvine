@@ -36,6 +36,10 @@ class Widget(models.Model):
         else:
             return None
 
+    @property
+    def widget_js_name(self):
+        return u'%s' %(self.slug.replace('-','_'))
+
 
 class WidgetInfo(models.Model):
     """ Modle used to store the Widget Description Info """

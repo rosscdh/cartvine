@@ -1,5 +1,6 @@
 {% load url from future %}
-this.widget_products_like = function() {
+//this.widget_products_like = function() {
+this.{{ widget.widget_js_name }} = function() {
     var _this = this;
     //# ----- WIDGET START {{ object.slug }} -----
     //# ----- DATA STORE -----

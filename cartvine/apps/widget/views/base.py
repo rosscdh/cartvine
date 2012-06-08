@@ -105,7 +105,7 @@ class WidgetsForShopView(DetailView):
         ]
 
         widget_list = Widget.objects.filter(shop=self.object)
-        context['widget_list_init_names'] = [ w.slug.replace('-','_') for w in widget_list]
+        context['widget_list_init_names'] = [ w.widget_js_name for w in widget_list]
 
         context['scripts'] = default_scripts #+ [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': widget.slug})),) for widget in widget_list ]
 
@@ -115,6 +115,7 @@ class WidgetsForShopView(DetailView):
         combined_widgets = []
 
         for widget in widget_list:
+            c['widget'] = widget
             widget_shop_join = get_object_or_404(WidgetShop, widget=widget, shop=self.object)
             c['config'] = widget_shop_join.data
 
