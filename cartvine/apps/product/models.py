@@ -39,3 +39,12 @@ class Product(models.Model):
 
     def get_images_src(self):
         return self.data['images'] if 'images' in self.data and isinstance(self.data['images'], type([])) else None
+
+
+class ProductVariant(models.Model):
+    product = models.ForeignKey(Product)
+    provider_id = models.IntegerField(db_index=True)
+    sku = models.CharField(max_length=128,null=True,db_index=True)
+    updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
+    inventory_quantity = models.IntegerField(default=0)
+    data = JSONField()

@@ -8,7 +8,7 @@ from django.core.files.base import ContentFile
 from StringIO import StringIO
 
 from cartvine.apps.shop.models import Shop
-from models import Product
+from cartvine.apps.product.models import Product, ProductVariant
 
 from urlparse import urlparse
 import shopify
@@ -57,6 +57,14 @@ def sync_products(shop):
             p.name = product.title
             p.slug = slugify(product.title)
             p.save()
+
+            # Do variants
+            for v in product.variants:
+                pv, is_new = ProductVariant.objects.get_or_create(product=p, provider_id=v['id'])
+                pv.sku = v['sku']
+                pv.inventory_quantity = v['inventory_quantity']
+                pv.data = v
+                pv.save()
 
     return None
 

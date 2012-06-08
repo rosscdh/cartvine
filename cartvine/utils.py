@@ -123,8 +123,9 @@ def redirect_to_login(next, login_url=None,
         querystring = QueryDict(login_url_parts[4], mutable=True)
         querystring[redirect_field_name] = next.path
         for i in next.query.split('&'):
-            key,value = i.split('=')
-            querystring[key] = value
+            if i.find('=') != -1:
+                key,value = i.split('=')
+                querystring[key] = value
 
         login_url_parts[4] = querystring.urlencode(safe='/')
 
