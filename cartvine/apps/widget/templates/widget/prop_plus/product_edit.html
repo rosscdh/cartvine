@@ -9,51 +9,95 @@
 {% endblock %}
 
 {% block body %}
-<div class="span5">
-    <h2>{% trans 'Properties' %}</h2>
-    <ul>
-    {% for property in object.data.options %}
-        <li>{{ property.name }}</li>
-    {% empty %}
-        <li>None Configured</li>
-    {% endfor %}
-    </ul>
 
-    <h2>{% trans 'Custom Properties' %}</h2>
+<h2>{% trans 'Properties' %}</h2>
+<ul>
+{% for property in object.data.options %}
+    <li>{{ property.name }}</li>
+{% empty %}
+    <li>None Configured</li>
+{% endfor %}
+</ul>
+
+<h2>{% trans 'Custom Properties' %}</h2>
 
 <!--     <p class="pull-right"><a class="btn btn-inverse" href="{% url 'widget:custom_config' slug=widget_slug %}">{% trans 'Add Properties' %}</a></p>
-    <div clas="clearfix">&nbsp;</div> -->
+<div clas="clearfix">&nbsp;</div> -->
 
-    <form action="{% url 'widget:custom_apply_post' slug=widget_slug provider_pk=provider_pk %}" method="post" class="form-horizontal">{% csrf_token %}
-        <label id="wrap-custom-props" for="input-new-prop"></label><div id="new-prop"></div>
+<form action="{% url 'widget:custom_apply_post' slug=widget_slug provider_pk=provider_pk %}" method="post" class="form-horizontal">{% csrf_token %}
+    <label id="wrap-custom-props" for="input-new-prop"></label><div id="new-prop"></div>
 <!--         {{ form.management_form }}
-        {% for form_item in form %}
-        {{ form_item.name }}
-        <div class="control-group">
-            <label class="control-label" for="{{ form_item.value.auto_id }}">{{ form_item.name.value }}</label>
-            <div class="controls">
-                {{ form_item.value }}
+    {% for form_item in form %}
+    {{ form_item.name }}
+    <div class="control-group">
+        <label class="control-label" for="{{ form_item.value.auto_id }}">{{ form_item.name.value }}</label>
+        <div class="controls">
+            {{ form_item.value }}
+        </div>
+    </div>
+    {% empty %}
+        {% trans 'No Properties Configured' %}
+    {% endfor %}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div> -->
+</form>
+
+
+<h2>{% trans 'Inventory' %}</h2>
+<div class="row">
+Your customers will select this new variant by the following:
+</div>
+<div class="">
+<form action="{% url 'widget:custom_apply_post' slug=widget_slug provider_pk=provider_pk %}" method="post" class="form-horizontal">{% csrf_token %}
+    {{ variant_form.management_form }}
+    {% for form in variant_form %}
+    <div class="well">
+        <div class="row">
+            properties here
+        </div>
+        <div class="form-actions'">&nbsp;</div>
+        <div class="row">
+            <div class="span3">
+            {{ form.sku.label|upper }}
+            {{ form.sku }}
+            </div>
+            <div class="span1">
+            {{ form.price.label }}
+            {{ form.price }}
+            </div>
+            <div class="span1">
+            {{ form.compare_at_price.label }}
+            {{ form.compare_at_price }}
+            </div>
+            <div class="span2">
+            {{ form.grams.label }}
+            {{ form.grams }}
             </div>
         </div>
-        {% empty %}
-            {% trans 'No Properties Configured' %}
-        {% endfor %}
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Save</button>
-        </div> -->
-    </form>
+        <div class="row">
+            <div class="span2">
+            {{ form.taxable.label }}
+            {{ form.taxable }}
 
-    <form action="{% url 'widget:custom_apply_post' slug=widget_slug provider_pk=provider_pk %}" method="post" class="form-horizontal">{% csrf_token %}
-        {{ variant_form.management_form }}
-        {% for form in variant_form %}
-        {{ form }}
-        {% empty %}
-        {% endfor %}
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Save</button>
+            {{ form.requires_shipping.label }}
+            {{ form.requires_shipping }}
+
+            {{ form.inventory_management.label }}
+            {{ form.inventory_management }}
+            
+            </div>
         </div>
-    </form>
+    </div>
+    <p>&nbsp;</p>
+    {% empty %}
+    {% endfor %}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
 </div>
+
 {% endblock %}
 
 

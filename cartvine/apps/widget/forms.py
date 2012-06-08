@@ -71,6 +71,7 @@ class ShopPropsWidgetPropertiesForm(bootstrap.BootstrapForm):
         else:
             return False
 
+
 class ShopPropsWidgetApplyForm(ShopPropsWidgetPropertiesForm):
     def __init__(self, *args, **kwargs):
         super(ShopPropsWidgetApplyForm,self).__init__(*args, **kwargs)
