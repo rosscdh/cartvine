@@ -5,21 +5,44 @@
 {% block title %}Products from your Shop{% endblock %}
 
 {% block content-head %}
-<h1>Products from your Shop</h1>
+<h1 style="pull-left">
+	Products from your Shop
+	<form class="form-search pull-right">
+		<input type="text" class="input-large search-query" placeholder="Search by product or category">
+		<button type="submit" class="btn">Search</button>
+	</form>
+</h1>
 {% endblock %}
 
 {% block pre-body %}
-<div class="hero-unit">
-    These products are our local listing from your store... info about syncing and stuff
-</div>
 {% endblock %}
 
 {% block body %}
-<ul id="" class="">
-{% for p in object_list %}
-    <li><a href="{% url 'product:info' slug=p.slug %}">{{ p.name }}</a></li>
-{% empty%}
-    <li>{% trans 'No Products found.' %}</li>
-{% endfor %}
-</ul>
+<div class="row">
+	<div class="span10 offset1">
+		<table class="table table-bordered table-striped">
+		    <thead>
+		      <tr>
+		        <th class="span1"></th>
+		        <th>Product Name</th>
+		      </tr>
+		    </thead>
+		    <tbody>
+				{% for p in object_list %}
+			      <tr>
+			        <td>
+			          <img src="http://placehold.it/50x50">
+			        </td>
+			        <td>
+			          <a href="{% url 'product:info' slug=p.slug %}">{{ p.name }}</a>
+					  <span class="label label-info">Shoes</span>
+			        </td>
+			      </tr>
+				{% empty%}
+				    <li>{% trans 'No Products found.' %}</li>
+				{% endfor %}
+		    </tbody>
+		  </table>
+  	</div>
+</div>
 {% endblock %}

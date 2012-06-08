@@ -2,7 +2,7 @@ django
 django_annoying
 django_extensions
 Werkzeug
-mysql-python
+#mysql-python
 python-memcached
 markdown 
 
