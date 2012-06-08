@@ -2,14 +2,14 @@
 var App = Em.Application.create(Em.Facebook);
 App.set('appId', facebookAppId);
 
-//# ----- DATA STORE ----- #//
+//# ----- DATA STORE -----
 
 App.store = DS.Store.create({
   revision: 4,
   adapter: DS.DjangoTastypieAdapter.create()
 });
 
-//# ----- OVERRIDES & EXTENSIONS ----- #//
+//# ----- OVERRIDES & EXTENSIONS -----
 
 App.reopen({
     Person: void 0,
@@ -23,7 +23,7 @@ App.reopen({
     }.observes('FBUser')
 });
 
-//# ----- MODELS ----- #//
+//# ----- MODELS -----
 App.Product = DS.Model.extend({
     url: 'products',
 });
@@ -103,13 +103,13 @@ Person = DS.Model.extend({
     }
 });
 
-//# ----- CONTROLLERS ----- #//
+//# ----- CONTROLLERS -----
 App.personProfileController = Em.Object.create({
 
 });
 
 
-//# ----- VIEWS ----- #//
+//# ----- VIEWS -----
 var fb_login_nav_view = Em.View.create({
   templateName: 'nav',
 });
