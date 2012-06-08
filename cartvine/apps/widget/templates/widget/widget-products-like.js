@@ -27,7 +27,7 @@ this.{{ widget.widget_js_name }} = function() {
      });
     //# ----- INSTANTIATE VIEWS -----
 
-    this.injectView(productsView, 'widget_products_like', '{{ config.target_id }}');
+    this.injectView(productsView, '{{ widget.widget_js_name }}', '{{ config.target_id }}');
 
     //# ----- HELPER JS -----
     $('a#vine-fb-connect').live('click', function (e) {});
