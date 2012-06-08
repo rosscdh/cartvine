@@ -1,5 +1,5 @@
 {% extends 'widget/widget_edit.html' %}
-{% load i18n %}
+{% load i18n templatetag_handlebars %}
 {% load url from future %}
 
 {% block title %}{% trans 'Info for' %} {{ object.name }}{% endblock %}
@@ -10,22 +10,23 @@
 
 {% block body %}
 <div class="span5">
-    <h2>{% trans 'Current Shopify Properties' %}</h2>
+    <h2>{% trans 'Properties' %}</h2>
     <ul>
-    {% for option in object.data.options %}
-    <li>{{ option }}</li>
+    {% for property in object.data.options %}
+        <li>{{ property.name }}</li>
     {% empty %}
-    <li>None Configured</li>
+        <li>None Configured</li>
     {% endfor %}
     </ul>
 
     <h2>{% trans 'Custom Properties' %}</h2>
 
-    <p class="pull-right"><a class="btn btn-inverse" href="{% url 'widget:custom_config' slug=widget_slug %}">{% trans 'Add Properties' %}</a></p>
-    <div clas="clearfix">&nbsp;</div>
+<!--     <p class="pull-right"><a class="btn btn-inverse" href="{% url 'widget:custom_config' slug=widget_slug %}">{% trans 'Add Properties' %}</a></p>
+    <div clas="clearfix">&nbsp;</div> -->
 
     <form action="{% url 'widget:custom_apply_post' slug=widget_slug provider_pk=provider_pk %}" method="post" class="form-horizontal">{% csrf_token %}
-        {{ form.management_form }}
+        <label id="wrap-custom-props" for="input-new-prop"></label><div id="new-prop"></div>
+<!--         {{ form.management_form }}
         {% for form_item in form %}
         {{ form_item.name }}
         <div class="control-group">
@@ -39,7 +40,7 @@
         {% endfor %}
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Save</button>
-        </div>
+        </div> -->
     </form>
 
     <form action="{% url 'widget:custom_apply_post' slug=widget_slug provider_pk=provider_pk %}" method="post" class="form-horizontal">{% csrf_token %}
@@ -53,4 +54,41 @@
         </div>
     </form>
 </div>
+{% endblock %}
+
+
+{% block js %}
+<script src="{{ STATIC_URL }}emberjs/js/ember-complete.js"></script>
+<script>
+$(document).ready(function(){
+
+    App = Em.Application.create();
+
+    var newPropView = Ember.TextField.create({
+        id: 'input-new-prop',
+        value: '',
+    });
+
+    var customPropsView = Ember.Select.create({
+        id: 'custom-props',
+        classNames: [''],
+        content: [{% for property in object.data.options %}{'name':'{{ property.name }}','value':'{{ property.name }}','selected':false},{% endfor %}{'name': '--------', 'value': void 0, 'selected': false},{'name': '{% trans "Custom" %}', 'value': 'new', 'selected': false},],
+        optionLabelPath: 'content.name',
+        optionValuePath: 'content.value',
+        change: function(event) {
+            if (event != 'undefined') {
+                newPropView.remove();
+                if (event.srcElement.options[event.srcElement.options.selectedIndex].text == '--------') {
+                    newPropView.appendTo('div#new-prop');
+                } else if (event.srcElement.options[event.srcElement.options.selectedIndex].text == '{% trans "Custom" %}') {
+                    newPropView.appendTo('div#new-prop');
+                }
+            }
+
+        }
+    });
+
+    customPropsView.appendTo('label#wrap-custom-props');
+});
+</script>
 {% endblock %}
