@@ -13,7 +13,7 @@ from tastypie.cache import SimpleCache
 from authentication import OAuthAuthentication
 from authorization import OAuthAuthorization
 
-from cartvine.apps.product.models import Product
+from cartvine.apps.product.models import Product, ProductVariant
 from cartvine.apps.shop.models import Shop
 from cartvine.apps.customer.models import Customer
 from cartvine.apps.widget.models import Widget, WidgetShop
@@ -77,6 +77,39 @@ class ProductResource(CartvineBaseModelResource):
         return bundle
 
 
+class ProductVariantResource(CartvineBaseModelResource):
+    product = fields.ForeignKey(ProductResource, 'product')
+    class Meta:
+        queryset = ProductVariant.objects.all()
+        resource_name = 'variant'
+        serializer = Serializer(formats=available_formats)
+        filtering = {
+            'shop': ['exact'],
+        }
+
+    def dehydrate(self, bundle):
+        data = ast.literal_eval(bundle.data['data'])
+        bundle.data['provider_id'] = data['id']
+        bundle.data['sku'] = data['sku']
+        bundle.data['grams'] = data['grams']
+        bundle.data['title'] = data['title']
+        bundle.data['inventory_policy'] = data['inventory_policy']
+        bundle.data['created_at'] = data['created_at']
+        bundle.data['requires_shipping'] = data['requires_shipping']
+        bundle.data['updated_at'] = data['updated_at']
+        bundle.data['inventory_quantity'] = data['inventory_quantity']
+        bundle.data['price'] = data['price']
+        bundle.data['inventory_management'] = data['inventory_management']
+        bundle.data['fulfillment_service'] = data['fulfillment_service']
+        bundle.data['taxable'] = data['taxable']
+        bundle.data['position'] = data['position']
+        bundle.data['option1'] = data['option1']
+        bundle.data['option2'] = data['option2']
+        bundle.data['option3'] = data['option3']
+        bundle.data['compare_at_price'] = data['option3']
+        del(bundle.data['data'])
+        return bundle
+
 class CustomerResource(CartvineBaseModelResource):
     class Meta:
         queryset = Customer.objects.all()
@@ -106,6 +139,7 @@ class WidgetShopResource(CartvineBaseModelResource):
 
 """ Register the api resources """
 v1_public_api.register(ProductResource())
+v1_public_api.register(ProductVariantResource())
 v1_public_api.register(ShopResource())
 v1_public_api.register(CustomerResource())
 v1_public_api.register(WidgetResource())
