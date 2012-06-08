@@ -12,9 +12,11 @@ this.{{ widget.widget_js_name }} = function() {
 
     this.App.routeManager = Em.RouteManager.create({
         products: Em.ViewState.create({
-            route: 'products',
+            route: 'products/:slug',
             enter: function(stateManager, transition) {
-                console.log('Entered Ember products view')
+                var params = stateManager.get('params');
+                var slug = params.slug
+                console.log('Entered Ember products view and viewing prod: ' + slug)
             }
         }),
         cart: Em.ViewState.create({
