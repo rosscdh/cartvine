@@ -11,9 +11,16 @@
 
     <link href="{{ STATIC_URL }}default/css/bootstrap.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}default/css/bootstrap-responsive.css" rel="stylesheet">
+    
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet">
+    <link href="{{ STATIC_URL }}default/css/font-awesome.css" rel="stylesheet">
+    
+    <link href="{{ STATIC_URL }}default/css/base-admin.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}default/css/base-admin-responsive.css" rel="stylesheet">
+
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
+    <!--[if lt IE 9]> 
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <script src="{{ STATIC_URL }}default/js/jquery.min.js"></script>
@@ -30,44 +37,93 @@
   </head>
 
   <body data-spy="scroll" data-target=".subnav" data-offset="50">
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">			
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</a>
+			
+				<a class="brand" href="/">
+					PropertiesPlus				
+				</a>		
+			
+				<div class="nav-collapse">
 
-    <div id="navbar" class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
+					<ul class="nav pull-left">
+	                    {% if user.is_authenticated %}
+	                    <li><a href="{% url 'widget:my' %}"><i class="icon-gift"></i> Widgets</a></li>
+	                    <li><a href="{% url 'product:index' %}"><i class="icon-shopping-cart"></i>Products</a></li>
+	                    {% endif %}
+					</ul>
 
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="/">CartVine</a>
-          <div class="nav-collapse">
-            <ul class="nav">
-                {% if user.is_authenticated %}
-                <li><a href="{% url 'widget:my' %}">Widgets</a></li>
-                <li><a href="{% url 'product:index' %}">Products</a></li>
-                {% endif %}
-            </ul>
+	                
+					<ul class="nav pull-right">
+		                {% if user.is_authenticated %}
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+								<i class="icon-user"></i> 
+								{% blocktrans with user.get_full_name as name %}
+			                		{{ name }}
+			               	 	{% endblocktrans %}
+								<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a href="mailto:support@cartvine.com">{% trans 'Get Help' %}</a></li>
+								<li><a href="{% url 'default:logout' %}">{% trans 'Logout' %}</a></li>
+							</ul>
+						</li>
+						{% endif %}
+					</ul>
+				
+				</div><!--/.nav-collapse -->	
+	
+			</div> <!-- /container -->
+		
+		</div> <!-- /navbar-inner -->
+	
+	</div> <!-- /navbar -->
 
-            <p class="navbar-text pull-right">
-                {% if user.is_authenticated %}
-                {% blocktrans with user.get_full_name as name %}
-                Logged in as {{ name }}
-                {% endblocktrans %}
-                <a href="{% url 'default:logout' %}">{% trans 'Logout' %}</a>
-                {% endif %}
-            </p>
 
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
+
+
+    <!-- <div id="navbar" class="navbar navbar-fixed-top">
+          <div class="navbar-inner">
+            <div class="container">
+    
+              <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+              <a class="brand" href="/">CartVine</a>
+              <div class="nav-collapse">
+                <ul class="nav">
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'widget:my' %}">Widgets</a></li>
+                    <li><a href="{% url 'product:index' %}">Products</a></li>
+                    {% endif %}
+                </ul>
+    
+                <p class="navbar-text pull-right">
+                    {% if user.is_authenticated %}
+                    {% blocktrans with user.get_full_name as name %}
+                    Logged in as {{ name }}
+                    {% endblocktrans %}
+                    <a href="{% url 'default:logout' %}">{% trans 'Logout' %}</a>
+                    {% endif %}
+                </p>
+    
+              </div>
+            </div>
+          </div>
+        </div> -->
   
     <div class="container">
 
-        <p>&nbsp;</p>
-
-        <div id="lang-selector" class="row">&nbsp;</div>
+        <!--<div id="lang-selector" class="row">&nbsp;</div> -->
 
         {% if messages %}
         <div class="row">
@@ -78,14 +134,40 @@
         </ul>
         </div>
         {% endif %}
-        <div class="page-header">{% block content-head %}{% endblock %}</div>
+        <div class="page-header">
+			<div class="row">
+				<div class="span10 offset1">
+					{% block content-head %}{% endblock %}
+				</div>
+			</div>
+		</div>
         {% block pre-body %}{% endblock %}
         {% block body %}{% endblock %}
 
     </div> <!-- /container -->
 
-    <p>&nbsp;</p>
-    <p>&nbsp;</p>
+
+
+
+	<div class="footer">
+	
+		<div class="footer-inner">
+		
+			<div class="container">
+			
+				<div class="row">
+				
+	    			<div class="span12">
+	    				&copy; 2012 <a href="http://cartvine.com">CartVine</a>.
+	    			</div> <!-- /span12 -->
+    			
+	    		</div> <!-- /row -->
+    		
+			</div> <!-- /container -->
+		
+		</div> <!-- /footer-inner -->
+	
+	</div> <!-- /footer -->
 
     {% block js %}{% endblock %}
 

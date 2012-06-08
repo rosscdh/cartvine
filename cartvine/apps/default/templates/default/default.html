@@ -4,38 +4,149 @@
 
 {% block title %}{{ block.super }}Install CartVine on your shopify.com Store{% endblock %}
 
-{% block content-head %}
-{% if not current_shop %}
-<h1>Welcome to CartVine for Shopify</h1>
-{% else %}
-<h1>Welcome to CartVine</h1>
-{% endif %}
-{% endblock %}
+{% block content-head %}<img src="{{ STATIC_URL }}default/img/logo.png">{% endblock %}
 
 {% block body %}
-{% if not user.is_authenticated %}
-    <form action="{% url 'default:index' %}" method="GET" class="form-horizontal">
-        {{ form.shop.errors }}
-        <label for="id_shop">{{ form.shop.label }}</label>
-        {{ form.shop }}
-        <div class="help_text">{{ form.shop.help_text }}</div>
+<link rel="stylesheet" href="{{ STATIC_URL }}default/css/pages/plans.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	<div class="main">
+		<div class="main-inner">
+		    <div class="container">
+				<!--Welcome block-->
+		      <div class="row">
+			      <div class="span10 offset1">
+		      		<div class="widget">
+							<div class="widget-header">
+								<i class="icon-pushpin"></i>
+								<h3>{% trans 'Welcome to Properties<span>Plus</span>' %} </h3>
+							</div> <!-- /widget-header -->
+							<div class="widget-content">
+								{% trans 'Want to add multiple product Properties and Variations to your store? Then this is the app for you. PropertiesPlus allows you to define <strong>unlimited Product Properties</strong>, more than the standard 3 shopify supports by default.  define <strong>Product variations</strong>. Just install the app and use the "Edit product variations" link at the top of every edit product page to setup your products.' %}
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--Install block-->
+			   <div class="row">
+			      <div class="span10 offset1">
+			   		<div class="widget">
+							{% if not user.is_authenticated %}
+							<div class="widget-content">
+								<h1>{% trans 'Install Properties<span>Plus</span>' %} </h1>
+								<br />
+								<form action="{% url 'default:index' %}" method="GET" class="form-inline">
+									{{ form.shop.errors }}
+									{{ form.shop }}
+									<!-- <input class="span4 login-input" id="appendedInput" size="50" type="text" placeholder="Enter your Shopify store URL"> -->
+									<button class="button btn btn-warning btn-large">Sign In</button>
+								</form>
+							</div>
+							{% else %}
+							<div class="widget-content">
+								<a href="{% url 'product:index' %}" class="btn btn-warning btn-large">Properties Plus Installed! Go to Admin</a>
+							</div>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+				<!--Screenshots block-->
+		      <div class="row">
+			      <div class="span10 offset1">
+		      		<div class="widget">
+							<div class="widget-header">
+								<i class="icon-picture"></i>
+								<h3>{% trans 'Screenshots' %} </h3>
+							</div> <!-- /widget-header -->
+							<div class="widget-content">
+								<div class="row-fluid">
+								  <div class="span3"><img src="http://placehold.it/210x150"></div>
+								  <div class="span3"><img src="http://placehold.it/210x150"></div>
+								  <div class="span3"><img src="http://placehold.it/210x150"></div>
+								  <div class="span3"><img src="http://placehold.it/210x150"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--Pricing plan-->
+		      <div class="row">
+		      	<div class="span10 offset1">
+		      		<div class="widget">
+						<div class="widget-header">
+							<i class="icon-th-large"></i>
+							<h3>Pricing based on your Shopify subscription</h3>
+						</div> <!-- /widget-header -->
+						<div class="widget-content">
+							<div class="pricing-plans plans-4">
+							<p>After the free 10-day trial period, the App converts to a flat monthly charge based on your Shopify account plan. If you are not sure, click the "Account" link from your Shopify Admin interface. All billing for the application will be handled through your Shopify account, no separate payments are necessary to us directly.
+							</p>
+							<div class="plan-container">
+						        <div class="plan">
+							        <div class="plan-header">
+							        	<div class="plan-title">
+							        		Basic	        		
+						        		</div> <!-- /plan-title -->
+							            <div class="plan-price">
+						                	<span class="note">$</span>5<span class="term">Per Month</span>
+										</div> <!-- /plan-price -->
+							        </div> <!-- /plan-header -->	        
+									<div class="plan-actions">				
+									</div> <!-- /plan-actions -->
+								</div> <!-- /plan -->
+						    </div> <!-- /plan-container -->
+						    <div class="plan-container">
+						        <div class="plan">
+							        <div class="plan-header">
+							        	<div class="plan-title">
+							        		Professional	        		
+						        		</div> <!-- /plan-title -->
+							            <div class="plan-price">
+						                	<span class="note">$</span>9<span class="term">Per Month</span>
+										</div> <!-- /plan-price -->
+							        </div> <!-- /plan-header -->       
+									<div class="plan-actions">				
+									</div> <!-- /plan-actions -->
 
-        <div class="form-actions">
-        <button class="btn btn-primary" type="submit">{% trans 'Login' %}</button>
-        </div>
-    </form>
-{% else %}
-    <h3>You have successfully installed the CartVine App for your store.</h3>
-    <p>Now you are able to view and select widgets to install for on your store</p>
-<!--     <p>Now you can:</p>
-    <ul>
-        <li><i class="icon-ok-circle"></i><a href="{% url 'my_app:settings' %}">Setup your app settings</a></li>
-        <li><i class="icon-asterisk"></i><a href="{% url 'my_app:design' %}">Setup your product review page</a></li>
-    </ul>
-    <ul>
-        <li><i class="icon-ok-circle"></i><a href="{% url 'product:index' %}">Products</a></li>
-        <li><i class="icon-ok-circle"></i><a href="{% url 'customer:index' %}">Customers</a></li>
-        <li><i class="icon-ok-circle"></i><a href="{% url 'mail:index' %}">View pending invitation messages</a></li>
-    </ul> -->
-{% endif %}
+								</div> <!-- /plan -->
+						    </div> <!-- /plan-container -->
+						    <div class="plan-container">
+						        <div class="plan">
+							        <div class="plan-header">
+							        	<div class="plan-title">
+							        		Business	        		
+						        		</div> <!-- /plan-title -->
+							            <div class="plan-price">
+						                	<span class="note">$</span>17<span class="term">Per Month</span>
+										</div> <!-- /plan-price -->
+							        </div> <!-- /plan-header -->	          
+									<div class="plan-actions">				
+									</div> <!-- /plan-actions -->
+								</div> <!-- /plan -->
+						    </div> <!-- /plan-container -->
+					    
+						    <div class="plan-container">
+						        <div class="plan">
+							        <div class="plan-header">
+					                
+							        	<div class="plan-title">
+							        		Unlimited	        		
+						        		</div> <!-- /plan-title -->
+					                
+							            <div class="plan-price">
+						                	<span class="note">$</span>29<span class="term">Per Month</span>
+										</div> <!-- /plan-price -->
+									
+							        </div> <!-- /plan-header -->	       
+									<div class="plan-actions">				
+									</div> <!-- /plan-actions -->
+								</div> <!-- /plan -->
+						    </div> <!-- /plan-container -->
+						</div> <!-- /pricing-plans -->
+						</div> <!-- /widget-content -->
+					</div> <!-- /widget -->					
+			    </div> <!-- /span12 -->     	
+		      </div> <!-- /row -->
+			</div>
+		</div>
+	</div>					
+	
 {% endblock %}
