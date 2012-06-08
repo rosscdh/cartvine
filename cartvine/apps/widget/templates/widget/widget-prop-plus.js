@@ -30,4 +30,4 @@ this.widget_prop_plus = function() {
     //# ----- HELPER JS ----- #//
     //# ----- WIDGET END {{ object.slug }} ----- #//
     console.log('wtf');
-}
+},
