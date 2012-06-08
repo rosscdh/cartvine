@@ -1,4 +1,4 @@
-(function($) {
+//(function($) {
     // CV object
     var CartVine = function() {
         this.shop = "{{ object.name }}",
@@ -78,4 +78,4 @@
     // cv instance
     var cartvine = new CartVine();
     cartvine.init();
-})(jQuery);
+//})(jQuery);
