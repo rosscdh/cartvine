@@ -1,4 +1,4 @@
-(function($) {
+//(function($) {
     // CV object
     var CartVine = function() {
         this.shop = "{{ object.name }}",
@@ -69,13 +69,15 @@
         },
         this.loadWidgets = function() {
     		// complete init @TODO find a way to make this dynamic
-    		{% for w in widget_list_init_names %}
+    		{% spaceless %}{% for w in widget_list_init_names %}
     		this.{{ w }}();
-    		{% endfor %}
+    		{% endfor %}{% endspaceless %}
+            // fire the route manager event to bind the current page with the established routes (ember lame)
+            this.App.routeManager.set('location', window.location.pathname);
         }
     };
 
     // cv instance
     var cartvine = new CartVine();
     cartvine.init();
-})(jQuery);
+//})(jQuery);

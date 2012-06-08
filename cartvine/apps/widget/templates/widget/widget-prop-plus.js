@@ -22,6 +22,6 @@ this.{{ widget.widget_js_name }} = function() {
             enter: function(stateManager, transition) {
                 console.log('Entered Ember cart view')
             }
-        }),
+        })
     });
 },
