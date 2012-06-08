@@ -82,7 +82,10 @@ class ShopExtendApplyView(ShopExtendConfigView):
     def get_context_data(self, **kwargs):
         context = super(ShopExtendApplyView, self).get_context_data(**kwargs)        
         context['object'] = self.object
-        context['variants'] = self.object.productvariant_set.all()
+        if self.request.GET.get('variant') is not None:
+            context['variants'] = self.object.productvariant_set.filter(provider_id=self.request.GET.get('variant'))
+        else:
+            context['variants'] = self.object.productvariant_set.all()
         variants = [v.data for v in context['variants']]
         variant_formset = formset_factory(ProductVariantForm, extra=0, can_delete=False)
         context['variant_form'] = variant_formset(initial=variants)

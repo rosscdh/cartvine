@@ -28,17 +28,21 @@
     <h3>{% trans 'Properties &amp; Variants' %}</h3>
     <strong>@IMPLEMENT_WITH emberjs</strong>
     <p>List of Variants that are clickable and can have properties applied to them once clicked upon</p>
+    {% with products_list=shop.0.product_set.all %}
     <ul>
-        {% for p in shop.0.product_set.all %}
+        {% for p in products_list %}
         <li>
-            {{ p.name }}
+            <a href="{% url 'widget:custom_apply_post' slug=widget.slug provider_pk=p.provider_id %}">{{ p.name }}</a>
+            {% if p.data.variants %}
             <ul>
                 {% for v in p.data.variants %}
-                 <li><a href="{% url 'widget:custom_apply_post' slug=widget.slug provider_pk=p.provider_id %}">{{ v.title }}</a></li>
+                 <li><a href="{% url 'widget:custom_apply_post' slug=widget.slug provider_pk=p.provider_id %}?variant={{ v.id }}">{{ v.title }}</a></li>
                 {% endfor %}
             </ul>
-        <li>
+            {% endif %}
+        </li>
         {% endfor %}
     </ul>
+    {% endwith %}
 </div>
 {% endblock %}
