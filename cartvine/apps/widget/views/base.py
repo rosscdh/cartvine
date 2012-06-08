@@ -86,7 +86,16 @@ class WidgetLoaderView(TemplateView):
 
 class WidgetsForShopView(DetailView):
     """ View generates javascript response that is used to load widget js files 
-    should be public """
+    should be public 
+
+    # compressor setup
+    rm /tmp/cartvine-complete.js
+    cat ~/Projects/Personal/cartvine/cartvine/apps/default/static/emberjs/js/libs/ember-0.9.8.1.min.js  >> /tmp/cartvine-complete.js
+    java -jar build/yuicompressor-2.4.7.jar --charset utf-8  ~/Projects/Personal/cartvine/cartvine/apps/default/static/emberjs/js/libs/ember-routemanager.min.js >> /tmp/cartvine-complete.js
+    java -jar build/yuicompressor-2.4.7.jar --charset utf-8  ~/Projects/Personal/cartvine/cartvine/apps/default/static/emberjs/js/libs/ember-data-latest.js >> /tmp/cartvine-complete.js
+    java -jar build/yuicompressor-2.4.7.jar --charset utf-8  ~/Projects/Personal/cartvine/cartvine/apps/default/static/emberjs/js/libs/tastypie_adapter.js >> /tmp/cartvine-complete.js
+    java -jar build/yuicompressor-2.4.7.jar --charset utf-8  ~/Projects/Personal/cartvine/cartvine/apps/default/static/emberjs/js/libs/ember-facebook.js >> /tmp/cartvine-complete.js
+    """
     model = Shop
     template_name = 'widget/for_shop.js'
 
@@ -96,10 +105,12 @@ class WidgetsForShopView(DetailView):
         static_url = self.request.build_absolute_uri(settings.STATIC_URL)
 
         default_scripts = [
-            '%semberjs/js/libs/ember-0.9.8.1.min.js'%(static_url),
-            '%semberjs/js/libs/ember-routemanager.min.js'%(static_url),
-            '%semberjs/js/libs/ember-data-latest.js'%(static_url),
-            '%semberjs/js/libs/tastypie_adapter.js'%(static_url),
+            # combined js files using yui compressor
+            '%semberjs/js/ember-complete.js'%(static_url),
+            # '%semberjs/js/libs/ember-0.9.8.1.min.js'%(static_url),
+            # '%semberjs/js/libs/ember-routemanager.min.js'%(static_url),
+            # '%semberjs/js/libs/ember-data-latest.js'%(static_url),
+            # '%semberjs/js/libs/tastypie_adapter.js'%(static_url),
             #'%semberjs/js/libs/ember-facebook.js'%(static_url),
             #'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js',
         ]

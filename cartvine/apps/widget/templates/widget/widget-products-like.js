@@ -26,7 +26,6 @@ this.{{ widget.widget_js_name }} = function() {
         templateName: 'cartvine-products_like_this_one',
      });
     //# ----- INSTANTIATE VIEWS -----
-
     this.injectView(productsView, '{{ widget.widget_js_name }}', '{{ config.target_id }}');
 
     //# ----- HELPER JS -----
