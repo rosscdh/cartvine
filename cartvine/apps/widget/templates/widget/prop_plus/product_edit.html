@@ -9,8 +9,33 @@
 {% endblock %}
 
 {% block body %}
-
 <h2>{% trans 'Properties' %}</h2>
+
+<table class="table table-bordered">
+<tr>
+    <td class="span3"><strong>{% trans 'Title' %}</strong></td><td>{{ object.name }}</td>
+</tr>
+<tr>
+    <td class="span3"><strong>{% trans 'Type' %}</strong></td><td>{{ object.product_type }}</td>
+</tr>
+<tr>
+    <td class="span3"><strong>{% trans 'Vendor' %}</strong></td><td>{{ object.data.vendor }}</td>
+</tr>
+<tr>
+    <td class="span3"><strong>{% trans 'Inventory' %}</strong></td><td>{{ object.data.inventory_quantity|default:"&infin;" }}</td>
+</tr>
+<table>
+
+<h2>{% trans 'Tags' %}</h2>
+<ul>
+{% for tag in object.tags %}
+    <li>{{ tag }}</li>
+{% empty %}
+    <li>None Configured</li>
+{% endfor %}
+</ul>
+
+<h2>{% trans 'Custom Properties' %}</h2>
 <ul>
 {% for property in object.data.options %}
     <li>{{ property.name }}</li>
@@ -18,14 +43,15 @@
     <li>None Configured</li>
 {% endfor %}
 </ul>
-
-<h2>{% trans 'Custom Properties' %}</h2>
-
 <!--     <p class="pull-right"><a class="btn btn-inverse" href="{% url 'widget:custom_config' slug=widget_slug %}">{% trans 'Add Properties' %}</a></p>
 <div clas="clearfix">&nbsp;</div> -->
 
 <form action="{% url 'widget:custom_apply_post' slug=widget_slug provider_pk=provider_pk %}" method="post" class="form-horizontal">{% csrf_token %}
-    <label id="wrap-custom-props" for="input-new-prop"></label><div id="new-prop"></div>
+    <table class="table table-bordered">
+    <tr>
+        <td class="span3"><label id="wrap-custom-props" for="input-new-prop"></label></td><td><div id="new-prop"></div></td>
+    </tr>
+    <table>
 <!--         {{ form.management_form }}
     {% for form_item in form %}
     {{ form_item.name }}
@@ -62,11 +88,11 @@ Your customers will select this new variant by the following:
             {{ form.sku.label|upper }}
             {{ form.sku }}
             </div>
-            <div class="span1">
+            <div class="span2">
             {{ form.price.label }}
             {{ form.price }}
             </div>
-            <div class="span1">
+            <div class="span3">
             {{ form.compare_at_price.label }}
             {{ form.compare_at_price }}
             </div>
@@ -79,10 +105,10 @@ Your customers will select this new variant by the following:
             <div class="span2">
             {{ form.taxable.label }}
             {{ form.taxable }}
-
+            <br/>
             {{ form.requires_shipping.label }}
             {{ form.requires_shipping }}
-
+            <br/>
             {{ form.inventory_management.label }}
             {{ form.inventory_management }}
             
@@ -111,6 +137,14 @@ $(document).ready(function(){
     var newPropView = Ember.TextField.create({
         id: 'input-new-prop',
         value: '',
+        placeholder: '{% trans "Default value" %}',
+    });
+
+    var buttonAddView = Ember.Button.create({
+        id: 'button-add-new-prop',
+        value: '{% trans "Add" %}',
+        text: 'fdasfd',
+        classNames: ['btn', 'btn-success', 'icon-plus-sign', 'icon-white'],
     });
 
     var customPropsView = Ember.Select.create({
@@ -122,10 +156,13 @@ $(document).ready(function(){
         change: function(event) {
             if (event != 'undefined') {
                 newPropView.remove();
+                buttonAddView.remove();
                 if (event.srcElement.options[event.srcElement.options.selectedIndex].text == '--------') {
                     newPropView.appendTo('div#new-prop');
+                    buttonAddView.appendTo('div#new-prop');
                 } else if (event.srcElement.options[event.srcElement.options.selectedIndex].text == '{% trans "Custom" %}') {
                     newPropView.appendTo('div#new-prop');
+                    buttonAddView.appendTo('div#new-prop');
                 }
             }
 

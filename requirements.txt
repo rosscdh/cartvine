@@ -43,5 +43,5 @@ pil
 -e git+https://github.com/stard0g101/django-bootstrap.git#egg=django-bootstrap
 
 # Filterset for model filters like admin
-git+https://github.com/alex/django-filter.git#egg=django-filter
+# -e git+https://github.com/alex/django-filter.git#egg=django-filter
 
