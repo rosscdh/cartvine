@@ -1,0 +1,20 @@
+{% extends 'widget/widget_edit.html' %}
+{% load i18n %}
+{% load url from future %}
+
+{% block body %}
+<div class="span5">
+    <form action="." method="post" class="form-horizontal">{% csrf_token %}
+        {{ form.management_form }}
+        {% for form_item in form %}
+            {{ form_item }}
+        {% endfor %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</div>
+<div class="span5 pull-right">
+    
+</div>
+{% endblock %}

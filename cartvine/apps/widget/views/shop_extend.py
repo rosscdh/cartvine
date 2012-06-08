@@ -9,7 +9,7 @@ from django.template import loader, Context
 from django.contrib.admin.views.main import ChangeList
 from django.forms.formsets import formset_factory
 
-from cartvine.apps.widget.forms import ShopPropsWidgetForm, ShopPropsWidgetApplyForm
+from cartvine.apps.widget.forms import ShopPropsWidgetPropertiesForm, ShopPropsWidgetApplyForm
 from cartvine.apps.product.forms import ProductVariantForm
 from cartvine.apps.widget.models import Widget, WidgetShop
 from cartvine.apps.widget.views.base import MyWidgetEditView
@@ -24,7 +24,7 @@ class ShopExtendConfigView(FormView):
     template_name = 'widget/prop_plus/widget_config.html'
 
     def get_form_class(self):
-        return formset_factory(ShopPropsWidgetForm, extra=1, can_delete=True)
+        return formset_factory(ShopPropsWidgetPropertiesForm, extra=1, can_delete=True)
 
     def get_success_url(self):
         return reverse('widget:custom_config', kwargs={'slug': self.kwargs['slug']})
@@ -51,7 +51,7 @@ class ShopExtendConfigView(FormView):
 
 class ShopExtendApplyView(ShopExtendConfigView):
     model = Product
-    template_name = 'widget/shop_prop/product_edit.html'
+    template_name = 'widget/prop_plus/product_edit.html'
 
     def get_form_class(self):
         return formset_factory(ShopPropsWidgetApplyForm, extra=0, can_delete=False)

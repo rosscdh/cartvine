@@ -23,7 +23,18 @@ class ProductsLikeWidgetForm(BaseJavascriptWidgetEditForm):
     pass
 
 
-class ShopPropsWidgetForm(bootstrap.BootstrapForm):
+class ShopPropsWidgetConfigForm(bootstrap.BootstrapForm):
+    template_name = 'widget/prop_plus/widget_config.html'
+    cart_name_target = forms.CharField(label=_('Item to purchase Target'), help_text=_('The div.class_name of the cart page element that will contain the Variant Name details'), required=True, initial='.item_name', widget=bootstrap_widgets.PrependedText(attrs={'prepend_text': '&sdot;'}))
+    product_name_target = forms.CharField(label=_('Variants List Target'), help_text=_('The form#id_name of the Product Detail page element that wrap the Variants Selection drop-downs'), required=True, initial='form#product-actions', widget=bootstrap_widgets.PrependedText(attrs={'prepend_text': '#'}))
+
+    class Meta:
+        layout = (  bootstrap.Fieldset("Cart Page", "cart_name_target"),
+                    bootstrap.Fieldset("Product Detail Page", "product_name_target"),
+                 )
+
+
+class ShopPropsWidgetPropertiesForm(bootstrap.BootstrapForm):
     name = forms.CharField(_('Property Name'),help_text=_('eg. Color, Size, Type...'),required=True)
     value = forms.CharField(_('Default Value'),help_text=_('Leave blank if there is no default value'),required=False)
     DELETE = forms.BooleanField(required=False)
@@ -60,7 +71,7 @@ class ShopPropsWidgetForm(bootstrap.BootstrapForm):
         else:
             return False
 
-class ShopPropsWidgetApplyForm(ShopPropsWidgetForm):
+class ShopPropsWidgetApplyForm(ShopPropsWidgetPropertiesForm):
     def __init__(self, *args, **kwargs):
         super(ShopPropsWidgetApplyForm,self).__init__(*args, **kwargs)
         self.fields['name'].widget = forms.widgets.HiddenInput()

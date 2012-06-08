@@ -9,12 +9,10 @@
 {% endblock %}
 
 {% block body %}
-
 <form action="{% url 'widget:edit' slug=widget.slug %}" method="post" class="form-horizontal">{% csrf_token %}
     {{ form }}
     <div class="form-actions">
         <button type="submit" class="btn btn-primary">Save</button>
     </div>
 </form>
-
 {% endblock %}

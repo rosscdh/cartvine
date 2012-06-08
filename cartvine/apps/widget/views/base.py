@@ -12,7 +12,7 @@ from cartvine.utils import get_namedtuple_choices
 from cartvine.apps.shop.models import Shop
 
 from cartvine.apps.widget.models import Widget, WidgetShop
-from cartvine.apps.widget.forms import FacebookAuthWidgetForm, ProductsLikeWidgetForm, ShopPropsWidgetForm
+from cartvine.apps.widget.forms import FacebookAuthWidgetForm, ProductsLikeWidgetForm, ShopPropsWidgetConfigForm
 
 
 class AvailableWidgetView(ListView):
@@ -45,7 +45,7 @@ class MyWidgetEditView(FormView):
     WIDGET_FORMS = get_namedtuple_choices('WIDGET_FORMS', (
         (FacebookAuthWidgetForm, 'widget_auth_facebook', 'Facebook Auth'),
         (ProductsLikeWidgetForm, 'widget_products_like', 'Products Like This One'),
-        (ShopPropsWidgetForm, 'widget_prop_plus', 'Shop Props'),
+        (ShopPropsWidgetConfigForm, 'widget_prop_plus', 'Shop Props'),
     ))
     template_name = 'widget/widget_edit.html'
 
@@ -57,13 +57,19 @@ class MyWidgetEditView(FormView):
         return reverse('widget:edit', kwargs={'slug': self.kwargs['slug']})
 
     def get_initial(self):
-        shop = Shop.objects.filter(users__in=[self.request.user])
-        self.widget_config = get_object_or_404(WidgetShop.objects.filter(shop=shop), widget__slug=self.kwargs['slug'])
+        self.shop = Shop.objects.filter(users__in=[self.request.user])
+        self.widget_config = get_object_or_404(WidgetShop.objects.filter(shop=self.shop), widget__slug=self.kwargs['slug'])
         return self.widget_config.data
 
     def get_context_data(self, **kwargs):
         context = super(MyWidgetEditView, self).get_context_data(**kwargs)
+        context['shop'] = self.shop
         context['widget'] = get_object_or_404(Widget, slug=self.kwargs['slug'])
+        context['widget_config'] = self.widget_config
+
+        if hasattr(context['form'], 'template_name'):
+            self.template_name = context['form'].template_name
+
         return context
 
     def post(self, request, *args, **kwargs):
