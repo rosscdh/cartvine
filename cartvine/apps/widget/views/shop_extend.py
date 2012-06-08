@@ -21,7 +21,7 @@ from cartvine.apps.widget.tasks import sync_product_metadata
 
 
 class ShopExtendConfigView(FormView):
-    template_name = 'widget/shop_prop/widget_config.html'
+    template_name = 'widget/prop_plus/widget_config.html'
 
     def get_form_class(self):
         return formset_factory(ShopPropsWidgetForm, extra=1, can_delete=True)

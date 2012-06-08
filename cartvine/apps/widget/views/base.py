@@ -45,7 +45,7 @@ class MyWidgetEditView(FormView):
     WIDGET_FORMS = get_namedtuple_choices('WIDGET_FORMS', (
         (FacebookAuthWidgetForm, 'widget_auth_facebook', 'Facebook Auth'),
         (ProductsLikeWidgetForm, 'widget_products_like', 'Products Like This One'),
-        (ShopPropsWidgetForm, 'app_shop_prop', 'Shop Props'),
+        (ShopPropsWidgetForm, 'widget_prop_plus', 'Shop Props'),
     ))
     template_name = 'widget/widget_edit.html'
 
@@ -97,13 +97,14 @@ class WidgetsForShopView(DetailView):
 
         default_scripts = [
             '%semberjs/js/libs/ember-0.9.8.1.min.js'%(static_url),
+            '%semberjs/js/libs/ember-routemanager.min.js'%(static_url),
             '%semberjs/js/libs/ember-data-latest.js'%(static_url),
             '%semberjs/js/libs/tastypie_adapter.js'%(static_url),
             #'%semberjs/js/libs/ember-facebook.js'%(static_url),
             #'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js',
         ]
 
-        widget_list = Widget.objects.filter(shop=self.object, widget_type=Widget.WIDGET_TYPE.text_javascript)
+        widget_list = Widget.objects.filter(shop=self.object)
         context['widget_list_init_names'] = [ w.slug.replace('-','_') for w in widget_list]
 
         context['scripts'] = default_scripts #+ [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': widget.slug})),) for widget in widget_list ]
