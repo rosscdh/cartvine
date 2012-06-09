@@ -134,42 +134,38 @@ $(document).ready(function(){
 
     App = Em.Application.create();
 
-    var newPropView = Ember.TextField.create({
-        id: 'input-new-prop',
-        value: '',
-        placeholder: '{% trans "Default value" %}',
+    App.customPropsSelectView = Ember.Select.create({
+        id: 'custom-props',
+        classNames: [''],
+        content: [{% for property in object.data.options %}{'name':'{{ property.name }}','value':'{{ property.name }}','selected':false},{% endfor %}{'name': '--------', 'value': void 0, 'selected': false},{'name': '{% trans "Custom" %}', 'value': 'new', 'selected': false},],
+        optionLabelPath: 'content.name',
+        optionValuePath: 'content.value',
     });
 
-    var buttonAddView = Ember.Button.create({
+    App.newPropTextFieldView = Ember.TextField.create({
+        id: 'input-new-prop',
+        targetElement_id: 'div#new-prop',
+        value: '',
+        placeholder: '{% trans "Default value" %}',
+        selectionChanged: function(sender, key, value, rev) {
+            if (value.value == 'new') {
+                this.appendTo(this.targetElement_id);
+                App.buttonAddView.appendTo(this.targetElement_id)
+            } else {
+                this.remove();
+                App.buttonAddView.remove();
+            }
+        }.observes('App.customPropsSelectView.selection'),
+    });
+
+    App.buttonAddView = Ember.Button.create({
         id: 'button-add-new-prop',
         value: '{% trans "Add" %}',
         text: 'fdasfd',
         classNames: ['btn', 'btn-success', 'icon-plus-sign', 'icon-white'],
     });
 
-    var customPropsView = Ember.Select.create({
-        id: 'custom-props',
-        classNames: [''],
-        content: [{% for property in object.data.options %}{'name':'{{ property.name }}','value':'{{ property.name }}','selected':false},{% endfor %}{'name': '--------', 'value': void 0, 'selected': false},{'name': '{% trans "Custom" %}', 'value': 'new', 'selected': false},],
-        optionLabelPath: 'content.name',
-        optionValuePath: 'content.value',
-        change: function(event) {
-            if (event != 'undefined') {
-                newPropView.remove();
-                buttonAddView.remove();
-                if (event.srcElement.options[event.srcElement.options.selectedIndex].text == '--------') {
-                    newPropView.appendTo('div#new-prop');
-                    buttonAddView.appendTo('div#new-prop');
-                } else if (event.srcElement.options[event.srcElement.options.selectedIndex].text == '{% trans "Custom" %}') {
-                    newPropView.appendTo('div#new-prop');
-                    buttonAddView.appendTo('div#new-prop');
-                }
-            }
-
-        }
-    });
-
-    customPropsView.appendTo('label#wrap-custom-props');
+    App.customPropsSelectView.appendTo('label#wrap-custom-props');
 });
 </script>
 {% endblock %}
