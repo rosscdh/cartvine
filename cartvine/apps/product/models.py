@@ -39,7 +39,7 @@ class Product(models.Model):
 
     @property
     def tags(self):
-        return self.data['tags'].split(',') if 'tags' in self.data else None
+        return self.data['tags'].split() if 'tags' in self.data else None
 
     def get_images_src(self):
         return self.data['images'] if 'images' in self.data and isinstance(self.data['images'], type([])) else None
