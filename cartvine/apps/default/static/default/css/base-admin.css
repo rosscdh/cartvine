@@ -291,8 +291,6 @@ textarea {
 
 .main {
 	padding-bottom: 2em;
-	
-	border-bottom: 1px solid #000;
 }
 
 
@@ -445,8 +443,9 @@ textarea {
 			
 			
 		}
-
-
+		.widget-header button {
+			margin:6px;
+		}
 
 
 .widget-content {
@@ -622,4 +621,13 @@ textarea {
        -moz-border-radius: 0;
             border-radius: 0;
   }
+}
+
+table.table-condensed th, table.table-condensed td{
+	font-size:12px;
+	padding:6px 4px;
+
+}
+table .cen {
+	text-align:center;
 }
