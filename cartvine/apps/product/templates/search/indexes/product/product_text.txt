@@ -1,0 +1,6 @@
+{{ object.shop.name }}
+{{ object.shop.url }}
+
+{% for v in object.productvariant_set.all %}
+{{ v.sku }}
+{% endfor %}
