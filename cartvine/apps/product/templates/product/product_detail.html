@@ -3,31 +3,283 @@
 
 {% block title %}Product Detail{% endblock %}
 
-{% block content-head %}
-<h1>Product Detail</h1>
-{% endblock %}
+{% block content-head %}{% endblock %}
 
 {% block pre-body %}
-<div class="hero-unit">
-    <span class="pull-right"><a href="{{ object.shop.url }}{{ object.shopify_url }}">View in Shopify</a></span>
+    <span class="pull-right"><a href="{{ object.shop.url }}{{ object.shopify_url }}" class="btn">View in Shopify</a></span>
     <h2>{{ object.name }}</h2>
-    <strong>{{ object.data.vendor }}: {{ object.product_type }}</strong>
-    <br/>{{ object.data.tags }}
-</div>
+	<br />
 {% endblock %}
 
 {% block body %}
-<div id="body-content" class="span7">
-{{ object.summary|safe }}
-</div>
 
-<div id="images" class="pull-right">
-{% if object.featured_image_src %}
-<img id="feature-image" src="{{ object.featured_image_src|image_resize:"medium" }}" border="0"/>
-{% endif %}
-{% for i in object.get_images_src %}
-    <img class="product image" src="{{ i|image_resize:"small" }}" border="0"/>
-{% endfor %}
-</div>
+	<div class="main">
+		<div class="row">
+		    <div class="span9">
+				<div class="widget widget-table">
+					<div class="widget-header">
+						<span class="icon-list-alt"></span>
+						<h3>{% trans 'Product Properties' %}</h3>
+						<button type="edit" class="btn btn-small btn-warning pull-right">{% trans 'Edit Properties' %}</button>
+					</div>					
+					<div class="widget-content">
+						<table class="table table-bordered table-striped">
+							<thead>
+								<tr>								
+									<th class="span3">{% trans 'Property name' %}</th>
+									<th>{% trans 'Value' %}</th>								
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="name">{% trans 'Product type' %}</td>
+									<td class="value"><span>{{ object.product_type }}</span></td>
+								</tr>
+								<tr>
+									<td class="name">{% trans 'Product vendor' %}</td>
+									<td class="value"><span>{{ object.data.vendor }}</span></td>
+								</tr>
+								<tr>
+									<td class="name">Title</td>
+									<td class="value"><span class="label label-info">Version 1</span> <span class="label label-info">Version 2</span></td>
+								</tr>
 
+								<tr>
+									<td class="name">Fabric</td>
+									<td class="value"><span class="label label-info">Cotton</span> <span class="label label-info">Nylon</span></td>
+								</tr>
+								<tr>
+									<td class="name">Width</td>
+									<td class="value"><span class="label label-info">20cm</span> <span class="label label-info">40cm</span></td>
+								</tr>
+								<tr>
+									<td class="name">Height</td>
+									<td class="value"><span class="label label-info">20cm</span> <span class="label label-info">40cm</span></td>
+								</tr>
+								<tr>
+									<td class="name">Weight</td>
+									<td class="value"><span class="label label-info">200kg</span> <span class="label label-info">80kg</span></td>
+								</tr>
+								
+								<tr>
+									<td class="name"></td>
+									<td class="value"><button type="edit" class="btn btn-small btn-success pull-right">{% trans 'Add Property' %}</button></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				
+
+			</div>
+		    <div class="span3">
+	      		<!-- Product image, taken out for the moment, not critical. 
+				<div class="widget">
+	      							{% if object.featured_image_src %}
+	      								<img id="feature-image" src="{{ object.featured_image_src|image_resize:"medium" }}" border="0"/>
+	      							{% else %}
+	      								<img src="http://placehold.it/300x150&text=No Product Thumb">
+	      							{% endif %}
+	      							{% for i in object.get_images_src %}
+	      							    <img class="product image" src="{{ i|image_resize:"medium" }}" border="0"/>
+	      							{% endfor %}
+	      							
+	      		</div> -->
+				<!--Product description block-->
+	  			<div class="widget">
+					<div class="widget-header">
+						<i class="icon-pushpin"></i>
+						<h3>{% trans 'Product Description' %}</h3>
+					</div> <!-- /widget-header -->
+					<div class="widget-content">
+						{{ object.summary|safe|truncatewords:30 }}
+					</div>
+				</div>
+				<!--Product tags block-->
+	  			<div class="widget">
+					<div class="widget-header">
+						<i class="icon-pushpin"></i>
+						<h3>{% trans 'Product Tags' %} </h3>
+					</div> <!-- /widget-header -->
+					<div class="widget-content">
+						{{ object.data.tags }}
+					</div>
+				</div>
+			</div>
+			<div class="span12">
+				<div class="widget widget-table">
+					<div class="widget-header">
+						<span class="icon-barcode"></span>
+						<h3>{% trans 'Product Inventory' %}</h3>
+					</div>					
+					<div class="widget-content">
+						<table class="table table-bordered table-striped table-condensed">
+							<thead>
+								<tr>								
+									<th class="span1"></th>
+									<th>Title</th>								
+									<th>Fabric</th>								
+									<th>Width</th>								
+									<th>Height</th>			
+									<th>Packaging</th>
+									<th>Width2</th>								
+									<th>Height2</th>			
+									<th>SKU</th>								
+									<th>Price</th>								
+									<th>In Stock</th>								
+									<th></th>								
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="cen"><input type="checkbox"></input></td>
+									<td class="value">Version 1</td>
+									<td class="value">Nylon</td>
+									<td class="value">40cm</td>
+									<td class="value">40cm</td>
+									<td class="value">20kg</td>
+									<td class="value">40cm</td>
+									<td class="value">40cm</td>
+									<td class="value">PO9887</td>
+									<td class="value">$40</td>
+									<td class="value">∞</td>
+									<td class="value cen"> <a data-toggle="modal" href="#editVariationModal" class="btn btn-mini btn-warning">Edit</a> <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a> </td>
+								</tr>
+								<tr>
+									<td class="cen"><input type="checkbox"></input></td>
+									<td class="value">Version 2</td>
+									<td class="value">Nylon</td>
+									<td class="value">40cm</td>
+									<td class="value">40cm</td>
+									<td class="value">20kg</td>
+									<td class="value">40cm</td>
+									<td class="value">40cm</td>
+									<td class="value">PO9887</td>
+									<td class="value">$40</td>
+									<td class="value">∞</td>
+									<td class="value cen"> <a data-toggle="modal" href="#editVariationModal" class="btn btn-mini btn-warning">Edit</a> <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a> </td>
+								</tr>
+								<tr>
+									<td colspan="12"><a data-toggle="modal" href="#editVariationModal" class="btn btn-small btn-success pull-right">Add Variation</a></td>
+								</tr>
+
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+				
+			</div>
+
+			
+			
+		</div>
+	</div>
+	
+<div id="editVariationModal" class="modal hide fade">
+	<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	<h3>{% trans 'Edit' %} Product Name</h3>
+	</div>
+	<div class="modal-body">
+		<form class="form-horizontal">
+			<fieldset>
+			<div class="control-group">
+	            <label class="control-label" for="input01">Title</label>
+	            <div class="controls">
+	              <input type="text" class="input-xlarge" id="input01">
+	            </div>
+	        </div>			  
+			<div class="control-group">
+	            <label class="control-label" for="input01">Fabric</label>
+	            <div class="controls">
+	              <input type="text" class="input-xlarge" id="input01">
+	            </div>
+	        </div>		
+			<div class="control-group">
+	            <label class="control-label" for="input01">Width</label>
+	            <div class="controls">
+	              <input type="text" class="input-xlarge" id="input01">
+	            </div>
+	        </div>					  
+			<div class="control-group">
+	            <label class="control-label" for="input01">Height</label>
+	            <div class="controls">
+	              <input type="text" class="input-xlarge" id="input01">
+	            </div>
+	        </div>	
+			<div class="control-group">
+	            <label class="control-label" for="input01">Packaging</label>
+	            <div class="controls">
+	              <input type="text" class="input-xlarge" id="input01">
+	            </div>
+	        </div>	
+			<div class="control-group">
+	            <label class="control-label" for="input01">Width2</label>
+	            <div class="controls">
+	              <input type="text" class="input-xlarge" id="input01">
+	            </div>
+	        </div>	
+			<div class="control-group">
+	            <label class="control-label" for="input01">Height2</label>
+	            <div class="controls">
+	              <input type="text" class="input-xlarge" id="input01">
+	            </div>
+	        </div>
+			<!--End custom variation variables-->				
+			<hr />		
+			<div>
+				<div class="span2">
+				    <label>{% trans 'Selling Price' %}</label>
+					<div class="input-append">
+	                	<input class="span1" id="appendedInput" size="16" type="text"><span class="add-on">CAD</span>
+	              	</div>
+				</div>			
+				<div class="span2">
+				    <label>{% trans 'Compare at price' %}</label>
+					<div class="input-append">
+	                	<input class="span1" id="appendedInput" size="16" type="text"><span class="add-on">CAD</span>
+	              	</div>
+				</div>	
+				<div class="span2">
+				    <label>{% trans 'SKU' %}</label>
+				     <input type="text" class="span2" placeholder="Stock keeping unit">
+				</div>
+			</div>
+		
+			<div class="span2">
+				<br />
+			    <label>{% trans 'Weight' %}</label>
+				<div class="input-append">
+                	<input class="span1" id="appendedInput" size="16" type="text" placeholder="0.0"><span class="add-on">KG</span>
+              	</div>
+			</div>
+			<div class="span4">
+				<br />
+			    <label>
+                	<input class="" id="appendedInput" size="16" type="checkbox">
+					{% trans 'Charge taxes' %}
+				</label>
+			    <label>
+                	<input class="" id="appendedInput" size="16" type="checkbox">
+					{% trans 'Require shipping address' %}
+				</label>
+			    <label>
+                	<input class="" id="appendedInput" size="16" type="checkbox">
+					{% trans 'Track stock levels' %}
+				</label>
+				
+			</div>														
+			<!--Start standard variation variables-->	
+			</fieldset>		  
+		</form>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal" >{% trans 'Close' %}</a>
+		<a href="#" class="btn btn-primary">{% trans 'Save changes' %}</a>
+	</div>
+</div>
+	
+{% endblock %}
+{% block js %}
 {% endblock %}
