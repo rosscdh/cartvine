@@ -41,6 +41,9 @@ class Product(models.Model):
     def tags(self):
         return self.data['tags'].split(',') if 'tags' in self.data else None
 
+    def properties_plus(self):
+        return []
+
     def get_images_src(self):
         return self.data['images'] if 'images' in self.data and isinstance(self.data['images'], type([])) else None
 
@@ -52,3 +55,15 @@ class ProductVariant(models.Model):
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
     inventory_quantity = models.IntegerField(default=0)
     data = JSONField()
+
+    @property
+    def cost(self):
+        #return u'%s' %(self.product.shop.data['money_format'].replace('{{amount}}', self.data['price']))
+        return u'%s' %(self.data['price'],)
+
+    @property
+    def num_in_stock(self):
+        return '%d' %(self.data['inventory_quantity'],)
+
+    def basic_product_options(self):
+        return [self.data[o] for o in ['option1','option2','option3']]

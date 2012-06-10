@@ -1,131 +1,253 @@
 {% extends 'widget/widget_edit.html' %}
-{% load i18n templatetag_handlebars %}
+{% load i18n templatetag_handlebars product_tags %}
 {% load url from future %}
 
-{% block title %}{% trans 'Info for' %} {{ object.name }}{% endblock %}
+{% block title %}{% trans 'Product Detail' %} - {{ object.name }}{% endblock %}
 
-{% block content-head %}
-<h1>{% trans 'Properties for ' %}{{ object.name }}</h1>
+{% block pre-body %}
+    <span class="pull-right"><a href="{{ object.shop.url }}{{ object.shopify_url }}" class="btn">{% trans 'View in Shopify' %}</a></span>
+    <h2>{{ object.name }}</h2>
 {% endblock %}
 
 {% block body %}
-<h2>{% trans 'Properties' %}</h2>
 
-<table class="table table-bordered">
-<tr>
-    <td class="span3"><strong>{% trans 'Title' %}</strong></td><td>{{ object.name }}</td>
-</tr>
-<tr>
-    <td class="span3"><strong>{% trans 'Type' %}</strong></td><td>{{ object.product_type }}</td>
-</tr>
-<tr>
-    <td class="span3"><strong>{% trans 'Vendor' %}</strong></td><td>{{ object.data.vendor }}</td>
-</tr>
-<tr>
-    <td class="span3"><strong>{% trans 'Inventory' %}</strong></td><td>{{ object.data.inventory_quantity|default:"&infin;" }}</td>
-</tr>
-<table>
-
-<h2>{% trans 'Tags' %}</h2>
-<ul>
-{% for tag in object.tags %}
-    <li>{{ tag }}</li>
-{% empty %}
-    <li>None Configured</li>
-{% endfor %}
-</ul>
-
-<h2>{% trans 'Custom Properties' %}</h2>
-<ul>
-{% for property in object.data.options %}
-    <li>{{ property.name }}</li>
-{% empty %}
-    <li>None Configured</li>
-{% endfor %}
-</ul>
-<!--     <p class="pull-right"><a class="btn btn-inverse" href="{% url 'widget:custom_config' slug=widget_slug %}">{% trans 'Add Properties' %}</a></p>
-<div clas="clearfix">&nbsp;</div> -->
-
-<form action="{% url 'widget:custom_apply_post' slug=widget_slug provider_pk=provider_pk %}" method="post" class="form-horizontal">{% csrf_token %}
-    <table class="table table-bordered">
-    <tr>
-        <td class="span3"><label id="wrap-custom-props" for="input-new-prop"></label></td><td><div id="new-prop"></div></td>
-    </tr>
-    <table>
-<!--         {{ form.management_form }}
-    {% for form_item in form %}
-    {{ form_item.name }}
-    <div class="control-group">
-        <label class="control-label" for="{{ form_item.value.auto_id }}">{{ form_item.name.value }}</label>
-        <div class="controls">
-            {{ form_item.value }}
-        </div>
-    </div>
-    {% empty %}
-        {% trans 'No Properties Configured' %}
-    {% endfor %}
-    <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Save</button>
-    </div> -->
-</form>
-
-
-<h2>{% trans 'Inventory' %}</h2>
-<div class="row">
-Your customers will select this new variant by the following:
-</div>
-<div class="">
-<form action="{% url 'widget:custom_apply_post' slug=widget_slug provider_pk=provider_pk %}" method="post" class="form-horizontal">{% csrf_token %}
-    {{ variant_form.management_form }}
-    {% for form in variant_form %}
-    <div class="well">
+    <div class="main">
         <div class="row">
-            properties here
-        </div>
-        <div class="form-actions'">&nbsp;</div>
-        <div class="row">
+            <div class="span9">
+                <div class="widget widget-table">
+                    <div class="widget-header">
+                        <span class="icon-list-alt"></span>
+                        <h3>{% trans 'Product Properties' %}</h3>
+                        <button type="edit" class="btn btn-small btn-warning pull-right">{% trans 'Edit Properties' %}</button>
+                    </div>                  
+                    <div class="widget-content">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>                                
+                                    <th class="span3">{% trans 'Property name' %}</th>
+                                    <th>{% trans 'Value' %}</th>                                
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="name">{% trans 'Product' %}</td>
+                                    <td class="value"><span>{{ object.name }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="name">{% trans 'Product type' %}</td>
+                                    <td class="value"><span>{{ object.product_type }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="name">{% trans 'Product vendor' %}</td>
+                                    <td class="value"><span>{{ object.data.vendor }}</span></td>
+                                </tr>
+                                {% for property in object.data.options %}
+                                <tr>
+                                    <td class="name">{{ property.name }}</td>
+                                    <td class="value"><span class="label label-info">Combined list</span> <span class="label label-info">of all variations</span> <span class="label label-info">of this type here</span></td>
+                                </tr>
+                                {% endfor %}
+                                {% for property in object.properties_plus %}
+                                {% endfor %}
+                                <tr>
+                                    <td class="name"></td>
+                                    <td class="value"><button type="edit" class="btn btn-small btn-success pull-right">{% trans 'Add Property' %}</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <div class="span3">
-            {{ form.sku.label|upper }}
-            {{ form.sku }}
+                <!-- Product image, taken out for the moment, not critical. 
+                <div class="widget">
+                                    {% if object.featured_image_src %}
+                                        <img id="feature-image" src="{{ object.featured_image_src|image_resize:"medium" }}" border="0"/>
+                                    {% else %}
+                                        <img src="http://placehold.it/300x150&text=No Product Thumb">
+                                    {% endif %}
+                                    {% for i in object.get_images_src %}
+                                        <img class="product image" src="{{ i|image_resize:"medium" }}" border="0"/>
+                                    {% endfor %}
+                                    
+                </div> -->
+                <!--Product description block-->
+                <div class="widget">
+                    <div class="widget-header">
+                        <i class="icon-pushpin"></i>
+                        <h3>{% trans 'Product Description' %}</h3>
+                    </div> <!-- /widget-header -->
+                    <div class="widget-content">
+                        {{ object.summary|safe|truncatewords:30 }}
+                    </div>
+                </div>
+                <!--Product tags block-->
+                <div class="widget">
+                    <div class="widget-header">
+                        <i class="icon-pushpin"></i>
+                        <h3>{% trans 'Product Tags' %} </h3>
+                    </div> <!-- /widget-header -->
+                    <div class="widget-content">
+                        {{ object.data.tags }}
+                    </div>
+                </div>
             </div>
-            <div class="span2">
-            {{ form.price.label }}
-            {{ form.price }}
-            </div>
-            <div class="span3">
-            {{ form.compare_at_price.label }}
-            {{ form.compare_at_price }}
-            </div>
-            <div class="span2">
-            {{ form.grams.label }}
-            {{ form.grams }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="span2">
-            {{ form.taxable.label }}
-            {{ form.taxable }}
-            <br/>
-            {{ form.requires_shipping.label }}
-            {{ form.requires_shipping }}
-            <br/>
-            {{ form.inventory_management.label }}
-            {{ form.inventory_management }}
-            
+            <div class="span12">
+                <div class="widget widget-table">
+                    <div class="widget-header">
+                        <span class="icon-barcode"></span>
+                        <h3>{% trans 'Product Inventory' %}</h3>
+                    </div>                  
+                    <div class="widget-content">
+                        <table id="variants-list" class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>                                
+                                    <th class="span1 cen"><input id="all-variants" type="checkbox"></input></th>
+                                    <th>{% trans 'SKU' %}</th>
+                                    <th>{% trans 'Price' %}</th>
+                                    {% for property in object.data.options %}
+                                    <th>{{ property.name }}</th>
+                                    {% endfor %}
+                                    <th></th>                               
+                                </tr>
+                            </thead>
+                            <tbody>
+<!--                                 {% for variant in object.productvariant_set.all %}
+                                <tr>
+                                    <td class="cen"><input class="variant" id="variant-{{ variant.pk }}" type="checkbox"></input></td>
+                                    <td class="value">{{ variant.sku }}</td>
+                                    <td class="value">{{ object.shop.currency_symbol|safe }}{{ variant.cost }}</td>
+                                    {% for option in variant.basic_product_options %}
+                                        <td class="value">{{ option }}</td>
+                                    {% endfor %}
+                                    <td class="value cen"> <a data-toggle="modal" href="#editVariationModal" class="btn btn-mini btn-warning">Edit</a> <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a> </td>
+                                </tr>
+                                {% endfor %} -->
+                                <tr>
+                                    <td colspan="12"><a data-toggle="modal" href="#editVariationModal" class="btn btn-small btn-success pull-right">Add Variation</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <p>&nbsp;</p>
-    {% empty %}
-    {% endfor %}
-    <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Save</button>
+
+
+<div id="editVariationModal" class="modal hide fade">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h3>{% trans 'Edit' %} Product Name</h3>
     </div>
-</form>
+    <div class="modal-body">
+        <form class="form-horizontal">
+            <fieldset>
+            <div class="control-group">
+                <label class="control-label" for="input01">Title</label>
+                <div class="controls">
+                  <input type="text" class="input-xlarge" id="input01">
+                </div>
+            </div>            
+            <div class="control-group">
+                <label class="control-label" for="input01">Fabric</label>
+                <div class="controls">
+                  <input type="text" class="input-xlarge" id="input01">
+                </div>
+            </div>      
+            <div class="control-group">
+                <label class="control-label" for="input01">Width</label>
+                <div class="controls">
+                  <input type="text" class="input-xlarge" id="input01">
+                </div>
+            </div>                    
+            <div class="control-group">
+                <label class="control-label" for="input01">Height</label>
+                <div class="controls">
+                  <input type="text" class="input-xlarge" id="input01">
+                </div>
+            </div>  
+            <div class="control-group">
+                <label class="control-label" for="input01">Packaging</label>
+                <div class="controls">
+                  <input type="text" class="input-xlarge" id="input01">
+                </div>
+            </div>  
+            <div class="control-group">
+                <label class="control-label" for="input01">Width2</label>
+                <div class="controls">
+                  <input type="text" class="input-xlarge" id="input01">
+                </div>
+            </div>  
+            <div class="control-group">
+                <label class="control-label" for="input01">Height2</label>
+                <div class="controls">
+                  <input type="text" class="input-xlarge" id="input01">
+                </div>
+            </div>
+            <!--End custom variation variables-->               
+            <hr />      
+            <div>
+                <div class="span2">
+                    <label>{% trans 'Selling Price' %}</label>
+                    <div class="input-append">
+                        <input class="span1" id="appendedInput" size="16" type="text"><span class="add-on">CAD</span>
+                    </div>
+                </div>          
+                <div class="span2">
+                    <label>{% trans 'Compare at price' %}</label>
+                    <div class="input-append">
+                        <input class="span1" id="appendedInput" size="16" type="text"><span class="add-on">CAD</span>
+                    </div>
+                </div>  
+                <div class="span2">
+                    <label>{% trans 'SKU' %}</label>
+                     <input type="text" class="span2" placeholder="Stock keeping unit">
+                </div>
+            </div>
+        
+            <div class="span2">
+                <br />
+                <label>{% trans 'Weight' %}</label>
+                <div class="input-append">
+                    <input class="span1" id="appendedInput" size="16" type="text" placeholder="0.0"><span class="add-on">KG</span>
+                </div>
+            </div>
+            <div class="span4">
+                <br />
+                <label>
+                    <input class="" id="appendedInput" size="16" type="checkbox">
+                    {% trans 'Charge taxes' %}
+                </label>
+                <label>
+                    <input class="" id="appendedInput" size="16" type="checkbox">
+                    {% trans 'Require shipping address' %}
+                </label>
+                <label>
+                    <input class="" id="appendedInput" size="16" type="checkbox">
+                    {% trans 'Track stock levels' %}
+                </label>
+                
+            </div>                                                      
+            <!--Start standard variation variables-->   
+            </fieldset>       
+        </form>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal" >{% trans 'Close' %}</a>
+        <a href="#" class="btn btn-primary">{% trans 'Save changes' %}</a>
+    </div>
 </div>
+
+
+<script id="data-variant_list">
+[{% for v in object.productvariant_set.all %}
+{ 'pk': '{{ v.pk }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku }}', 'basic_product_options': [{% for o in v.basic_product_options %}'{{ o }}',{% endfor %}] }{% if not forloop.last %}, {% endif %}
+{% endfor %}]
+</script>
 
 {% endblock %}
-
 
 {% block js %}
 <script src="{{ STATIC_URL }}emberjs/js/ember-complete.js"></script>
@@ -134,42 +256,50 @@ $(document).ready(function(){
 
     App = Em.Application.create();
 
-    var newPropView = Ember.TextField.create({
-        id: 'input-new-prop',
-        value: '',
-        placeholder: '{% trans "Default value" %}',
+    App.Variant = Em.Object.extend({
+        pk: void 0,
+        cost: void 0,
+        sku: void 0,
+        basic_product_options: [],
     });
 
-    var buttonAddView = Ember.Button.create({
-        id: 'button-add-new-prop',
-        value: '{% trans "Add" %}',
-        text: 'fdasfd',
-        classNames: ['btn', 'btn-success', 'icon-plus-sign', 'icon-white'],
-    });
-
-    var customPropsView = Ember.Select.create({
-        id: 'custom-props',
-        classNames: [''],
-        content: [{% for property in object.data.options %}{'name':'{{ property.name }}','value':'{{ property.name }}','selected':false},{% endfor %}{'name': '--------', 'value': void 0, 'selected': false},{'name': '{% trans "Custom" %}', 'value': 'new', 'selected': false},],
-        optionLabelPath: 'content.name',
-        optionValuePath: 'content.value',
-        change: function(event) {
-            if (event != 'undefined') {
-                newPropView.remove();
-                buttonAddView.remove();
-                if (event.srcElement.options[event.srcElement.options.selectedIndex].text == '--------') {
-                    newPropView.appendTo('div#new-prop');
-                    buttonAddView.appendTo('div#new-prop');
-                } else if (event.srcElement.options[event.srcElement.options.selectedIndex].text == '{% trans "Custom" %}') {
-                    newPropView.appendTo('div#new-prop');
-                    buttonAddView.appendTo('div#new-prop');
-                }
+    App.VariantView = Em.CollectionView.create({
+        content: [],
+        tagName: 'ol',
+        templateName: 'hb-variant-list',
+        // itemViewClass: Em.View.extend({
+        //   template: Em.Handlebars.compile("the letter: {{content}}")
+        // }),
+        init: function() {
+            variants = eval($('script#data-variant_list').html());
+            content = [];
+            for (var i=0; i<variants.length; i++) {
+                content.push(App.Variant.create(variants[i]));
             }
-
+            this.set('content', content);
         }
     });
 
-    customPropsView.appendTo('label#wrap-custom-props');
+    App.VariantView.appendTo('#variants-list');
+
 });
 </script>
+{% endblock %}
+
+{% block extrahead %}
+{% spaceless %}
+
+    {% tplhandlebars "hb-variant-list" %}
+    {{#each content}}{{pk}}{{/each}}
+             <td class="cen"><input class="variant" id="variant-{{unbound pk}}" type="checkbox"></input></td>
+            <td class="value">{{ubound sku}}</td>
+            <td class="value">{{unbound cost}}</td>
+            {{#each basic_product_options}}
+                <td class="value">{{option}}</td>
+            {{/each}}
+            <td class="value cen"> <a data-toggle="modal" href="#editVariationModal" class="btn btn-mini btn-warning">{% trans 'Edit' %}</a> <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a> </td>
+
+    {% endtplhandlebars %}
+
+{% endspaceless %}
 {% endblock %}

@@ -32,3 +32,6 @@ class Shop(models.Model):
         session.token = self.provider_access_token
         return shopify.ShopifyResource.activate_session(session)
 
+    @property
+    def currency_symbol(self, amount=''):
+        return u'%s' %(self.data['money_format'].replace('{{amount}}',amount))
