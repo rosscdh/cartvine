@@ -245,40 +245,39 @@ $(document).ready(function(){
 				<div class="span2">
 				    <label>{% trans 'Selling Price' %}</label>
 					<div class="input-append">
-					    {{view Em.TextField valueBinding="selectedVariant.cost"}}
-	                	<input class="span1" id="appendedInput" value="{{selectedVariant}}" size="16" type="text"><span class="add-on">CAD</span>
+					    {{view Em.TextField class="span1" name="" valueBinding="selectedVariant.cost"}}<span class="add-on">CAD</span>
 	              	</div>
-				</div>			
+				</div>
 				<div class="span2">
 				    <label>{% trans 'Compare at price' %}</label>
 					<div class="input-append">
-	                	<input class="span1" id="appendedInput" value="{{selectedVariant.compare_at_price}}" size="16" type="text"><span class="add-on">CAD</span>
+                        {{view Em.TextField class="span1" name="" valueBinding="selectedVariant.appendedInput"}}<span class="add-on">CAD</span>
 	              	</div>
 				</div>	
 				<div class="span2">
 				    <label>{% trans 'SKU' %}</label>
-				     <input type="text" class="span2" value="{{selectedVariant.sku}}" placeholder="Stock keeping unit">
+				     {{view Em.TextField class="span2" name="" placeholder="Stock keeping unit" valueBinding="selectedVariant.sku"}}
 				</div>
 			</div>
 			<div class="span2">
 				<br />
 			    <label>{% trans 'Weight' %}</label>
 				<div class="input-append">
-                	<input class="span1" id="appendedInput" value="{{selectedVariant.weight}}" size="16" type="text" placeholder="0.0"><span class="add-on">KG</span>
+                    {{view Em.TextField class="span1" name="" valueBinding="selectedVariant.weight"}}<span class="add-on">KG</span>
               	</div>
 			</div>
 			<div class="span4">
 				<br />
 			    <label>
-                	<input class="" id="appendedInput" value="{{selectedVariant.taxable}}" size="16" type="checkbox">
+                    {{view Em.Checkbox name="" valueBinding="selectedVariant.taxable"}}
 					{% trans 'Charge taxes' %}
 				</label>
 			    <label>
-                	<input class="" id="appendedInput" value="{{selectedVariant.requires_shipping}}" size="16" type="checkbox">
+			        {{view Em.Checkbox name="" valueBinding="selectedVariant.requires_shipping"}}
 					{% trans 'Require shipping address' %}
 				</label>
 			    <label>
-                	<input class="" id="appendedInput" value="{{selectedVariant.inventory_management}}" size="16" type="checkbox">
+			        {{view Em.Checkbox name="" valueBinding="selectedVariant.inventory_management"}}
 					{% trans 'Track stock levels' %}
 				</label>
 			</div>
