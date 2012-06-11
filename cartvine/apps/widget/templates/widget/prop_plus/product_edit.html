@@ -263,21 +263,20 @@ $(document).ready(function(){
         basic_product_options: [],
     });
 
-    App.VariantView = Em.CollectionView.create({
+    App.variantController = Em.ArrayController.create({
         content: [],
-        tagName: 'ol',
-        templateName: 'hb-variant-list',
-        // itemViewClass: Em.View.extend({
-        //   template: Em.Handlebars.compile("the letter: {{content}}")
-        // }),
         init: function() {
             variants = eval($('script#data-variant_list').html());
-            content = [];
-            for (var i=0; i<variants.length; i++) {
-                content.push(App.Variant.create(variants[i]));
+            for (var i=0; i < variants.length; i++) {
+                this.pushObject(App.Variant.create(variants[i]));
             }
-            this.set('content', content);
         }
+    });
+
+    App.VariantView = Em.View.create({
+        tagName: 'tr',
+        classNames: ['variant'],
+        templateName: 'hb-variant-list',
     });
 
     App.VariantView.appendTo('#variants-list');
@@ -290,14 +289,20 @@ $(document).ready(function(){
 {% spaceless %}
 
     {% tplhandlebars "hb-variant-list" %}
-    {{#each content}}{{pk}}{{/each}}
-             <td class="cen"><input class="variant" id="variant-{{unbound pk}}" type="checkbox"></input></td>
-            <td class="value">{{ubound sku}}</td>
-            <td class="value">{{unbound cost}}</td>
+        {{#each App.variantController.content}}
+
+            <td class="cen"><input class="variant" id="variant-{{unbound pk}}" type="checkbox"></input></td>
+            <td class="value">{{sku}}</td>
+            <td class="value">{{cost}}</td>
             {{#each basic_product_options}}
-                <td class="value">{{option}}</td>
+            <td class="value">{{content}}</td>
             {{/each}}
-            <td class="value cen"> <a data-toggle="modal" href="#editVariationModal" class="btn btn-mini btn-warning">{% trans 'Edit' %}</a> <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a> </td>
+            <td class="value cen">
+                <a data-toggle="modal" href="#editVariationModal" class="btn btn-mini btn-warning">{% trans 'Edit' %}</a>
+                <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a>
+            </td>
+        </tr>
+        {{/each}}
 
     {% endtplhandlebars %}
 
