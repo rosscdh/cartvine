@@ -247,6 +247,15 @@ $(document).ready(function(){
         classNames: ['variant-th']
     });
 
+    App.allVariantsCheckBox = Em.Checkbox.extend({
+        change: function() {
+            return this._super();
+        }.property()
+    });
+    App.variantCheckBox = Em.Checkbox.extend({
+        allVariantsCheckedBinding: 'App.allVariantsCheckBox.change'
+    });
+
     App.VariantView = Em.View.extend({
         templateName: 'hb-variant-item',
         tagName: 'tr',
@@ -278,7 +287,7 @@ $(document).ready(function(){
     {% endtplhandlebars %}
 
     {% tplhandlebars "hb-variant-th" %}
-        <th class="cen span1"><input class="variant" id="variant-all" type="checkbox"></th>
+        <th class="cen span1">{{view App.allVariantsCheckBox classNames="all-variants"}}</th>
         <th>SKU</th>
         <th>Price</th>
         {{#each App.variantsController.basic_product_options}}
@@ -289,7 +298,7 @@ $(document).ready(function(){
 
     {% tplhandlebars "hb-variant-item" %}
         {{#with content as variant}}
-        <td class="cen"><input class="variant" id="variant-{{unbound pk}}" type="checkbox"></td>
+        <td class="cen">{{view App.variantCheckBox classNames="variant-select"}}</td>
         <td class="value">{{variant.sku}}</td>
         <td class="value">{{variant.cost}}</td>
         {{#each variant.basic_product_options}}
