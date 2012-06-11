@@ -39,7 +39,7 @@ class Product(models.Model):
 
     @property
     def tags(self):
-        return self.data['tags'].split(',') if 'tags' in self.data else None
+        return self.data['tags'].split() if 'tags' in self.data else None
 
     def properties_plus(self):
         return []

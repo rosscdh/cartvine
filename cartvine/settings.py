@@ -158,6 +158,7 @@ HELPER_APPS = (
     'tastypie',
     # helpers
     'django_extensions',
+    'haystack',
     'annoying',
     'south',
 )
@@ -202,6 +203,18 @@ if DEBUG:
     # Postback for the dev webhook interface
     # Define in your local_settings.py
     # WEBHOOK_POSTBACK_HOST = 'http://178.200.223.240:8000'
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(SITE_ROOT, '../data/search/product_index'),
+        'STORAGE': 'file',
+        'POST_LIMIT': 128 * 1024 * 1024,
+        'INCLUDE_SPELLING': True,
+        'BATCH_SIZE': 100,
+        'SILENTLY_FAIL': True,
+    },
+}
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

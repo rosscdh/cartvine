@@ -62,7 +62,7 @@ class ProductResource(CartvineBaseModelResource):
         resource_name = 'product'
         serializer = Serializer(formats=available_formats)
         filtering = {
-            'shop': ['exact'],
+            'shop': ('exact', 'startswith',),
         }
 
     def dehydrate(self, bundle):

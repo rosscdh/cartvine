@@ -12,6 +12,9 @@ mock
 
 south
 
+Whoosh
+-e git+https://github.com/toastdriven/django-haystack.git#egg=django-haystack
+
 -e git+https://github.com/Shopify/shopify_python_api.git#egg=shopify
 
 -e git+https://github.com/django-debug-toolbar/django-debug-toolbar.git#egg=django-debug-toolbar
