@@ -141,7 +141,7 @@
 
 <script id="data-variant_list">
 [{% for v in object.productvariant_set.all %}
-{ 'pk': '{{ v.pk }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku }}', 'compare_at_price':'', 'weight':'', 'taxable':'', 'requires_shipping':'', 'inventory_management':'', 'basic_product_options': [{% for o in v.basic_product_options %}{'name':'{{ o }}'},{% endfor %}] }{% if not forloop.last %}, {% endif %}
+{ 'pk': '{{ v.pk }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'basic_product_options': [{% for o in v.basic_product_options %}{'name':'{{ o }}'},{% endfor %}] }{% if not forloop.last %}, {% endif %}
 {% endfor %}]
 </script>
 
@@ -171,8 +171,9 @@ $(document).ready(function(){
 
     App.variantsController = Em.ArrayController.create({
         selectedVariant: App.Variant.create({}),
-        basicProductOptions: [{% for o in object.data.options %}{'name':'{{ o.name }}'},{% endfor %}],
+        basicProductOptions: [{% for o in object.data.options %}{'name':'{{ o.name }}', 'value':'Test'},{% endfor %}],
         extraProductOptions: [],
+        currencySymbol: '{{ object.shop.currency_symbol|safe }}',
         content: variants.map(function(v) {
             return App.Variant.create(v);
         }),
@@ -186,11 +187,12 @@ $(document).ready(function(){
     });
     App.VariantFormView.create({
         selectedVariant: void 0,
+        currencyBinding: 'App.variantsController.currencySymbol',
         basicProductOptionsBinding: 'App.variantsController.basicProductOptions',
         extraProductOptionsBinding: 'App.variantsController.extraProductOptions',
 
         updateSelectedVariant: function() {
-            this.selectedVariant = App.variantsController.get('selectedVariant');
+            this.set('selectedVariant', App.variantsController.get('selectedVariant'));
         }.observes('App.variantsController.selectedVariant.change')
 
     }).appendTo('#editVariationModal');
@@ -206,7 +208,6 @@ $(document).ready(function(){
                     break;
                 }
             }
-            console.log(App.variantsController.get('selectedVariant').get('pk'))
         }
     });
 
@@ -220,7 +221,7 @@ $(document).ready(function(){
     {% tplhandlebars "hb-modify-variant" %}
 	<div class="modal-header">
 	<button type="button" class="close" data-dismiss="modal">&times;</button>
-	<h3 id="title-action"></h3>
+	<h3 id="title-action">Modify Variant</h3>
 	</div>
 	<div class="modal-body">
 		<form class="form-horizontal">
@@ -229,7 +230,7 @@ $(document).ready(function(){
             <div class="control-group">
                 <label class="control-label" for="input01">{{name}}</label>
                 <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
+                  {{view Em.TextField class="input-xlarge" name="" valueBinding="value"}}
                 </div>
             </div>
             {{/each}}
@@ -247,13 +248,13 @@ $(document).ready(function(){
 				<div class="span2">
 				    <label>{% trans 'Selling Price' %}</label>
 					<div class="input-append">
-					    {{view Em.TextField class="span1" name="" valueBinding="selectedVariant.cost"}}<span class="add-on">CAD</span>
+					    {{view Em.TextField class="span1" name="" valueBinding="selectedVariant.cost"}}<span class="add-on">{{currency}}</span>
 	              	</div>
 				</div>
 				<div class="span2">
 				    <label>{% trans 'Compare at price' %}</label>
 					<div class="input-append">
-                        {{view Em.TextField class="span1" name="" valueBinding="selectedVariant.appendedInput"}}<span class="add-on">CAD</span>
+                        {{view Em.TextField class="span1" name="" valueBinding="selectedVariant.appendedInput"}}<span class="add-on">{{currency}}</span>
 	              	</div>
 				</div>	
 				<div class="span2">

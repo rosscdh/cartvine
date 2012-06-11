@@ -41,6 +41,13 @@ class Product(models.Model):
     def tags(self):
         return self.data['tags'].split() if 'tags' in self.data else None
 
+    def basic_options(self):
+        """ assemble properties and lis of variant options uniquified"""
+        basic = []
+        # for i,o in enumerate(self.data['options']):
+        #     basic.append({'name': o, 'value': self.data['option%s'%(i+1,)]})
+        return basic
+
     def properties_plus(self):
         return []
 
@@ -58,12 +65,21 @@ class ProductVariant(models.Model):
 
     @property
     def cost(self):
-        #return u'%s' %(self.product.shop.data['money_format'].replace('{{amount}}', self.data['price']))
         return u'%s' %(self.data['price'],)
+
+    @property
+    def weight_as_kg(self):
+        return '%d' %(self.data['grams']/1000)
 
     @property
     def num_in_stock(self):
         return '%d' %(self.data['inventory_quantity'],)
+
+    def basic_options(self):
+        basic = []
+        for i,o in enumerate(self.data['options']):
+            basic.append({'name': o, 'value': self.data['option%s'%(i+1,)]})
+        return basic
 
     def basic_product_options(self):
         return [self.data[o] for o in ['option1','option2','option3']]
