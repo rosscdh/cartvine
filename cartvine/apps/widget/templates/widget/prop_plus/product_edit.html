@@ -49,10 +49,6 @@
                                 {% endfor %}
                                 {% for property in object.properties_plus %}
                                 {% endfor %}
-                                <tr>
-                                    <td class="name"></td>
-                                    <td class="value"><button type="edit" class="btn btn-small btn-success pull-right">{% trans 'Add Property' %}</button></td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -98,37 +94,42 @@
                     <div class="widget-header">
                         <span class="icon-barcode"></span>
                         <h3>{% trans 'Product Inventory' %}</h3>
-                    </div>                  
+                    </div>
                     <div class="widget-content">
-                        <table id="variants-list" class="table table-bordered table-striped table-condensed">
-                            <thead>
-                                <tr>                                
-                                    <th class="span1 cen"><input id="all-variants" type="checkbox"></input></th>
-                                    <th>{% trans 'SKU' %}</th>
-                                    <th>{% trans 'Price' %}</th>
-                                    {% for property in object.data.options %}
-                                    <th>{{ property.name }}</th>
-                                    {% endfor %}
-                                    <th></th>                               
-                                </tr>
-                            </thead>
-                            <tbody>
-<!--                                 {% for variant in object.productvariant_set.all %}
-                                <tr>
-                                    <td class="cen"><input class="variant" id="variant-{{ variant.pk }}" type="checkbox"></input></td>
-                                    <td class="value">{{ variant.sku }}</td>
-                                    <td class="value">{{ object.shop.currency_symbol|safe }}{{ variant.cost }}</td>
+						<table class="table table-bordered table-striped table-condensed">
+							<thead>
+								<tr>
+									<th class="cen span1"><input type="checkbox"/></th>
+									<th>SKU</th>
+									<th>Price</th>
+									<th>In Stock</th>
+									{% for option in object.data.options %}
+									<th>{{ option.name }}</th>
+									{% endfor %}
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+							    {% for variant in object.productvariant_set.all %}
+							    <tr>
+                                    <td class="cen"><input type="checkbox"/></td>
+                                    <td class="value">{{variant.sku}}</td>
+                                    <td class="value">{{variant.cost}}</td>
+                                    <td class="value">{{variant.num_in_stock}}</td>
                                     {% for option in variant.basic_product_options %}
-                                        <td class="value">{{ option }}</td>
+                                    <td class="value">{{ option }}</td>
                                     {% endfor %}
-                                    <td class="value cen"> <a data-toggle="modal" href="#editVariationModal" class="btn btn-mini btn-warning">Edit</a> <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a> </td>
-                                </tr>
-                                {% endfor %} -->
-                                <tr>
-                                    <td colspan="12"><a data-toggle="modal" href="#editVariationModal" class="btn btn-small btn-success pull-right">Add Variation</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    <td class="value cen">
+                                    <a data-toggle="modal" data-variant_pk="{{ variant.pk }}" href="#editVariationModal" class="btn-modal-form btn btn-mini btn-warning">{% trans 'Edit' %}</a>
+                                    <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a>
+                                    </td>
+							    </tr>
+							    {% endfor %}
+								<tr>
+									<td colspan="12"><a data-toggle="modal" href="#editVariationModal" class="btn-modal-form btn btn-small btn-success pull-right">{% trans 'Add Variation' %}</a></td>
+								</tr>
+							</tbody>
+						</table>
                     </div>
                 </div>
             </div>
@@ -136,114 +137,11 @@
     </div>
 
 
-<div id="editVariationModal" class="modal hide fade">
-    <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h3>{% trans 'Edit' %} Product Name</h3>
-    </div>
-    <div class="modal-body">
-        <form class="form-horizontal">
-            <fieldset>
-            <div class="control-group">
-                <label class="control-label" for="input01">Title</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
-                </div>
-            </div>            
-            <div class="control-group">
-                <label class="control-label" for="input01">Fabric</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
-                </div>
-            </div>      
-            <div class="control-group">
-                <label class="control-label" for="input01">Width</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
-                </div>
-            </div>                    
-            <div class="control-group">
-                <label class="control-label" for="input01">Height</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
-                </div>
-            </div>  
-            <div class="control-group">
-                <label class="control-label" for="input01">Packaging</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
-                </div>
-            </div>  
-            <div class="control-group">
-                <label class="control-label" for="input01">Width2</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
-                </div>
-            </div>  
-            <div class="control-group">
-                <label class="control-label" for="input01">Height2</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
-                </div>
-            </div>
-            <!--End custom variation variables-->               
-            <hr />      
-            <div>
-                <div class="span2">
-                    <label>{% trans 'Selling Price' %}</label>
-                    <div class="input-append">
-                        <input class="span1" id="appendedInput" size="16" type="text"><span class="add-on">CAD</span>
-                    </div>
-                </div>          
-                <div class="span2">
-                    <label>{% trans 'Compare at price' %}</label>
-                    <div class="input-append">
-                        <input class="span1" id="appendedInput" size="16" type="text"><span class="add-on">CAD</span>
-                    </div>
-                </div>  
-                <div class="span2">
-                    <label>{% trans 'SKU' %}</label>
-                     <input type="text" class="span2" placeholder="Stock keeping unit">
-                </div>
-            </div>
-        
-            <div class="span2">
-                <br />
-                <label>{% trans 'Weight' %}</label>
-                <div class="input-append">
-                    <input class="span1" id="appendedInput" size="16" type="text" placeholder="0.0"><span class="add-on">KG</span>
-                </div>
-            </div>
-            <div class="span4">
-                <br />
-                <label>
-                    <input class="" id="appendedInput" size="16" type="checkbox">
-                    {% trans 'Charge taxes' %}
-                </label>
-                <label>
-                    <input class="" id="appendedInput" size="16" type="checkbox">
-                    {% trans 'Require shipping address' %}
-                </label>
-                <label>
-                    <input class="" id="appendedInput" size="16" type="checkbox">
-                    {% trans 'Track stock levels' %}
-                </label>
-                
-            </div>                                                      
-            <!--Start standard variation variables-->   
-            </fieldset>       
-        </form>
-    </div>
-    <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal" >{% trans 'Close' %}</a>
-        <a href="#" class="btn btn-primary">{% trans 'Save changes' %}</a>
-    </div>
-</div>
-
+<div id="editVariationModal" class="modal hide fade"></div>
 
 <script id="data-variant_list">
 [{% for v in object.productvariant_set.all %}
-{ 'pk': '{{ v.pk }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku }}', 'basic_product_options': [{% for o in v.basic_product_options %}'{{ o }}',{% endfor %}] }{% if not forloop.last %}, {% endif %}
+{ 'pk': '{{ v.pk }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku }}', 'compare_at_price':'', 'weight':'', 'taxable':'', 'requires_shipping':'', 'inventory_management':'', 'basic_product_options': [{% for o in v.basic_product_options %}{'name':'{{ o }}'},{% endfor %}] }{% if not forloop.last %}, {% endif %}
 {% endfor %}]
 </script>
 
@@ -258,31 +156,59 @@ $(document).ready(function(){
 
 
     App.Variant = Em.Object.extend({
-        pk: void 0,
-        cost: void 0,
-        sku: void 0,
+        pk: 0,
+        cost: 0,
+        sku: null,
+        compare_at_price: 0,
+        weight: 0,
+        taxable: true,
+        requires_shipping: false,
+        inventory_management: false,
         basic_product_options: [],
     });
 
-    App.VariantView = Em.CollectionView.create({
-        content: [],
-        tagName: 'ol',
-        templateName: 'hb-variant-list',
-        // itemViewClass: Em.View.extend({
-        //   template: Em.Handlebars.compile("the letter: {{content}}")
-        // }),
-        init: function() {
-            variants = eval($('script#data-variant_list').html());
-            content = [];
-            for (var i=0; i<variants.length; i++) {
-                content.push(App.Variant.create(variants[i]));
-            }
-            this.set('content', content);
+    variants = eval($('script#data-variant_list').html());
+
+    App.variantsController = Em.ArrayController.create({
+        selectedVariant: App.Variant.create({}),
+        basicProductOptions: [{% for o in object.data.options %}{'name':'{{ o.name }}'},{% endfor %}],
+        extraProductOptions: [],
+        content: variants.map(function(v) {
+            return App.Variant.create(v);
+        }),
+        setVariantFromPk: function(pk) {
+            alert(pk)
         }
     });
 
-    App.VariantView.appendTo('#variants-list');
+    App.VariantFormView = Em.View.extend({
+        templateName: 'hb-modify-variant',
+    });
+    App.VariantFormView.create({
+        selectedVariant: void 0,
+        basicProductOptionsBinding: 'App.variantsController.basicProductOptions',
+        extraProductOptionsBinding: 'App.variantsController.extraProductOptions',
 
+        updateSelectedVariant: function() {
+            this.selectedVariant = App.variantsController.get('selectedVariant');
+        }.observes('App.variantsController.selectedVariant.change')
+
+    }).appendTo('#editVariationModal');
+
+    $('a.btn-modal-form').live('click', function(event) {
+        event.preventDefault();
+        var variant_pk = $(this).attr('data-variant_pk');
+        if (variant_pk != 'undefined') {
+            var variants = App.variantsController.get('content');
+            for (var i=0; i < variants.length; i++) {
+                if (variants[i].get('pk') == variant_pk) {
+                    App.variantsController.set('selectedVariant', variants[i]);
+                    break;
+                }
+            }
+            console.log(App.variantsController.get('selectedVariant').get('pk'))
+        }
+    });
 
 });
 </script>
@@ -291,17 +217,80 @@ $(document).ready(function(){
 {% block extrahead %}
 {% spaceless %}
 
-    {% tplhandlebars "hb-variant-list" %}
-    {{#each content}}{{pk}}{{/each}}
-             <td class="cen"><input class="variant" id="variant-{{unbound pk}}" type="checkbox"></input></td>
-            <td class="value">{{ubound sku}}</td>
-            <td class="value">{{unbound cost}}</td>
-            {{#each basic_product_options}}
-                <td class="value">{{option}}</td>
+    {% tplhandlebars "hb-modify-variant" %}
+	<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	<h3 id="title-action"></h3>
+	</div>
+	<div class="modal-body">
+		<form class="form-horizontal">
+			<fieldset>
+            {{#each basicProductOptions}}
+            <div class="control-group">
+                <label class="control-label" for="input01">{{name}}</label>
+                <div class="controls">
+                  <input type="text" class="input-xlarge" id="input01">
+                </div>
+            </div>
             {{/each}}
-            <td class="value cen"> <a data-toggle="modal" href="#editVariationModal" class="btn btn-mini btn-warning">{% trans 'Edit' %}</a> <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a> </td>
-
+            {{#each extraProductOptions}}
+            <div class="control-group">
+                <label class="control-label" for="input01">Title</label>
+                <div class="controls">
+                  <input type="text" class="input-xlarge" id="input01">
+                </div>
+            </div>
+            {{/each}}
+			<!--End custom variation variables-->
+			<hr/>
+			<div>
+				<div class="span2">
+				    <label>{% trans 'Selling Price' %}</label>
+					<div class="input-append">
+					    {{view Em.TextField class="span1" name="" valueBinding="selectedVariant.cost"}}<span class="add-on">CAD</span>
+	              	</div>
+				</div>
+				<div class="span2">
+				    <label>{% trans 'Compare at price' %}</label>
+					<div class="input-append">
+                        {{view Em.TextField class="span1" name="" valueBinding="selectedVariant.appendedInput"}}<span class="add-on">CAD</span>
+	              	</div>
+				</div>	
+				<div class="span2">
+				    <label>{% trans 'SKU' %}</label>
+				     {{view Em.TextField class="span2" name="" placeholder="Stock keeping unit" valueBinding="selectedVariant.sku"}}
+				</div>
+			</div>
+			<div class="span2">
+				<br />
+			    <label>{% trans 'Weight' %}</label>
+				<div class="input-append">
+                    {{view Em.TextField class="span1" name="" valueBinding="selectedVariant.weight"}}<span class="add-on">KG</span>
+              	</div>
+			</div>
+			<div class="span4">
+				<br />
+			    <label>
+                    {{view Em.Checkbox name="" valueBinding="selectedVariant.taxable"}}
+					{% trans 'Charge taxes' %}
+				</label>
+			    <label>
+			        {{view Em.Checkbox name="" valueBinding="selectedVariant.requires_shipping"}}
+					{% trans 'Require shipping address' %}
+				</label>
+			    <label>
+			        {{view Em.Checkbox name="" valueBinding="selectedVariant.inventory_management"}}
+					{% trans 'Track stock levels' %}
+				</label>
+			</div>
+			<!--Start standard variation variables-->
+			</fieldset>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal" >{% trans 'Close' %}</a>
+		<a href="#" class="btn btn-warning">{% trans 'Save changes' %}</a>
+	</div>
     {% endtplhandlebars %}
-
 {% endspaceless %}
 {% endblock %}
