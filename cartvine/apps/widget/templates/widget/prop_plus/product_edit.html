@@ -243,7 +243,7 @@ $(document).ready(function(){
 
     App.VariantView = Em.View.extend({
         templateName: 'hb-variant-th',
-        tagName: 'th',
+        tagName: 'tr',
         classNames: ['']
     });
 
@@ -261,7 +261,7 @@ $(document).ready(function(){
 
     App.VariantsView.create({
         variantsBinding: 'App.variantsController'
-    }).append();
+    }).appendTo('#variants-list');
 
 });
 </script>
