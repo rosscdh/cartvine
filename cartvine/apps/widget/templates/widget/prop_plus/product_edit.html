@@ -210,7 +210,6 @@
     </div>
 </div>
 
-
 <script id="data-variant_list">
 [{% for v in object.productvariant_set.all %}
 { 'pk': '{{ v.pk }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku }}', 'basic_product_options': [{% for o in v.basic_product_options %}'{{ o }}',{% endfor %}] }{% if not forloop.last %}, {% endif %}
@@ -238,13 +237,14 @@ $(document).ready(function(){
     App.variantsController = Em.ArrayController.create({
         content: variants.map(function(v) {
             return App.Variant.create(v);
-        })
+        }),
+        basic_product_options: [{% for o in object.data.options %}{'name':'{{ o.name }}'},{% endfor %}],
     });
 
-    App.VariantView = Em.View.extend({
+    App.VariantThView = Em.View.extend({
         templateName: 'hb-variant-th',
         tagName: 'tr',
-        classNames: ['']
+        classNames: ['variant-th']
     });
 
     App.VariantView = Em.View.extend({
@@ -271,23 +271,19 @@ $(document).ready(function(){
 {% spaceless %}
 
     {% tplhandlebars "hb-variant-list" %}
-            {{#each variant in variants}}
-                {{view App.VariantView contentBinding="variant"}}
-            {{/each}}
+        {{view App.VariantThView contentBinding="App.variantsController.basic_product_options"}}
+        {{#each variant in variants}}
+            {{view App.VariantView contentBinding="variant"}}
+        {{/each}}
     {% endtplhandlebars %}
 
     {% tplhandlebars "hb-variant-th" %}
-        <th class="span1"></th>
-        <th>Title</th>
-        <th>Fabric</th>
-        <th>Width</th>
-        <th>Height</th>
-        <th>Packaging</th>
-        <th>Width2</th>
-        <th>Height2</th>
+        <th class="cen span1"><input class="variant" id="variant-all" type="checkbox"></th>
         <th>SKU</th>
         <th>Price</th>
-        <th>In Stock</th>
+        {{#each App.variantsController.basic_product_options}}
+        <th class="value">{{name}}</th>
+        {{/each}}
         <th></th>
     {% endtplhandlebars %}
 
