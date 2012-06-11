@@ -212,7 +212,7 @@
 
 <script id="data-variant_list">
 [{% for v in object.productvariant_set.all %}
-{ 'pk': '{{ v.pk }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku }}', 'basic_product_options': [{% for o in v.basic_product_options %}'{{ o }}',{% endfor %}] }{% if not forloop.last %}, {% endif %}
+{ 'pk': '{{ v.pk }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku }}', 'basic_product_options': [{% for o in v.basic_product_options %}{'name':'{{ o }}'},{% endfor %}] }{% if not forloop.last %}, {% endif %}
 {% endfor %}]
 </script>
 
@@ -293,7 +293,7 @@ $(document).ready(function(){
         <td class="value">{{variant.sku}}</td>
         <td class="value">{{variant.cost}}</td>
         {{#each variant.basic_product_options}}
-        <td class="value">{{content}}</td>
+        <td class="value">{{name}}</td>
         {{/each}}
         <td class="value cen">
           <a data-toggle="modal" href="#editVariationModal" class="btn btn-mini btn-warning">Edit</a>
