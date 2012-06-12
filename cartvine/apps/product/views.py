@@ -3,7 +3,12 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render_to_response, redirect
 from django.core.urlresolvers import reverse
-from django.views.generic import DetailView, ListView
+from django.http import HttpResponse
+from django.views.generic import DetailView, ListView, FormView
+from django.utils import simplejson as json
+from django.http import QueryDict
+
+from cartvine.apps.product.forms import ProductPropertiesForm, ProductVariantForm
 
 import shopify
 from annoying.decorators import ajax_request
@@ -44,3 +49,33 @@ def ProductSearchView(request):
     return {
     'products': ajax_object_list
     }
+
+
+class ProductPropertiesView(FormView):
+    form_class = ProductPropertiesForm
+    def post(self, request, *args, **kwargs):
+        response = {
+            'pk': 1,
+            'message': 'yay'
+        }
+        return HttpResponse(json.dumps(response), content_type='text/json')
+
+
+class ProductVariantView(FormView):
+    form_class = ProductVariantForm
+    
+    def get_response_json(self):
+        return {
+            'pk': 1,
+            'message': 'yay'
+        }
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form(self.get_form_class())
+        print form
+        response = self.get_response_json()
+
+        if not form.is_valid():
+            response['message'] = 'Shoooot'
+
+        return HttpResponse(json.dumps(response), content_type='text/json')

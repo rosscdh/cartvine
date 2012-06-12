@@ -5,6 +5,8 @@ from bootstrap import widgets as bootstrap_widgets
 from django.template.defaultfilters import slugify
 
 from cartvine.utils import get_namedtuple_choices
+from models import Product, ProductVariant
+
 
 class ProductVariantForm(bootstrap.BootstrapForm):
     sku = forms.CharField(widget=forms.widgets.TextInput(attrs={'class':'span2'}))
@@ -41,8 +43,18 @@ class ProductVariantForm(bootstrap.BootstrapForm):
 
 
 class ProductPropertiesForm(forms.Form):
-    pass
+    def clean(self):
+        cleaned_data = super(ProductPropertiesForm, self).clean()
+        return cleaned_data
 
 
 class ProductVariantForm(forms.Form):
-    pass
+    def clean(self):
+        #ProductVariant
+        print self.data
+        cleaned_data = super(ProductVariantForm, self).clean()
+        print cleaned_data
+#        raise forms.ValidationError("Monkies")
+        return cleaned_data
+
+

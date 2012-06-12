@@ -10,7 +10,7 @@ from django.contrib.admin.views.main import ChangeList
 from django.forms.formsets import formset_factory
 
 from cartvine.apps.widget.forms import ShopPropsWidgetPropertiesForm, ShopPropsWidgetApplyForm
-from cartvine.apps.product.forms import ProductVariantForm, ProductPropertiesForm, ProductVariantForm
+from cartvine.apps.product.forms import ProductVariantForm
 from cartvine.apps.widget.models import Widget, WidgetShop
 from cartvine.apps.widget.views.base import MyWidgetEditView
 
@@ -110,13 +110,3 @@ class ShopExtendApplyView(ShopExtendConfigView):
 
         return super(FormView, self).post(request, *args, **kwargs)
 
-
-class ProductPropertiesView(FormView):
-    form_class = ProductPropertiesForm
-    def post(self, request, *args, **kwargs):
-        pass
-
-class ProductVariantView(FormView):
-    form_class = ProductVariantForm
-    def post(self, request, *args, **kwargs):
-        pass
