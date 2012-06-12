@@ -147,9 +147,6 @@
 {% endblock %}
 
 {% block js %}
-{% for i,v in object.get_data_options.iteritems %}
-{{i}}
-{% endfor %}
 <script src="{{ STATIC_URL }}emberjs/js/ember-complete.js"></script>
 <script>
 $(document).ready(function(){

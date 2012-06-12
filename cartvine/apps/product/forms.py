@@ -38,3 +38,11 @@ class ProductVariantForm(bootstrap.BootstrapForm):
 
     def save(self, commit=True):
         pass
+
+
+class ProductPropertiesForm(forms.Form):
+    pass
+
+
+class ProductVariantForm(forms.Form):
+    pass
