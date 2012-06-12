@@ -140,7 +140,7 @@
 
 <script id="data-variant_list">
 [{% for v in object.productvariant_set.all %}
-{ 'pk': '{{ v.pk }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'basic_product_options': [{% for o in v.basic_product_options %}{'name':'{{ o }}'},{% endfor %}] }{% if not forloop.last %}, {% endif %}
+{ 'pk': '{{ v.pk }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'basic_product_options': [{% for o in v.basic_options %}{'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %}] }{% if not forloop.last %}, {% endif %}
 {% endfor %}]
 </script>
 
