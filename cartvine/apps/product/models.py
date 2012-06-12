@@ -47,10 +47,9 @@ class Product(models.Model):
     def tags(self):
         return self.data['tags'].split() if 'tags' in self.data else None
 
-    def basic_props(self):
-        """ assemble properties and lis of variant options uniquified"""
-        basic = []
-        options = {}
+    def get_variant_prop_groups(self, options=None):
+        if options is None:
+            options = {}
         #assemble variant options
         for v in self.data['variants']:
             for option_id,o in self.BASIC_OPTIONS.get_choices():
@@ -58,12 +57,24 @@ class Product(models.Model):
                     options[option_id] = {'name':option_id, 'value': [v[option_id]]}
                 else:
                     options[option_id]['value'].append(v[option_id])
+        return options
+
+    def get_data_options(self, options=None):
+        if options is None:
+            options = {}
+            for option_id,o in self.BASIC_OPTIONS.get_choices():
+                options[option_id] = {'name':'', 'value':''}
 
         for i,o in enumerate(self.data['options']):
             option_id = 'option%s'%(i+1,)
             options[option_id]['name'] = o['name']
             options[option_id]['value'] = set(options[option_id]['value'])
+        return options
 
+    def basic_props(self):
+        """ assemble properties and lis of variant options uniquified"""
+        basic = []
+        options = self.get_data_options(self.get_variant_prop_groups())
         for name, p in options.iteritems():
             basic.append(p)
         return basic
@@ -96,7 +107,7 @@ class ProductVariant(models.Model):
         return '%d' %(self.data['inventory_quantity'],)
 
     def basic_options(self):
-        options = []
+        options = {}
         for option_id,o in Product.BASIC_OPTIONS.get_choices():
-            options.append({'name':option_id, 'value': self.data[option_id]})
+            options[option_id] = {'name':option_id, 'value': self.data[option_id]}
         return options

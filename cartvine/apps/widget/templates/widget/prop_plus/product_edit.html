@@ -115,7 +115,7 @@
                                     <td class="value">{{variant.sku}}</td>
                                     <td class="value">{{variant.cost}}</td>
                                     <td class="value">{{variant.num_in_stock}}</td>
-                                    {% for option in variant.basic_options %}
+                                    {% for option_id,option in variant.basic_options.iteritems %}
                                     <td class="value">{{ option.value }}</td>
                                     {% endfor %}
                                     <td class="value cen">
@@ -140,13 +140,16 @@
 
 <script id="data-variant_list">
 [{% for v in object.productvariant_set.all %}
-{ 'pk': '{{ v.pk }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'basic_product_options': [{% for o in v.basic_options %}{'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %}] }{% if not forloop.last %}, {% endif %}
+{ 'pk': '{{ v.pk }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'basic_product_options': { {% for option_id,o in v.basic_options.iteritems %}'{{ option_id }}': {'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %} } }{% if not forloop.last %}, {% endif %}
 {% endfor %}]
 </script>
 
 {% endblock %}
 
 {% block js %}
+{% for i,v in object.get_data_options.iteritems %}
+{{i}}
+{% endfor %}
 <script src="{{ STATIC_URL }}emberjs/js/ember-complete.js"></script>
 <script>
 $(document).ready(function(){
@@ -170,15 +173,12 @@ $(document).ready(function(){
 
     App.variantsController = Em.ArrayController.create({
         selectedVariant: App.Variant.create({}),
-        basicProductOptions: [{% for o in object.data.options %}{'name':'{{ o.name }}', 'value':'Test'},{% endfor %}],
+        basicProductOptions: [{% for o,v in object.get_data_options.iteritems %}{'name':'{{ o }}', 'value':'{{ v.name }}'},{% endfor %}],
         extraProductOptions: [],
         currencySymbol: '{{ object.shop.currency_symbol|safe }}',
         content: variants.map(function(v) {
             return App.Variant.create(v);
-        }),
-        setVariantFromPk: function(pk) {
-            alert(pk)
-        }
+        })
     });
 
     App.VariantFormView = Em.View.extend({
@@ -186,12 +186,14 @@ $(document).ready(function(){
     });
     App.VariantFormView.create({
         selectedVariant: void 0,
+        variant_options: void 0,
         currencyBinding: 'App.variantsController.currencySymbol',
         basicProductOptionsBinding: 'App.variantsController.basicProductOptions',
         extraProductOptionsBinding: 'App.variantsController.extraProductOptions',
 
         updateSelectedVariant: function() {
             this.set('selectedVariant', App.variantsController.get('selectedVariant'));
+            this.set('variant_options', this.get('selectedVariant').get('basic_product_options'))
         }.observes('App.variantsController.selectedVariant.change')
 
     }).appendTo('#editVariationModal');
@@ -210,6 +212,10 @@ $(document).ready(function(){
             }
         }else{
             variant = App.Variant.create({});
+        }
+        for (var i=0; i < variant.basic_product_options.length; i++) {
+            j = variant.basic_product_options[i]
+            console.log(j.value)
         }
         App.variantsController.set('selectedVariant', variant);
     });
@@ -231,9 +237,9 @@ $(document).ready(function(){
 			<fieldset>
             {{#each basicProductOptions}}
             <div class="control-group">
-                <label class="control-label" for="input01">{{name}}</label>
+                <label class="control-label" for="input01">{{value}}</label>
                 <div class="controls">
-                  {{view Em.TextField class="input-xlarge" name="" valueBinding="value"}}
+                  {{view Em.TextField class="input-xlarge" name="" valueBinding=""}}
                 </div>
             </div>
             {{/each}}
