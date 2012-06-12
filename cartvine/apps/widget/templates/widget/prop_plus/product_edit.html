@@ -10,7 +10,6 @@
 {% endblock %}
 
 {% block body %}
-
     <div class="main">
         <div class="row">
             <div class="span9">
@@ -41,10 +40,10 @@
                                     <td class="name">{% trans 'Product vendor' %}</td>
                                     <td class="value"><span>{{ object.data.vendor }}</span></td>
                                 </tr>
-                                {% for property in object.data.options %}
+                                {% for property in object.basic_props %}
                                 <tr>
                                     <td class="name">{{ property.name }}</td>
-                                    <td class="value"><span class="label label-info">Combined list</span> <span class="label label-info">of all variations</span> <span class="label label-info">of this type here</span></td>
+                                    <td class="value">{% for p in property.value %}<span class="label label-info">{{ p }}</span>&nbsp;{% endfor %}</td>
                                 </tr>
                                 {% endfor %}
                                 {% for property in object.properties_plus %}
@@ -103,7 +102,7 @@
 									<th>SKU</th>
 									<th>Price</th>
 									<th>In Stock</th>
-									{% for option in object.data.options %}
+									{% for option in object.basic_props %}
 									<th>{{ option.name }}</th>
 									{% endfor %}
 									<th></th>
@@ -116,8 +115,8 @@
                                     <td class="value">{{variant.sku}}</td>
                                     <td class="value">{{variant.cost}}</td>
                                     <td class="value">{{variant.num_in_stock}}</td>
-                                    {% for option in variant.basic_product_options %}
-                                    <td class="value">{{ option }}</td>
+                                    {% for option in variant.basic_options %}
+                                    <td class="value">{{ option.value }}</td>
                                     {% endfor %}
                                     <td class="value cen">
                                     <a data-toggle="modal" data-variant_pk="{{ variant.pk }}" href="#editVariationModal" class="btn-modal-form btn btn-mini btn-warning">{% trans 'Edit' %}</a>
@@ -162,7 +161,7 @@ $(document).ready(function(){
         compare_at_price: 0,
         weight: 0,
         taxable: true,
-        requires_shipping: false,
+        requires_shipping: true,
         inventory_management: false,
         basic_product_options: [],
     });
@@ -200,15 +199,19 @@ $(document).ready(function(){
     $('a.btn-modal-form').live('click', function(event) {
         event.preventDefault();
         var variant_pk = $(this).attr('data-variant_pk');
-        if (variant_pk != 'undefined') {
+        var variant = null;
+        if (variant_pk != undefined) {
             var variants = App.variantsController.get('content');
             for (var i=0; i < variants.length; i++) {
                 if (variants[i].get('pk') == variant_pk) {
-                    App.variantsController.set('selectedVariant', variants[i]);
+                    variant = variants[i];
                     break;
                 }
             }
+        }else{
+            variant = App.Variant.create({});
         }
+        App.variantsController.set('selectedVariant', variant);
     });
 
 });

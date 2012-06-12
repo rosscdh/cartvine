@@ -1,11 +1,17 @@
 from django.db import models
 from jsonfield import JSONField
+from cartvine.utils import get_namedtuple_choices
 
 from cartvine.apps.shop.models import Shop
 from managers import ProductManager
 
 
 class Product(models.Model):
+    BASIC_OPTIONS = get_namedtuple_choices('BASIC_OPTIONS', (
+        ('option1', 'option1', 'Option 1'),
+        ('option2', 'option2', 'Option 2'),
+        ('option3', 'option3', 'Option 3'),
+    ))
     shop = models.ForeignKey(Shop)
     provider_id = models.IntegerField(db_index=True)
     name = models.CharField(max_length=255)
@@ -41,11 +47,25 @@ class Product(models.Model):
     def tags(self):
         return self.data['tags'].split() if 'tags' in self.data else None
 
-    def basic_options(self):
+    def basic_props(self):
         """ assemble properties and lis of variant options uniquified"""
         basic = []
-        # for i,o in enumerate(self.data['options']):
-        #     basic.append({'name': o, 'value': self.data['option%s'%(i+1,)]})
+        options = {}
+        #assemble variant options
+        for v in self.data['variants']:
+            for option_id,o in self.BASIC_OPTIONS.get_choices():
+                if option_id not in options:
+                    options[option_id] = {'name':option_id, 'value': [v[option_id]]}
+                else:
+                    options[option_id]['value'].append(v[option_id])
+
+        for i,o in enumerate(self.data['options']):
+            option_id = 'option%s'%(i+1,)
+            options[option_id]['name'] = o['name']
+            options[option_id]['value'] = set(options[option_id]['value'])
+
+        for name, p in options.iteritems():
+            basic.append(p)
         return basic
 
     def properties_plus(self):
@@ -76,10 +96,7 @@ class ProductVariant(models.Model):
         return '%d' %(self.data['inventory_quantity'],)
 
     def basic_options(self):
-        basic = []
-        for i,o in enumerate(self.data['options']):
-            basic.append({'name': o, 'value': self.data['option%s'%(i+1,)]})
-        return basic
-
-    def basic_product_options(self):
-        return [self.data[o] for o in ['option1','option2','option3']]
+        options = []
+        for option_id,o in Product.BASIC_OPTIONS.get_choices():
+            options.append({'name':option_id, 'value': self.data[option_id]})
+        return options
