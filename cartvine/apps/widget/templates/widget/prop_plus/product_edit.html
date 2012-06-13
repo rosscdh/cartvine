@@ -136,7 +136,77 @@
     </div>
 
 
-<div id="editVariationModal" class="modal hide fade"></div>
+<div id="editVariationModal" class="modal hide fade">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal">&times;</button>
+<h3 id="title-action">Modify Variant</h3>
+</div>
+<div class="modal-body">
+	<form id="form-variant-props" class="form-horizontal">
+		<fieldset>
+        <div data-bind="foreach: basicProductOptions" class="control-group">
+            <label class="control-label" for="input01" data-bind="text: name"></label>
+            <div class="controls">
+                <input type="text" name="" id="" data-bind="value: value">
+            </div>
+        </div>
+        <div data-bind="foreach: extraProductOptions" class="control-group">
+            <label class="control-label" for="input01" data-bind="text: name"></label>
+            <div class="controls">
+                <input type="text" name="" id="" data-bind="value: value">
+            </div>
+        </div>
+		<!--End custom variation variables-->
+		<hr/>
+		<div>
+			<div class="span2">
+			    <label>{% trans 'Selling Price' %}</label>
+				<div class="input-append">
+				    <input type="text" name="" id="" class="span1" data-bind="value: selectedVariant().cost"/><span class="add-on" data-bind="text: currency"></span>
+              	</div>
+			</div>
+			<div class="span2">
+			    <label>{% trans 'Compare at price' %}</label>
+				<div class="input-append">
+				    <input type="text" name="" id="" class="span1" data-bind="value: selectedVariant().compare_at_price"/><span class="add-on">{{currency}}</span>
+              	</div>
+			</div>	
+			<div class="span2">
+			    <label>{% trans 'SKU' %}</label>
+                <input type="text" name="" id="" class="span2" data-bind="value: selectedVariant().sku"/>
+			</div>
+		</div>
+		<div class="span2">
+			<br />
+		    <label>{% trans 'Weight' %}</label>
+			<div class="input-append">
+                <input type="text" name="" id="" class="span1" data-bind="value: selectedVariant().weight"/><span class="add-on">{% trans 'KG' %}</span>
+          	</div>
+		</div>
+		<div class="span4">
+			<br />
+		    <label>
+                <input type="checkbox" name="" id="" data-bind="value: selectedVariant().taxable"/>
+				{% trans 'Charge taxes' %}
+			</label>
+		    <label>
+                <input type="checkbox" name="" id="" data-bind="value: selectedVariant().requires_shipping"/>
+				{% trans 'Require shipping address' %}
+			</label>
+		    <label>
+		        <input type="checkbox" name="" id="" data-bind="value: selectedVariant().inventory_management"/>
+				{% trans 'Track stock levels' %}
+			</label>
+		</div>
+		<!--Start standard variation variables-->
+		</fieldset>
+	</form>
+</div>
+<div class="modal-footer">
+	<a href="#" class="btn" data-dismiss="modal" >{% trans 'Close' %}</a>
+	<a href="#" data-bind="data_variant_pk: selectedVariant().pk" id="submit-variant-props" class="btn btn-warning">{% trans 'Save changes' %}</a>
+</div>
+</div>
 
 <script id="data-variant_list">
 [{% for v in object.productvariant_set.all %}
@@ -151,64 +221,62 @@
 <script>
 $(document).ready(function(){
 
-    App = Em.Application.create();
+    function VariantsViewModel() {
+        var self = this;
+        self.blankVariant = new Variant(0,0,0,0,0,0,false,false,false,[]);
+        self.currency = '{{ object.shop.currency_symbol|safe }}';
+        self.selectedVariant = ko.observable(self.blankVariant);
+        self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('basic','{{ o }}','{{ v.name }}'),{% endfor %}]);
+        self.extraProductOptions = ko.observableArray([]);
+        self.currencySymbol = ko.observable('{{ object.shop.currency_symbol|safe }}');
 
+        var variant_list = eval($('script#data-variant_list').html());
+        self.variants = ko.observableArray([]);
+        for (var i = 0; i < variant_list.length; i++) {
+            v = variant_list[i];
+            variant = new Variant(v.pk,v.provider_id,v.cost,v.sku,v.compare_at_price,v.weight,v.taxable,v.requires_shipping,v.inventory_management,v.basic_product_options);
+            self.variants.push(variant);
+        }
 
-    App.Variant = Em.Object.extend({
-        pk: void 0,
-        provider_id: void 0,
-        cost: 0,
-        sku: null,
-        compare_at_price: 0,
-        weight: 0,
-        taxable: true,
-        requires_shipping: true,
-        inventory_management: false,
-        basic_product_options: [],
-    });
+        self.formProductPropsPostUrl = ko.observable('');
+        self.formVariantPropsPostUrl = ko.observable('');
 
-    variants = eval($('script#data-variant_list').html());
-
-    App.variantsController = Em.ArrayController.create({
-        selectedVariant: App.Variant.create({}),
-        basicProductOptions: [{% for o,v in object.get_data_options.iteritems %}{'name':'{{ o }}', 'value':'{{ v.name }}'},{% endfor %}],
-        extraProductOptions: [],
-        currencySymbol: '{{ object.shop.currency_symbol|safe }}',
-
-        formProductPropsPostUrl: void 0,
-        formVariantPropsPostUrl: void 0,
-
-        content: variants.map(function(v) {
-            return App.Variant.create(v);
-        })
-    });
-
-    App.VariantFormView = Em.View.extend({
-        templateName: 'hb-modify-variant',
-    });
-    App.VariantFormView.create({
-        selectedVariant: void 0,
-        variant_options: void 0,
-        currencyBinding: 'App.variantsController.currencySymbol',
-        basicProductOptionsBinding: 'App.variantsController.basicProductOptions',
-        extraProductOptionsBinding: 'App.variantsController.extraProductOptions',
-
-        updateSelectedVariant: function() {
+        updateSelectedVariant = function() {
             var url = "{% url 'product:variant' slug=object.slug variant_pk=999 %}";
+            url = url.replace('999', self.selectedVariant.pk) + '?provider_id=' + self.selectedVariant.provider_id;
+            self.formVariantPropsPostUrl = url;
+        }
 
-            this.set('selectedVariant', App.variantsController.get('selectedVariant'));
-            this.set('variant_options', this.get('selectedVariant').get('basic_product_options'));
-            url = url.replace('999', this.get('selectedVariant').pk) + '?provider_id=' + this.get('selectedVariant').provider_id;
-            App.variantsController.set('formVariantPropsPostUrl', url);
+    };
 
-        }.observes('App.variantsController.selectedVariant.change')
-    }).appendTo('#editVariationModal');
+    function Variant(pk,provider_id,cost,sku,compare_at_price,weight,taxable,requires_shipping,inventory_management,basic_product_options) {
+        var self = this;
+        self.pk = pk;
+        self.provider_id = provider_id;
+        self.cost = cost;
+        self.sku = sku;
+        self.compare_at_price = compare_at_price;
+        self.weight = weight;
+        self.taxable = taxable;
+        self.requires_shipping = requires_shipping;
+        self.inventory_management = inventory_management;
+        self.basic_product_options = basic_product_options;
+    }
+    function ProductOption(prop_type,name,value) {
+        var self = this;
+        self.prop_type = prop_type;
+        self.name = name;
+        self.value = value;
+    }
+
+    AppVariants = new VariantsViewModel()
+    ko.applyBindings(AppVariants);
 
     $('#submit-variant-props').live('click', function(event) {
         event.preventDefault();
         $.ajax({
           type: 'POST',
-          url: App.variantsController.get('formVariantPropsPostUrl'),
+          url: AppVariants.formVariantPropsPostUrl,
           data: $('#form-variant-props').serialize(),
           dataType: 'json'
         })
@@ -222,103 +290,22 @@ $(document).ready(function(){
         var variant_pk = $(this).attr('data-variant_pk');
         var variant = null;
         if (variant_pk != undefined) {
-            var variants = App.variantsController.get('content');
-            for (var i=0; i < variants.length; i++) {
+            for (var i=0; i < AppVariants.variants.length; i++) {
                 if (variants[i].get('pk') == variant_pk) {
                     variant = variants[i];
                     break;
                 }
             }
         }else{
-            variant = App.Variant.create({});
+            variant = AppVariants.blankVariant;
         }
+        alert(variant)
         for (var i=0; i < variant.basic_product_options.length; i++) {
-            j = variant.basic_product_options[i]
+//            j = variant.basic_product_options[i]
         }
-        App.variantsController.set('selectedVariant', variant);
+        AppVariants.selectedVariant = variant;
     });
 
 });
 </script>
-{% endblock %}
-
-{% block extrahead %}
-{% spaceless %}
-
-    {% tplhandlebars "hb-modify-variant" %}
-	<div class="modal-header">
-	<button type="button" class="close" data-dismiss="modal">&times;</button>
-	<h3 id="title-action">Modify Variant</h3>
-	</div>
-	<div class="modal-body">
-		<form id="form-variant-props" class="form-horizontal">
-			<fieldset>
-            {{#each basicProductOptions}}
-            <div class="control-group">
-                <label class="control-label" for="input01">{{value}}</label>
-                <div class="controls">
-                  {{view Em.TextField class="input-xlarge" name="" valueBinding=""}}
-                </div>
-            </div>
-            {{/each}}
-            {{#each extraProductOptions}}
-            <div class="control-group">
-                <label class="control-label" for="input01">Title</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
-                </div>
-            </div>
-            {{/each}}
-			<!--End custom variation variables-->
-			<hr/>
-			<div>
-				<div class="span2">
-				    <label>{% trans 'Selling Price' %}</label>
-					<div class="input-append">
-					    {{view Em.TextField class="span1" name="" valueBinding="selectedVariant.cost"}}<span class="add-on">{{currency}}</span>
-	              	</div>
-				</div>
-				<div class="span2">
-				    <label>{% trans 'Compare at price' %}</label>
-					<div class="input-append">
-                        {{view Em.TextField class="span1" name="" valueBinding="selectedVariant.appendedInput"}}<span class="add-on">{{currency}}</span>
-	              	</div>
-				</div>	
-				<div class="span2">
-				    <label>{% trans 'SKU' %}</label>
-				     {{view Em.TextField class="span2" name="" placeholder="Stock keeping unit" valueBinding="selectedVariant.sku"}}
-				</div>
-			</div>
-			<div class="span2">
-				<br />
-			    <label>{% trans 'Weight' %}</label>
-				<div class="input-append">
-                    {{view Em.TextField class="span1" name="" valueBinding="selectedVariant.weight"}}<span class="add-on">KG</span>
-              	</div>
-			</div>
-			<div class="span4">
-				<br />
-			    <label>
-                    {{view Em.Checkbox name="" valueBinding="selectedVariant.taxable"}}
-					{% trans 'Charge taxes' %}
-				</label>
-			    <label>
-			        {{view Em.Checkbox name="" valueBinding="selectedVariant.requires_shipping"}}
-					{% trans 'Require shipping address' %}
-				</label>
-			    <label>
-			        {{view Em.Checkbox name="" valueBinding="selectedVariant.inventory_management"}}
-					{% trans 'Track stock levels' %}
-				</label>
-			</div>
-			<!--Start standard variation variables-->
-			</fieldset>
-		</form>
-	</div>
-	<div class="modal-footer">
-		<a href="#" class="btn" data-dismiss="modal" >{% trans 'Close' %}</a>
-		<a href="#" {{bindAttr data_variant_pk="selectedVariant.pk"}} id="submit-variant-props" class="btn btn-warning">{% trans 'Save changes' %}</a>
-	</div>
-    {% endtplhandlebars %}
-{% endspaceless %}
 {% endblock %}
