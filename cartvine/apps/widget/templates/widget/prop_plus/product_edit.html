@@ -109,7 +109,7 @@
 								</tr>
 							</thead>
 							<tbody>
-							    {% for variant in object.productvariant_set.all %}
+							    {% for variant in variants %}
 							    <tr>
                                     <td class="cen"><input type="checkbox"/></td>
                                     <td class="value">{{variant.sku}}</td>
@@ -144,12 +144,14 @@
 <div class="modal-body">
 	<form id="form-variant-props" class="form-horizontal">
 		<fieldset>
-        <div data-bind="foreach: basicProductOptions" class="control-group">
+        <!-- basic properties - thanks shopify  -->
+        <div data-bind="foreach: getVariantBasicProperties" class="control-group">
             <label class="control-label" for="input01" data-bind="text: name"></label>
             <div class="controls">
                 <input type="text" name="" id="" data-bind="value: value">
             </div>
         </div>
+        <!-- properties+ - thanks cartvine -->
         <div data-bind="foreach: extraProductOptions" class="control-group">
             <label class="control-label" for="input01" data-bind="text: name"></label>
             <div class="controls">
@@ -210,7 +212,7 @@
 </div>
 
 <script id="data-variant_list">
-[{% for v in object.productvariant_set.all %}
+[{% for v in variants %}
 { 'pk': '{{ v.pk }}', 'provider_id':'{{ v.provider_id }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'basic_product_options': { {% for option_id,o in v.basic_options.iteritems %}'{{ option_id }}': {'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %} } }{% if not forloop.last %}, {% endif %}
 {% endfor %}]
 </script>
@@ -228,7 +230,7 @@ $(document).ready(function(){
         self.blankVariant = new Variant(0,0,0,0,0,0,false,false,false,[]);
         self.currency = '{{ object.shop.currency_symbol|safe }}';
         self.selectedVariant = ko.observable(self.blankVariant);
-        self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('basic','{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
+        self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
         self.extraProductOptions = ko.observableArray([]);
         self.currencySymbol = '{{ object.shop.currency_symbol|safe }}';
 
@@ -242,6 +244,17 @@ $(document).ready(function(){
 
         //self.formProductPropsPostUrl = ko.observable('');
         self.formVariantPropsPostUrl = ko.observable('{% url 'product:variant' slug=object.slug variant_pk=999 %}');
+
+        self.getVariantBasicProperties = function() {
+            properties = []
+            for (var i = 0; i < self.basicProductOptions().length; i++) {
+                prop_type = self.basicProductOptions()[i].prop_type;
+                name = self.basicProductOptions()[i].internal_name;
+                value = self.selectedVariant().basic_product_options[prop_type].value;
+                properties.push({'name': name, 'value':  value})
+            }
+            return properties
+        }
 
         self.setSelectedVariant = function(variant_pk) {
             for (var i=0; i < self.variantsList().length; i++) {
@@ -283,10 +296,10 @@ $(document).ready(function(){
     }
     function ProductOption(prop_type,internal_name,name,value) {
         var self = this;
-        self.prop_type = ko.observable(prop_type);
-        self.internal_name = ko.observable(internal_name);
-        self.name = ko.observable(name);
-        self.value = ko.observable(value);
+        self.prop_type = prop_type;
+        self.internal_name = internal_name;
+        self.name = name;
+        self.value = value;
     }
 
     // ----- KO Instances -----

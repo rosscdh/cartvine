@@ -42,13 +42,19 @@ class ProductVariantForm(bootstrap.BootstrapForm):
         pass
 
 
-class ProductPropertiesForm(forms.Form):
+class ProductPropertiesForm(forms.ModelForm):
+    class Meta:
+        model = Product
+
     def clean(self):
         cleaned_data = super(ProductPropertiesForm, self).clean()
         return cleaned_data
 
 
-class ProductVariantForm(forms.Form):
+class ProductVariantForm(forms.ModelForm):
+    class Meta:
+        model = ProductVariant
+
     def clean(self):
         #ProductVariant
         print self.data

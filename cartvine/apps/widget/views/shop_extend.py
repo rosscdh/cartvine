@@ -10,7 +10,7 @@ from django.contrib.admin.views.main import ChangeList
 from django.forms.formsets import formset_factory
 
 from cartvine.apps.widget.forms import ShopPropsWidgetPropertiesForm, ShopPropsWidgetApplyForm
-from cartvine.apps.product.forms import ProductVariantForm
+from cartvine.apps.product.forms import ProductPropertiesForm, ProductVariantForm
 from cartvine.apps.widget.models import Widget, WidgetShop
 from cartvine.apps.widget.views.base import MyWidgetEditView
 
@@ -54,7 +54,7 @@ class ShopExtendApplyView(ShopExtendConfigView):
     template_name = 'widget/prop_plus/product_edit.html'
 
     def get_form_class(self):
-        return formset_factory(ShopPropsWidgetApplyForm, extra=0, can_delete=False)
+        return ProductPropertiesForm
 
     def get_success_url(self):
         return reverse('widget:custom_apply_post', kwargs={'slug': self.kwargs['slug'], 'provider_pk': self.kwargs['provider_pk']})
@@ -81,17 +81,12 @@ class ShopExtendApplyView(ShopExtendConfigView):
 
     def get_context_data(self, **kwargs):
         context = super(ShopExtendApplyView, self).get_context_data(**kwargs)        
+        context['variant_form'] = ProductVariantForm(initial=None)
         context['object'] = self.object
-        if self.request.GET.get('variant') is not None:
-            context['variants'] = self.object.productvariant_set.filter(provider_id=self.request.GET.get('variant'))
-        else:
-            context['variants'] = self.object.productvariant_set.all()
-        variants = [v.data for v in context['variants']]
-        variant_formset = formset_factory(ProductVariantForm, extra=0, can_delete=False)
-        context['variant_form'] = variant_formset(initial=variants)
+        context['variants'] = self.object.productvariant_set.all()
+        context['widget_config'] = self.widget_config
         context['widget_slug'] = self.kwargs['slug']
         context['provider_pk'] = self.kwargs['provider_pk']
-        context['widget_config'] = self.widget_config
 
         return context
 
