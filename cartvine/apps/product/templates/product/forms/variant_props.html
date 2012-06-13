@@ -13,24 +13,23 @@
         <div data-bind="foreach: selectedVariant().basic_props" class="control-group">
             <label class="control-label" for="input01" data-bind="text: name"></label>
             <div class="controls">
-                <input type="text" name="" id="" data-bind="value: value">
+                <input type="text" data-bind="attr: {'name': field_name, 'value': value}" id="">
             </div>
         </div>
         <!-- properties+ - thanks cartvine -->
         <div data-bind="foreach: extraProductOptions" class="control-group">
             <label class="control-label" for="input01" data-bind="text: name"></label>
             <div class="controls">
-                <input type="text" name="" id="" data-bind="value: value">
+                <input type="text" name="extra_props" id="" data-bind="value: value">
             </div>
         </div>
         <!--End custom variation variables-->
         <hr/>
         <div>
-            <input type="text" name="" id="" class="span1" data-bind="value: selectedVariant().pk"/>
             <div class="span2">
                 <label>{% trans 'Selling Price' %}</label>
                 <div class="input-append">
-                    <input type="text" name="cost" id="" class="span1" data-bind="value: selectedVariant().cost"/><span class="add-on" data-bind="html: currencySymbol"></span>
+                    <input type="text" name="price" id="" class="span1" data-bind="value: selectedVariant().cost"/><span class="add-on" data-bind="html: currencySymbol"></span>
                 </div>
             </div>
             <div class="span2">
@@ -48,7 +47,7 @@
             <br />
             <label>{% trans 'Weight' %}</label>
             <div class="input-append">
-                <input type="text" name="weight" id="" class="span1" data-bind="value: selectedVariant().weight"/><span class="add-on">{% trans 'KG' %}</span>
+                <input type="text" name="grams" id="" class="span1" data-bind="value: selectedVariant().weight"/><span class="add-on">{% trans 'KG' %}</span>
             </div>
         </div>
         <div class="span4">
@@ -62,7 +61,7 @@
                 {% trans 'Require shipping address' %}
             </label>
             <label>
-                <input type="checkbox" name="inventory_management" id="" data-bind="checked: selectedVariant().inventory_management"/>
+                <input type="checkbox" name="inventory_policy" id="" data-bind="checked: selectedVariant().inventory_management"/>
                 {% trans 'Track stock levels' %}
             </label>
         </div>

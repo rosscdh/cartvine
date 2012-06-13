@@ -219,9 +219,13 @@ $(document).ready(function(){
 
             for (var i = 0; i < AppVariants.basicProductOptions().length; i++) {
                 prop_type = AppVariants.basicProductOptions()[i].prop_type;
+                field_name = AppVariants.basicProductOptions()[i].prop_type
                 name = AppVariants.basicProductOptions()[i].internal_name;
                 value = self.basic_product_options[prop_type].value;
-                self.basic_props.push({'name': name, 'value':  value})
+
+                if (name != '' && name != 'None' && value != '' && value != 'None') {
+                    self.basic_props.push({'field_name': field_name, 'name': name, 'value':  value})
+                }
             }
         }
     }

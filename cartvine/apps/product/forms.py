@@ -51,16 +51,38 @@ class ProductPropertiesForm(forms.ModelForm):
         return cleaned_data
 
 
-class ProductVariantForm(forms.ModelForm):
-    class Meta:
-        model = ProductVariant
+class ProductVariantForm(forms.Form):
+    provider_id = forms.IntegerField(required=False)
+    price = forms.FloatField(initial=1.00,required=False)
+    compare_at_price = forms.CharField(initial=0,required=False)
+    sku = forms.CharField(initial='',required=False)
+    grams = forms.CharField(initial=0,required=False)
+    inventory_policy = forms.CharField(initial='',required=False)
+    requires_shipping = forms.BooleanField(initial=True,required=False)
+    taxable = forms.BooleanField(initial=True,required=False)
+    inventory_quantity = forms.IntegerField(initial=0,required=False)
+
 
     def clean(self):
-        #ProductVariant
-        print self.data
         cleaned_data = super(ProductVariantForm, self).clean()
-        print cleaned_data
-#        raise forms.ValidationError("Monkies")
+        cleaned_data['provider_id'] = self.initial['variant'].provider_id
+
+        # Set default values; all items in this form are "required"
+        for k,c in self.fields.items():
+            if k not in cleaned_data or cleaned_data[k] in [None,'None','null','']:
+                 cleaned_data[k] = self.fields[k].initial
+
+        for c in range(1,3):
+            key = 'option%d'%(c,)
+            cleaned_data[key] = self.data.get(key)
+
+        if len(self.data.getlist('extra_props')) > 0:
+            pass
+
         return cleaned_data
 
+    def save(self):
+        for key, value in self.cleaned_data.items():
+            self.initial['variant'].data[key] = value
+        return self.initial['variant'].save()
 

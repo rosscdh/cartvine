@@ -43,7 +43,6 @@ class Product(models.Model):
     def featured_image_src(self):
         return self.data['featured_image'] if 'featured_image' in self.data else None
 
-    @property
     def tags(self):
         return self.data['tags'].split() if 'tags' in self.data else None
 
