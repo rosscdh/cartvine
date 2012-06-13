@@ -65,24 +65,43 @@ class ProductVariantForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(ProductVariantForm, self).clean()
-        cleaned_data['provider_id'] = self.initial['variant'].provider_id
+
+        slug_parts = []
 
         # Set default values; all items in this form are "required"
         for k,c in self.fields.items():
             if k not in cleaned_data or cleaned_data[k] in [None,'None','null','']:
                  cleaned_data[k] = self.fields[k].initial
 
-        for c in range(1,3):
+        for c in range(1,4):
             key = 'option%d'%(c,)
             cleaned_data[key] = self.data.get(key)
+            slug_parts.append(cleaned_data[key])
+
 
         if len(self.data.getlist('extra_props')) > 0:
+            #slug_parts.append(cleaned_data[key])
             pass
+
+        variant_slug = slugify(' '.join(slug_parts))
+
+        if self.initial['variant'] is None:
+            variant, is_new = ProductVariant.objects.get_or_create(product=self.initial['product'], slug=variant_slug)
+            variant.data = {}
+            variant.save()
+            self.initial['variant'] = variant
+
+        if self.initial['variant'].slug in [None,'']:
+            self.initial['variant'].slug = variant_slug
+            self.initial['variant'].save()
+
+        cleaned_data['provider_id'] = hasattr(self.initial['variant'], 'provider_id')
 
         return cleaned_data
 
     def save(self):
         for key, value in self.cleaned_data.items():
             self.initial['variant'].data[key] = value
-        return self.initial['variant'].save()
+            self.initial['variant'].save()
+        return self.initial['variant']
 

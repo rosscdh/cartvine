@@ -8,6 +8,7 @@ from django.views.generic import DetailView, ListView, FormView
 from django.utils import simplejson as json
 from django.http import QueryDict
 from django.shortcuts import get_object_or_404
+from django.template.defaultfilters import slugify
 
 from forms import ProductPropertiesForm, ProductVariantForm
 from models import Product, ProductVariant
@@ -68,15 +69,22 @@ class ProductVariantView(FormView):
 
     def get_response_json(self):
         return {
-            'pk': 1,
-            'message': 'yay'
+            'pk': self.variant.pk if hasattr(self, 'variant') else None,
+            'status': '',
+            'message': ''
         }
 
     def get_form_kwargs(self, **kwargs):
         kwargs = super(ProductVariantView, self).get_form_kwargs(**kwargs)
 
-        kwargs['initial']['product'] = get_object_or_404(Product, slug=self.kwargs['slug'])
-        kwargs['initial']['variant'] = get_object_or_404(ProductVariant, pk=self.kwargs['variant_pk'])
+        kwargs['initial']['product'] = self.product = get_object_or_404(Product, slug=self.kwargs['slug'])
+
+        if 'variant_id' not in self.kwargs:
+            # is_new
+            kwargs['initial']['variant'] = None
+        else:
+            # editing
+            kwargs['initial']['variant'] = self.variant = get_object_or_404(ProductVAriant, slug=self.kwargs['variant_id'])
 
         return kwargs
 
@@ -86,9 +94,16 @@ class ProductVariantView(FormView):
         response = self.get_response_json()
 
         if not form.is_valid():
-            print form.errors
+            response['status'] = 'error'
+            response['message'] = json.dumps(form.errors)
         else:
-            print "saving"
-            form.save()
+            try:
+                variant = form.save()
+                response['pk'] = variant.pk
+                response['status'] = 'success'
+                response['message'] = unicode(_('Success, We saved your variant!'))
+            except:
+                response['status'] = 'error'
+                response['message'] = unicode(_('Strange and error occurred; but were not sure what.'))
 
         return HttpResponse(json.dumps(response), content_type='text/json')

@@ -125,7 +125,7 @@
 						    </tr>
 						    {% endfor %}
 							<tr>
-								<td colspan="12"><a data-toggle="modal" href="#editVariationModal" class="btn-modal-form btn btn-small btn-success pull-right">{% trans 'Add Variation' %}</a></td>
+								<td colspan="12"><a data-toggle="modal" data-variant_pk="add" href="#editVariationModal" class="btn-modal-form btn btn-small btn-success pull-right">{% trans 'Add Variation' %}</a></td>
 							</tr>
 						</tbody>
 					</table>
@@ -155,12 +155,15 @@ $(document).ready(function(){
     function VariantsViewModel() {
         var self = this;
 
-        self.blankVariant = new Variant(0,0,0,0,0,0,false,false,false,[]);
+        self.blankVariant = new Variant(null,null,0,0,0,0,false,false,false,[]);
         self.currency = '{{ object.shop.currency_symbol|safe }}';
         self.selectedVariant = ko.observable(self.blankVariant);
         self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
         self.extraProductOptions = ko.observableArray([]);
         self.currencySymbol = '{{ object.shop.currency_symbol|safe }}';
+
+        self.formTitle = ko.observable('');
+        self.formSubmitMessage = ko.observable('');
 
         var variant_list = eval($('script#data-variant_list').html());
         self.variantsList = ko.observableArray([]);
@@ -171,7 +174,7 @@ $(document).ready(function(){
         }
 
         //self.formProductPropsPostUrl = ko.observable('');
-        self.formVariantPropsPostUrl = ko.observable('{% url 'product:variant' slug=object.slug variant_pk=999 %}');
+        self.formVariantPropsPostUrl = ko.observable('');
 
         self.setSelectedVariant = function(variant_pk) {
             for (var i=0; i < self.variantsList().length; i++) {
@@ -184,15 +187,25 @@ $(document).ready(function(){
         }
 
         self.updateSelectedVariant = function(variant) {
+            self.formSubmitMessage('');
             self.selectedVariant(variant);
             self.selectedVariant().setVariantBasicProperties();
             self.updateVariantPropsPostUrl();
+
             return self.selectedVariant
         }
 
         self.updateVariantPropsPostUrl = function() {
             var url = "{% url 'product:variant' slug=object.slug variant_pk=999 %}";
-            url = url.replace('999', self.selectedVariant().pk) + '?provider_id=' + self.selectedVariant().provider_id;
+            console.log(self.selectedVariant().pk)
+            if (self.selectedVariant().pk !== null) {
+                self.formTitle('{% trans "Edit a Variant" %}');
+                url = url.replace('999', self.selectedVariant().pk) + '?provider_id=' + self.selectedVariant().provider_id;
+            }else{
+                self.formTitle('{% trans "Add a Variant" %}');
+                url = "{% url 'product:add_variant' slug=object.slug %}";
+                console.log(url)
+            }
             self.formVariantPropsPostUrl(url);
             return self.formVariantPropsPostUrl;
         }
@@ -219,9 +232,19 @@ $(document).ready(function(){
 
             for (var i = 0; i < AppVariants.basicProductOptions().length; i++) {
                 prop_type = AppVariants.basicProductOptions()[i].prop_type;
+
                 field_name = AppVariants.basicProductOptions()[i].prop_type
                 name = AppVariants.basicProductOptions()[i].internal_name;
-                value = self.basic_product_options[prop_type].value;
+
+                if (self.basic_product_options.length == 0) {
+                    value = ' ';
+                }else{
+                    if (self.basic_product_options[prop_type].value != '') {
+                        value = self.basic_product_options[prop_type].value;
+                    }else{
+                        value = ' ';
+                    }
+                }
 
                 if (name != '' && name != 'None' && value != '' && value != 'None') {
                     self.basic_props.push({'field_name': field_name, 'name': name, 'value':  value})
@@ -250,15 +273,29 @@ $(document).ready(function(){
           data: $('#form-variant-props').serialize(),
           dataType: 'json'
         })
-        .success(function(data, textStatus, jqXHR) { console.log(data); })
-        .error(function() { console.log("error"); })
+        .success(function(data, textStatus, jqXHR) { 
+
+            response = eval(data);
+            AppVariants.formSubmitMessage(response.message);
+            if (response.status == 'success') {
+                status_class = 'btn-success';
+            }else{
+                status_class = 'btn-warning';
+            }
+            $('div#form-variant-message').hide().fadeIn('slow').removeClass().addClass(status_class).addClass('messages')
+
+        })
+        .error(function() { 
+            AppVariants.formSubmitMessage('Sorry, something bad happened!');
+            $('div#form-variant-message').hide().fadeIn('slow').removeClass().addClass('btn-danger').addClass('messages')
+        })
         .complete(function() { console.log("complete"); });
     });
     
     $('a.btn-modal-form').live('click', function(event) {
         event.preventDefault();
         var variant_pk = $(this).attr('data-variant_pk');
-        if (variant_pk != undefined) {
+        if (variant_pk != undefined && variant_pk != 'add') {
             AppVariants.setSelectedVariant(variant_pk);
         }else{
             AppVariants.updateSelectedVariant(AppVariants.blankVariant);

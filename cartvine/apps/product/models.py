@@ -1,7 +1,8 @@
 from django.db import models
+from django.template.defaultfilters import slugify
+
 from jsonfield import JSONField
 from cartvine.utils import get_namedtuple_choices
-
 from cartvine.apps.shop.models import Shop
 from managers import ProductManager
 
@@ -87,11 +88,18 @@ class Product(models.Model):
 
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product)
-    provider_id = models.IntegerField(db_index=True)
+    slug = models.SlugField(null=True)
+    provider_id = models.IntegerField(null=True,db_index=True)
     sku = models.CharField(max_length=128,null=True,db_index=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
     inventory_quantity = models.IntegerField(default=0)
     data = JSONField()
+
+    def set_slug(self):
+        if 'extra_options' in self.data:
+            for i in self.data['extra_options']:
+                pass
+        #self.slug = slugify()
 
     @property
     def cost(self):
@@ -108,5 +116,6 @@ class ProductVariant(models.Model):
     def basic_options(self):
         options = {}
         for option_id,o in Product.BASIC_OPTIONS.get_choices():
-            options[option_id] = {'name':option_id, 'value': self.data[option_id]}
+            if option_id in self.data:
+                options[option_id] = {'name':option_id, 'value': self.data[option_id]}
         return options
