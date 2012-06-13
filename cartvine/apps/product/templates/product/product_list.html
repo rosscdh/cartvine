@@ -25,7 +25,8 @@
 		    <thead>
 		      <tr>
 		        <th class="span1">&nbsp;</th>
-		        <th>Product Name</th>
+		        <th>{% trans 'Product Name' %}</th>
+                <th class="span2">&nbsp;</th>
 		      </tr>
 		    </thead>
 		    <tbody>
@@ -39,9 +40,12 @@
 			          <a href="{% url 'product:info' slug=p.slug %}">{{ p.name }}</a>
 					  <br/>{% for t in p.tags %}<span class="label label-info">{{ t }}</span>&nbsp;{% endfor %}
 			        </td>
+                    <td>
+                        <a href="{% url 'widget:custom_apply_post' slug='widget-prop-plus' provider_pk=p.provider_id %}">{% trans 'Properties+' %}</a>
+                    </td>
 			      </tr>
 				{% empty%}
-				    <li>{% trans 'No Products found.' %}</li>
+				    <td>{% trans 'No Products found.' %}</td>
 				{% endfor %}
 		    </tbody>
 		  </table>
