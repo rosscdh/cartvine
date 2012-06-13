@@ -159,16 +159,17 @@
 		<!--End custom variation variables-->
 		<hr/>
 		<div>
+            <input type="text" name="" id="" class="span1" data-bind="value: selectedVariant().pk"/>
 			<div class="span2">
 			    <label>{% trans 'Selling Price' %}</label>
 				<div class="input-append">
-				    <input type="text" name="" id="" class="span1" data-bind="value: selectedVariant().cost"/><span class="add-on" data-bind="text: currency"></span>
+				    <input type="text" name="" id="" class="span1" data-bind="value: selectedVariant().cost"/><span class="add-on" data-bind="html: currencySymbol"></span>
               	</div>
 			</div>
 			<div class="span2">
 			    <label>{% trans 'Compare at price' %}</label>
 				<div class="input-append">
-				    <input type="text" name="" id="" class="span1" data-bind="value: selectedVariant().compare_at_price"/><span class="add-on">{{currency}}</span>
+				    <input type="text" name="" id="" class="span1" data-bind="value: selectedVariant().compare_at_price"/><span class="add-on" data-bind="html: currencySymbol"></span>
               	</div>
 			</div>	
 			<div class="span2">
@@ -186,15 +187,15 @@
 		<div class="span4">
 			<br />
 		    <label>
-                <input type="checkbox" name="" id="" data-bind="value: selectedVariant().taxable"/>
+                <input type="checkbox" name="" id="" data-bind="checked: selectedVariant().taxable"/>
 				{% trans 'Charge taxes' %}
 			</label>
 		    <label>
-                <input type="checkbox" name="" id="" data-bind="value: selectedVariant().requires_shipping"/>
+                <input type="checkbox" name="" id="" data-bind="checked: selectedVariant().requires_shipping"/>
 				{% trans 'Require shipping address' %}
 			</label>
 		    <label>
-		        <input type="checkbox" name="" id="" data-bind="value: selectedVariant().inventory_management"/>
+		        <input type="checkbox" name="" id="" data-bind="checked: selectedVariant().inventory_management"/>
 				{% trans 'Track stock levels' %}
 			</label>
 		</div>
@@ -223,28 +224,46 @@ $(document).ready(function(){
 
     function VariantsViewModel() {
         var self = this;
+
         self.blankVariant = new Variant(0,0,0,0,0,0,false,false,false,[]);
         self.currency = '{{ object.shop.currency_symbol|safe }}';
         self.selectedVariant = ko.observable(self.blankVariant);
-        self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('basic','{{ o }}','{{ v.name }}'),{% endfor %}]);
+        self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('basic','{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
         self.extraProductOptions = ko.observableArray([]);
-        self.currencySymbol = ko.observable('{{ object.shop.currency_symbol|safe }}');
+        self.currencySymbol = '{{ object.shop.currency_symbol|safe }}';
 
         var variant_list = eval($('script#data-variant_list').html());
-        self.variants = ko.observableArray([]);
+        self.variantsList = ko.observableArray([]);
         for (var i = 0; i < variant_list.length; i++) {
             v = variant_list[i];
             variant = new Variant(v.pk,v.provider_id,v.cost,v.sku,v.compare_at_price,v.weight,v.taxable,v.requires_shipping,v.inventory_management,v.basic_product_options);
-            self.variants.push(variant);
+            self.variantsList.push(variant);
         }
 
-        self.formProductPropsPostUrl = ko.observable('');
-        self.formVariantPropsPostUrl = ko.observable('');
+        //self.formProductPropsPostUrl = ko.observable('');
+        self.formVariantPropsPostUrl = ko.observable('{% url 'product:variant' slug=object.slug variant_pk=999 %}');
 
-        updateSelectedVariant = function() {
+        self.setSelectedVariant = function(variant_pk) {
+            for (var i=0; i < self.variantsList().length; i++) {
+                if (self.variantsList()[i].pk == variant_pk) {
+                    return self.updateSelectedVariant(self.variantsList()[i])
+                    break;
+                }
+            }
+            return self.updateSelectedVariant(self.blankVariant)
+        }
+
+        self.updateSelectedVariant = function(variant) {
+            self.selectedVariant(variant);
+            self.updateVariantPropsPostUrl();
+            return self.selectedVariant
+        }
+
+        self.updateVariantPropsPostUrl = function() {
             var url = "{% url 'product:variant' slug=object.slug variant_pk=999 %}";
             url = url.replace('999', self.selectedVariant.pk) + '?provider_id=' + self.selectedVariant.provider_id;
-            self.formVariantPropsPostUrl = url;
+            self.formVariantPropsPostUrl(url);
+            return self.formVariantPropsPostUrl;
         }
 
     };
@@ -262,15 +281,18 @@ $(document).ready(function(){
         self.inventory_management = inventory_management;
         self.basic_product_options = basic_product_options;
     }
-    function ProductOption(prop_type,name,value) {
+    function ProductOption(prop_type,internal_name,name,value) {
         var self = this;
-        self.prop_type = prop_type;
-        self.name = name;
-        self.value = value;
+        self.prop_type = ko.observable(prop_type);
+        self.internal_name = ko.observable(internal_name);
+        self.name = ko.observable(name);
+        self.value = ko.observable(value);
     }
 
+    // ----- KO Instances -----
     AppVariants = new VariantsViewModel()
-    ko.applyBindings(AppVariants);
+    // ----- KO Bindings -----
+    ko.applyBindings(AppVariants, document.getElementById('editVariationModal'));
 
     $('#submit-variant-props').live('click', function(event) {
         event.preventDefault();
@@ -288,22 +310,11 @@ $(document).ready(function(){
     $('a.btn-modal-form').live('click', function(event) {
         event.preventDefault();
         var variant_pk = $(this).attr('data-variant_pk');
-        var variant = null;
         if (variant_pk != undefined) {
-            for (var i=0; i < AppVariants.variants.length; i++) {
-                if (variants[i].get('pk') == variant_pk) {
-                    variant = variants[i];
-                    break;
-                }
-            }
+            AppVariants.setSelectedVariant(variant_pk);
         }else{
-            variant = AppVariants.blankVariant;
+            AppVariants.updateSelectedVariant(AppVariants.blankVariant);
         }
-        alert(variant)
-        for (var i=0; i < variant.basic_product_options.length; i++) {
-//            j = variant.basic_product_options[i]
-        }
-        AppVariants.selectedVariant = variant;
     });
 
 });
