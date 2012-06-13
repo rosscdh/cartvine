@@ -163,39 +163,39 @@
 			<div class="span2">
 			    <label>{% trans 'Selling Price' %}</label>
 				<div class="input-append">
-				    <input type="text" name="" id="" class="span1" data-bind="value: selectedVariant().cost"/><span class="add-on" data-bind="html: currencySymbol"></span>
+				    <input type="text" name="cost" id="" class="span1" data-bind="value: selectedVariant().cost"/><span class="add-on" data-bind="html: currencySymbol"></span>
               	</div>
 			</div>
 			<div class="span2">
 			    <label>{% trans 'Compare at price' %}</label>
 				<div class="input-append">
-				    <input type="text" name="" id="" class="span1" data-bind="value: selectedVariant().compare_at_price"/><span class="add-on" data-bind="html: currencySymbol"></span>
+				    <input type="text" name="compare_at_price" id="" class="span1" data-bind="value: selectedVariant().compare_at_price"/><span class="add-on" data-bind="html: currencySymbol"></span>
               	</div>
 			</div>	
 			<div class="span2">
 			    <label>{% trans 'SKU' %}</label>
-                <input type="text" name="" id="" class="span2" data-bind="value: selectedVariant().sku"/>
+                <input type="text" name="sku" id="" class="span2" data-bind="value: selectedVariant().sku"/>
 			</div>
 		</div>
 		<div class="span2">
 			<br />
 		    <label>{% trans 'Weight' %}</label>
 			<div class="input-append">
-                <input type="text" name="" id="" class="span1" data-bind="value: selectedVariant().weight"/><span class="add-on">{% trans 'KG' %}</span>
+                <input type="text" name="weight" id="" class="span1" data-bind="value: selectedVariant().weight"/><span class="add-on">{% trans 'KG' %}</span>
           	</div>
 		</div>
 		<div class="span4">
 			<br />
 		    <label>
-                <input type="checkbox" name="" id="" data-bind="checked: selectedVariant().taxable"/>
+                <input type="checkbox" name="taxable" id="" data-bind="checked: selectedVariant().taxable"/>
 				{% trans 'Charge taxes' %}
 			</label>
 		    <label>
-                <input type="checkbox" name="" id="" data-bind="checked: selectedVariant().requires_shipping"/>
+                <input type="checkbox" name="requires_shipping" id="" data-bind="checked: selectedVariant().requires_shipping"/>
 				{% trans 'Require shipping address' %}
 			</label>
 		    <label>
-		        <input type="checkbox" name="" id="" data-bind="checked: selectedVariant().inventory_management"/>
+		        <input type="checkbox" name="inventory_management" id="" data-bind="checked: selectedVariant().inventory_management"/>
 				{% trans 'Track stock levels' %}
 			</label>
 		</div>
@@ -261,7 +261,7 @@ $(document).ready(function(){
 
         self.updateVariantPropsPostUrl = function() {
             var url = "{% url 'product:variant' slug=object.slug variant_pk=999 %}";
-            url = url.replace('999', self.selectedVariant.pk) + '?provider_id=' + self.selectedVariant.provider_id;
+            url = url.replace('999', self.selectedVariant().pk) + '?provider_id=' + self.selectedVariant().provider_id;
             self.formVariantPropsPostUrl(url);
             return self.formVariantPropsPostUrl;
         }
@@ -298,7 +298,7 @@ $(document).ready(function(){
         event.preventDefault();
         $.ajax({
           type: 'POST',
-          url: AppVariants.formVariantPropsPostUrl,
+          url: AppVariants.formVariantPropsPostUrl(),
           data: $('#form-variant-props').serialize(),
           dataType: 'json'
         })
