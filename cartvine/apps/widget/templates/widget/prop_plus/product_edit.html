@@ -17,7 +17,7 @@
                 <div class="widget-header">
                     <span class="icon-list-alt"></span>
                     <h3>{% trans 'Product Properties' %}</h3>
-                    <button type="edit" class="btn btn-small btn-warning pull-right">{% trans 'Edit Properties' %}</button>
+                    <button type="edit" class="btn btn-warning pull-right" data-toggle="modal" href="#editPropertiesModal" >{% trans 'Edit Properties' %}</button>
                 </div>                  
                 <div class="widget-content">
                     <table class="table table-bordered table-striped">
@@ -136,80 +136,8 @@
 </div>
 
 
-<div id="editVariationModal" class="modal hide fade">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal">&times;</button>
-<h3 id="title-action">Modify Variant</h3>
-</div>
-<div class="modal-body">
-	<form id="form-variant-props" class="form-horizontal">{% csrf_token %}
-		<fieldset>
-        <!-- basic properties - thanks shopify  -->
-        <div data-bind="foreach: selectedVariant().basic_props" class="control-group">
-            <label class="control-label" for="input01" data-bind="text: name"></label>
-            <div class="controls">
-                <input type="text" name="" id="" data-bind="value: value">
-            </div>
-        </div>
-        <!-- properties+ - thanks cartvine -->
-        <div data-bind="foreach: extraProductOptions" class="control-group">
-            <label class="control-label" for="input01" data-bind="text: name"></label>
-            <div class="controls">
-                <input type="text" name="" id="" data-bind="value: value">
-            </div>
-        </div>
-		<!--End custom variation variables-->
-		<hr/>
-		<div>
-            <input type="text" name="" id="" class="span1" data-bind="value: selectedVariant().pk"/>
-			<div class="span2">
-			    <label>{% trans 'Selling Price' %}</label>
-				<div class="input-append">
-				    <input type="text" name="cost" id="" class="span1" data-bind="value: selectedVariant().cost"/><span class="add-on" data-bind="html: currencySymbol"></span>
-              	</div>
-			</div>
-			<div class="span2">
-			    <label>{% trans 'Compare at price' %}</label>
-				<div class="input-append">
-				    <input type="text" name="compare_at_price" id="" class="span1" data-bind="value: selectedVariant().compare_at_price"/><span class="add-on" data-bind="html: currencySymbol"></span>
-              	</div>
-			</div>	
-			<div class="span2">
-			    <label>{% trans 'SKU' %}</label>
-                <input type="text" name="sku" id="" class="span2" data-bind="value: selectedVariant().sku"/>
-			</div>
-		</div>
-		<div class="span2">
-			<br />
-		    <label>{% trans 'Weight' %}</label>
-			<div class="input-append">
-                <input type="text" name="weight" id="" class="span1" data-bind="value: selectedVariant().weight"/><span class="add-on">{% trans 'KG' %}</span>
-          	</div>
-		</div>
-		<div class="span4">
-			<br />
-		    <label>
-                <input type="checkbox" name="taxable" id="" data-bind="checked: selectedVariant().taxable"/>
-				{% trans 'Charge taxes' %}
-			</label>
-		    <label>
-                <input type="checkbox" name="requires_shipping" id="" data-bind="checked: selectedVariant().requires_shipping"/>
-				{% trans 'Require shipping address' %}
-			</label>
-		    <label>
-		        <input type="checkbox" name="inventory_management" id="" data-bind="checked: selectedVariant().inventory_management"/>
-				{% trans 'Track stock levels' %}
-			</label>
-		</div>
-		<!--Start standard variation variables-->
-		</fieldset>
-	</form>
-</div>
-<div class="modal-footer">
-	<a href="#" class="btn" data-dismiss="modal" >{% trans 'Close' %}</a>
-	<a href="#" data-bind="data_variant_pk: selectedVariant().pk" id="submit-variant-props" class="btn btn-warning">{% trans 'Save changes' %}</a>
-</div>
-</div>
+{% include 'product/forms/product_props.html' %}
+{% include 'product/forms/variant_props.html' %}
 
 <script id="data-variant_list">
 [{% for v in variants %}
