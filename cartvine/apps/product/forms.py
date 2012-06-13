@@ -83,7 +83,11 @@ class ProductVariantForm(forms.Form):
             #slug_parts.append(cleaned_data[key])
             pass
 
-        variant_slug = slugify(' '.join(slug_parts))
+        if slug_parts is not None:
+            variant_slug = slugify(' '.join(slug_parts))
+        else:
+            random.randint(1, 100) #@TODO uuuglee fix this case
+            variant_slug = '%s-%s' % (random,self.initial['product'].slug,)
 
         if self.initial['variant'] is None:
             variant, is_new = ProductVariant.objects.get_or_create(product=self.initial['product'], slug=variant_slug)
