@@ -210,6 +210,7 @@ $(document).ready(function(){
     $('#submit-variant-props').live('click', function(event) {
         event.preventDefault();
 
+        $('#submit-variant-props').css('visibility','hidden');
         $('#submit-variant-props').attr('disabled',true);
 
         $.ajax({
@@ -237,6 +238,7 @@ $(document).ready(function(){
 
             setTimeout(function () {
                 $('#editVariationModal').modal('hide');
+                $('#submit-variant-props').css('visibility','visible');
                 $('#submit-variant-props').attr('disabled',false);
             }, 1500);
 
@@ -244,6 +246,8 @@ $(document).ready(function(){
         .error(function() { 
             AppVariants.formSubmitMessage('Sorry, something bad happened!');
             $('div#form-variant-message').hide().fadeIn('slow').removeClass().addClass('btn-danger').addClass('messages')
+            $('#submit-variant-props').css('visibility','visible');
+            $('#submit-variant-props').attr('disabled',false);
         })
         .complete(function() {});
     });
