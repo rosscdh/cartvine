@@ -62,8 +62,21 @@ class ProductVariantForm(forms.Form):
     taxable = forms.BooleanField(initial=True,required=False)
     inventory_quantity = forms.IntegerField(initial=0,required=False)
 
+    def clean_sku(self):
+        # Ensure this sku is unique
+        exists = ProductVariant.objects.filter(sku=self.cleaned_data['sku'])
+
+        if self.initial['variant'] is not None:
+            exists = exists.exclude(pk=self.initial['variant'].pk)
+
+        if len(exists) > 0:
+            raise forms.ValidationError("Variant SKU already exists, SKU must be unique")
+
+        return self.cleaned_data['sku']
+
     def clean(self):
         cleaned_data = super(ProductVariantForm, self).clean()
+        # if we have errors.. stop hammer time
         if len(self.errors) > 0:
             return cleaned_data
 
@@ -91,10 +104,10 @@ class ProductVariantForm(forms.Form):
             random.randint(1, 100) #@TODO uuuglee fix this case
             variant_slug = '%s-%s' % (random,self.initial['product'].slug,)
 
+        # Is a new variant so set it up and make it pretty @TODO move into seperate task
         if self.initial['variant'] is None:
             variant, is_new = ProductVariant.objects.get_or_create(product=self.initial['product'], slug=variant_slug)
             variant.data = {}
-            variant.save()
             self.initial['variant'] = variant
 
         if self.initial['variant'].slug in [None,'']:

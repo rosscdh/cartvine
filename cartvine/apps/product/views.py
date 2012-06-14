@@ -78,12 +78,12 @@ class ProductVariantView(FormView):
 
         kwargs['initial']['product'] = self.product = get_object_or_404(Product, slug=self.kwargs['slug'])
 
-        if 'variant_id' not in self.kwargs:
+        if 'variant_pk' not in self.kwargs:
             # is_new
             kwargs['initial']['variant'] = None
         else:
             # editing
-            kwargs['initial']['variant'] = self.variant = get_object_or_404(ProductVAriant, slug=self.kwargs['variant_id'])
+            kwargs['initial']['variant'] = self.variant = get_object_or_404(ProductVariant, pk=self.kwargs['variant_pk'])
 
         return kwargs
 
