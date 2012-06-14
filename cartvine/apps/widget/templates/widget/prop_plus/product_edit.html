@@ -92,10 +92,10 @@
             <div class="widget widget-table">
                 <div class="widget-header">
                     <span class="icon-barcode"></span>
-                    <h3>{% trans 'Product Inventory' %}</h3>
+                    <h3>{% trans 'Product Inventory' %} (<span data-bind="text: variantsList().length"></span>)</h3>
                 </div>
                 <div class="widget-content">
-					<table class="table table-bordered table-striped table-condensed">
+					<table class="table table-bordered table-striped table-condensed" data-bind="visible: variantsList().length > 0">
 						<thead>
 							<tr>
 								<th class="cen span1"><input type="checkbox"/></th>
@@ -108,7 +108,7 @@
 								<th></th>
 							</tr>
 						</thead>
-						<tbody data-bind="foreach: variantsList()">
+						<tbody data-bind="foreach: variantsList">
 						    {% for variant in variants %}
 						    <tr>
                                 <td class="cen"><input type="checkbox"/></td>
@@ -139,7 +139,7 @@
 {% include 'product/forms/product_props.html' %}
 {% include 'product/forms/variant_props.html' %}
 
-<script id="data-variant_list">
+<script type="text/javascript" id="data-variant_list">
 [{% for v in variants %}
 { 'pk': '{{ v.pk }}', 'provider_id':'{{ v.provider_id }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'basic_product_options': { {% for option_id,o in v.basic_options.iteritems %}'{{ option_id }}': {'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %} } }{% if not forloop.last %}, {% endif %}
 {% endfor %}]
@@ -148,8 +148,8 @@
 {% endblock %}
 
 {% block js %}
-<script type='text/javascript' src='{{ STATIC_URL }}knockoutjs/js/knockout-2.1.0.js'></script>
-<script>
+<script type="text/javascript" src="{{ STATIC_URL }}knockoutjs/js/knockout-2.1.0.js"></script>
+<script type="text/javascript">
 $(document).ready(function(){
 
     function VariantsViewModel() {
@@ -293,10 +293,9 @@ $(document).ready(function(){
             AppVariants.formSubmitMessage(response.message);
 
             v = response.object;
-            v.basic_product_options = [v.option1,v.option2,v.option3];
+            v.basic_product_options = [v.option1,v.option2,v.option3];//@TODO fix this for js add
             variant = new Variant(v.pk,v.provider_id,v.price,v.sku,v.compare_at_price,v.grams,v.taxable,v.requires_shipping,v.inventory_policy,v.basic_product_options);
-            AppVariants.appendToVariantList(variant)
-            console.log(AppVariants.variantsList())
+            AppVariants.appendToVariantList(variant);
 
             if (response.status == 'success') {
                 status_class = 'btn-success';
