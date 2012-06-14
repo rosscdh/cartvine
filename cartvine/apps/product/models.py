@@ -38,14 +38,14 @@ class Product(models.Model):
 
     @property
     def shopify_updated_at(self):
-        return self.data['updated_at'] if 'updated_at' in self.data and not None else None
+        return self.data['updated_at'] if 'updated_at' in self.data and self.data['updated_at'] is not None else None
 
     @property
     def featured_image_src(self):
-        return self.data['featured_image'] if 'featured_image' in self.data else None
+        return self.data['featured_image'] if 'featured_image' in self.data and self.data['featured_image'] is not None else None
 
     def tags(self):
-        return self.data['tags'].split() if 'tags' in self.data else None
+        return self.data['tags'].split() if 'tags' in self.data and self.data['tags'] is not None else None
 
     def get_variant_prop_groups(self, options=None):
         if options is None:
