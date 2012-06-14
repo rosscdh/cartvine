@@ -64,6 +64,8 @@ class ProductVariantForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(ProductVariantForm, self).clean()
+        if len(self.errors) > 0:
+            return cleaned_data
 
         slug_parts = []
 
@@ -97,9 +99,8 @@ class ProductVariantForm(forms.Form):
 
         if self.initial['variant'].slug in [None,'']:
             self.initial['variant'].slug = variant_slug
-            self.initial['variant'].save()
 
-        cleaned_data['provider_id'] = hasattr(self.initial['variant'], 'provider_id')
+        cleaned_data['provider_id'] = self.initial['variant'].provider_id if hasattr(self.initial['variant'], 'provider_id') else None
 
         return cleaned_data
 

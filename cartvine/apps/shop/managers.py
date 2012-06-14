@@ -19,13 +19,16 @@ class ShopManager(models.Manager):
         """ Get or Create the Shop from the session if it does not exist
         also updates data from shopify api """
         # session is not present yet so create it
-        # @TODO change this to use the Shop.activate_shopify_session() method
         shopify.ShopifyResource.activate_session(shopify_session)
 
         current_shop = shopify.Shop.current()
 
         shop, is_new = self.get_or_create(provider_id=current_shop.id)
         shop.data = current_shop.__dict__['attributes']
+        # Make safe
+        if 'announcement' in shop.data:
+            del(shop.data['announcement'])
+
         shop.name = shop.data['name']
 
         slug = shop.data['myshopify_domain'].split('.')[0]
