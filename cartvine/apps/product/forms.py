@@ -74,16 +74,17 @@ class ProductVariantForm(forms.Form):
                  cleaned_data[k] = self.fields[k].initial
 
         for c in range(1,4):
+            # Deal with the current options1-3
             key = 'option%d'%(c,)
             cleaned_data[key] = self.data.get(key)
-            slug_parts.append(cleaned_data[key])
+            slug_parts.append(str(cleaned_data[key]))
 
 
         if len(self.data.getlist('extra_props')) > 0:
             #slug_parts.append(cleaned_data[key])
             pass
 
-        if slug_parts is not None:
+        if slug_parts is not None and len(slug_parts) > 0:
             variant_slug = slugify(' '.join(slug_parts))
         else:
             random.randint(1, 100) #@TODO uuuglee fix this case

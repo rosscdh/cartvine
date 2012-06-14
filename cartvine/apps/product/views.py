@@ -20,8 +20,6 @@ from haystack.query import SearchQuerySet
 from haystack.inputs import AutoQuery
 
 
-
-
 class ProductListView(ListView):
     model = Product
     def get_context_data(self, **kwargs):
@@ -71,7 +69,8 @@ class ProductVariantView(FormView):
         return {
             'pk': self.variant.pk if hasattr(self, 'variant') else None,
             'status': '',
-            'message': ''
+            'message': '',
+            'object': ''
         }
 
     def get_form_kwargs(self, **kwargs):
@@ -100,6 +99,8 @@ class ProductVariantView(FormView):
             try:
                 variant = form.save()
                 response['pk'] = variant.pk
+                response['object'] = variant.data
+
                 response['status'] = 'success'
                 response['message'] = unicode(_('Success, We saved your variant!'))
             except:

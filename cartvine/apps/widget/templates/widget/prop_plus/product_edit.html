@@ -108,13 +108,13 @@
 								<th></th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody data-bind="foreach: variantsList()">
 						    {% for variant in variants %}
 						    <tr>
                                 <td class="cen"><input type="checkbox"/></td>
-                                <td class="value">{{variant.sku}}</td>
-                                <td class="value">{{variant.cost}}</td>
-                                <td class="value">{{variant.num_in_stock}}</td>
+                                <td class="value" data-bind="text: sku">{{variant.sku}}</td>
+                                <td class="value" data-bind="text: cost">{{variant.cost}}</td>
+                                <td class="value" data-bind="text: num_in_stock">{{variant.num_in_stock}}</td>
                                 {% for option_id,option in variant.basic_options.iteritems %}
                                 <td class="value">{{ option.value }}</td>
                                 {% endfor %}
@@ -167,6 +167,7 @@ $(document).ready(function(){
 
         var variant_list = eval($('script#data-variant_list').html());
         self.variantsList = ko.observableArray([]);
+
         for (var i = 0; i < variant_list.length; i++) {
             v = variant_list[i];
             variant = new Variant(v.pk,v.provider_id,v.cost,v.sku,v.compare_at_price,v.weight,v.taxable,v.requires_shipping,v.inventory_management,v.basic_product_options);
@@ -175,6 +176,20 @@ $(document).ready(function(){
 
         //self.formProductPropsPostUrl = ko.observable('');
         self.formVariantPropsPostUrl = ko.observable('');
+
+        self.appendToVariantList = function(variant) {
+            var found = false;
+            for (var i=0; i < self.variantsList().length; i++) {
+                if (self.variantsList()[i].pk == variant.pk) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found == false) {
+                self.variantsList.push(variant);
+                //self.setSelectedVariant(variant.pk);
+            }
+        }
 
         self.setSelectedVariant = function(variant_pk) {
             for (var i=0; i < self.variantsList().length; i++) {
@@ -197,14 +212,13 @@ $(document).ready(function(){
 
         self.updateVariantPropsPostUrl = function() {
             var url = "{% url 'product:variant' slug=object.slug variant_pk=999 %}";
-            console.log(self.selectedVariant().pk)
+
             if (self.selectedVariant().pk !== null) {
                 self.formTitle('{% trans "Edit a Variant" %}');
                 url = url.replace('999', self.selectedVariant().pk) + '?provider_id=' + self.selectedVariant().provider_id;
             }else{
                 self.formTitle('{% trans "Add a Variant" %}');
                 url = "{% url 'product:add_variant' slug=object.slug %}";
-                console.log(url)
             }
             self.formVariantPropsPostUrl(url);
             return self.formVariantPropsPostUrl;
@@ -277,6 +291,13 @@ $(document).ready(function(){
 
             response = eval(data);
             AppVariants.formSubmitMessage(response.message);
+
+            v = response.object;
+            v.basic_product_options = [v.option1,v.option2,v.option3];
+            variant = new Variant(v.pk,v.provider_id,v.price,v.sku,v.compare_at_price,v.grams,v.taxable,v.requires_shipping,v.inventory_policy,v.basic_product_options);
+            AppVariants.appendToVariantList(variant)
+            console.log(AppVariants.variantsList())
+
             if (response.status == 'success') {
                 status_class = 'btn-success';
             }else{
@@ -289,7 +310,8 @@ $(document).ready(function(){
             AppVariants.formSubmitMessage('Sorry, something bad happened!');
             $('div#form-variant-message').hide().fadeIn('slow').removeClass().addClass('btn-danger').addClass('messages')
         })
-        .complete(function() { console.log("complete"); });
+        .complete(function() {
+        });
     });
     
     $('a.btn-modal-form').live('click', function(event) {
