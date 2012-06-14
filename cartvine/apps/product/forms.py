@@ -52,16 +52,15 @@ class ProductPropertiesForm(forms.ModelForm):
 
 
 class ProductVariantForm(forms.Form):
+    sku = forms.CharField(initial='',required=True)
+    price = forms.FloatField(initial=1.00,required=True)
     provider_id = forms.IntegerField(required=False)
-    price = forms.FloatField(initial=1.00,required=False)
     compare_at_price = forms.CharField(initial=0,required=False)
-    sku = forms.CharField(initial='',required=False)
     grams = forms.CharField(initial=0,required=False)
     inventory_policy = forms.CharField(initial='',required=False)
     requires_shipping = forms.BooleanField(initial=True,required=False)
     taxable = forms.BooleanField(initial=True,required=False)
     inventory_quantity = forms.IntegerField(initial=0,required=False)
-
 
     def clean(self):
         cleaned_data = super(ProductVariantForm, self).clean()
@@ -71,7 +70,7 @@ class ProductVariantForm(forms.Form):
         # Set default values; all items in this form are "required"
         for k,c in self.fields.items():
             if k not in cleaned_data or cleaned_data[k] in [None,'None','null','']:
-                 cleaned_data[k] = self.fields[k].initial
+                cleaned_data[k] = self.fields[k].initial
 
         for c in range(1,4):
             # Deal with the current options1-3
@@ -107,6 +106,10 @@ class ProductVariantForm(forms.Form):
     def save(self):
         for key, value in self.cleaned_data.items():
             self.initial['variant'].data[key] = value
-            self.initial['variant'].save()
+
+        self.initial['variant'].sku = self.initial['variant'].data['sku']
+        self.initial['variant'].inventory_quantity = self.initial['variant'].data['inventory_quantity']
+
+        self.initial['variant'].save()
         return self.initial['variant']
 

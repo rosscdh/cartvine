@@ -91,10 +91,9 @@ class ProductVariantView(FormView):
         form = self.get_form(self.get_form_class())
 
         response = self.get_response_json()
-
         if not form.is_valid():
             response['status'] = 'error'
-            response['message'] = json.dumps(form.errors)
+            response['message'] = str(form.errors)
         else:
             try:
                 variant = form.save()

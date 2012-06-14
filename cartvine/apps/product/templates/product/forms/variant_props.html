@@ -83,7 +83,7 @@ $(document).ready(function(){
     function VariantsViewModel() {
         var self = this;
 
-        self.blankVariant = new Variant(null,null,0,0,0,0,false,false,false,[]);
+        self.blankVariant = new Variant(null,null,0,null,0,0,false,false,false,[]);
         self.currency = '{{ object.shop.currency_symbol|safe }}';
         self.selectedVariant = ko.observable(self.blankVariant);
         self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
@@ -236,12 +236,13 @@ $(document).ready(function(){
             }
             $('div#form-variant-message').hide().fadeIn('fast').removeClass().addClass(status_class).addClass('messages')
 
-            setTimeout(function () {
-                $('#editVariationModal').modal('hide');
-                $('#submit-variant-props').css('visibility','visible');
-                $('#submit-variant-props').attr('disabled',false);
-            }, 1500);
-
+            if (response.status == 'success') {
+                setTimeout(function () {
+                    $('#editVariationModal').modal('hide');
+                }, 1500);
+            }
+            $('#submit-variant-props').css('visibility','visible');
+            $('#submit-variant-props').attr('disabled',false);
         })
         .error(function() { 
             AppVariants.formSubmitMessage('Sorry, something bad happened!');
