@@ -139,11 +139,5 @@
 {% include 'product/forms/product_props.html' %}
 {% include 'product/forms/variant_props.html' %}
 
-<script type="text/javascript" id="data-variant_list">
-[{% for v in variants %}
-{ 'pk': '{{ v.pk }}', 'provider_id':'{{ v.provider_id }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'basic_product_options': { {% for option_id,o in v.basic_options.iteritems %}'{{ option_id }}': {'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %} } }{% if not forloop.last %}, {% endif %}
-{% endfor %}]
-</script>
-
 {% endblock %}
 

@@ -75,7 +75,13 @@
 </div>
 </div>
 
-{% block js %}
+<script type="text/javascript" id="data-variant_list">
+[{% for v in variants %}
+{ 'pk': '{{ v.pk }}', 'provider_id':'{{ v.provider_id }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'basic_product_options': { {% for option_id,o in v.basic_options.iteritems %}'{{ option_id }}': {'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %} } }{% if not forloop.last %}, {% endif %}
+{% endfor %}]
+</script>
+
+
 <script type="text/javascript" src="{{ STATIC_URL }}knockoutjs/js/knockout-2.1.0.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -115,7 +121,7 @@ $(document).ready(function(){
             }
             if (found == false) {
                 self.variantsList.push(variant);
-                //self.setSelectedVariant(variant.pk);
+                self.setSelectedVariant(variant.pk);
             }
         }
 
@@ -222,11 +228,11 @@ $(document).ready(function(){
         .success(function(data, textStatus, jqXHR) { 
 
             response = eval(data);
+
             AppVariants.formSubmitMessage(response.message);
 
             v = response.object;
-            v.basic_product_options = [v.option1,v.option2,v.option3];//@TODO fix this for js add
-            variant = new Variant(v.pk,v.provider_id,v.price,v.sku,v.compare_at_price,v.grams,v.taxable,v.requires_shipping,v.inventory_policy,v.basic_product_options);
+            variant = new Variant(v.pk,v.provider_id,v.price,v.sku,v.compare_at_price,v.grams,v.taxable,v.requires_shipping,v.inventory_policy,v.basic_options);
             AppVariants.appendToVariantList(variant);
 
             if (response.status == 'success') {
@@ -265,4 +271,3 @@ $(document).ready(function(){
 
 });
 </script>
-{% endblock %}
