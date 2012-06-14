@@ -77,7 +77,7 @@
 
 <script type="text/javascript" id="data-variant_list">
 [{% for v in variants %}
-{ 'pk': '{{ v.pk }}', 'provider_id':'{{ v.provider_id }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'basic_product_options': { {% for option_id,o in v.basic_options.iteritems %}'{{ option_id }}': {'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %} } }{% if not forloop.last %}, {% endif %}
+{ 'pk': '{{ v.pk }}', 'provider_id':'{{ v.provider_id }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'basic_options': { {% for option_id,o in v.basic_options.iteritems %}'{{ option_id }}': {'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %} } }{% if not forloop.last %}, {% endif %}
 {% endfor %}]
 </script>
 
@@ -99,12 +99,11 @@ $(document).ready(function(){
         self.formTitle = ko.observable('');
         self.formSubmitMessage = ko.observable('');
 
-        var variant_list = eval($('script#data-variant_list').html());
         self.variantsList = ko.observableArray([]);
-
+        var variant_list = eval($('script#data-variant_list').html());
         for (var i = 0; i < variant_list.length; i++) {
             v = variant_list[i];
-            variant = new Variant(v.pk,v.provider_id,v.cost,v.sku,v.compare_at_price,v.weight,v.taxable,v.requires_shipping,v.inventory_management,v.basic_product_options);
+            variant = new Variant(v.pk,v.provider_id,v.cost,v.sku,v.compare_at_price,v.weight,v.taxable,v.requires_shipping,v.inventory_management,v.basic_options);
             self.variantsList.push(variant);
         }
 
@@ -158,6 +157,9 @@ $(document).ready(function(){
             return self.formVariantPropsPostUrl;
         }
 
+        self.toggleSelectAllVariants = function() {
+            console.log('fdfdasdf')
+        }
     };
 
     function Variant(pk,provider_id,cost,sku,compare_at_price,weight,taxable,requires_shipping,inventory_management,basic_product_options) {

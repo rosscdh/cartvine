@@ -95,10 +95,10 @@
                     <h3>{% trans 'Product Inventory' %} (<span data-bind="text: variantsList().length"></span>)</h3>
                 </div>
                 <div class="widget-content">
-					<table class="table table-bordered table-striped table-condensed" data-bind="visible: variantsList().length > 0">
+					<table class="table table-bordered table-striped table-condensed">
 						<thead>
 							<tr>
-								<th class="cen span1"><input type="checkbox"/></th>
+								<th class="cen span1"><input type="checkbox" data-bind="click: toggleSelectAllVariants"/></th>
 								<th>SKU</th>
 								<th>Price</th>
 								<th>In Stock</th>
@@ -108,7 +108,7 @@
 								<th></th>
 							</tr>
 						</thead>
-						<tbody data-bind="foreach: variantsList">
+						<tbody data-bind="foreach: variantsList()">
 						    {% for variant in variants %}
 						    <tr>
                                 <td class="cen"><input type="checkbox"/></td>
