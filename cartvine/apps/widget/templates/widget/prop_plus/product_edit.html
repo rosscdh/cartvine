@@ -124,11 +124,24 @@
                                 </td>
 						    </tr>
 						    {% endfor %}
-							<tr>
-								<td colspan="12"><a data-toggle="modal" data-variant_pk="add" href="#editVariationModal" class="btn-modal-form btn btn-small btn-success pull-right">{% trans 'Add Variation' %}</a></td>
-							</tr>
 						</tbody>
 					</table>
+                    <table class="table table-condensed">
+                    <tr>
+                        <td class="span10">
+                            <select name="variant-select-options" id="variant-select-options">
+                                <option value="null"></option>
+                                <optgroup label="Shopify Functions">
+                                    <option value="sync-variants">{% trans 'Sync Selected with Shopify' %}</option>
+                                </optgroup>
+                                <optgroup label="Danger Zone">
+                                    <option value="delete-variants">{% trans 'Delete Selected' %}</option>
+                                </optgroup>
+                            </select>
+                        </td>
+                        <td class="span2"><a data-toggle="modal" data-variant_pk="add" href="#editVariationModal" class="btn-modal-form btn btn-small btn-success pull-right">{% trans 'Add Variation' %}</a></td>
+                    </tr>
+                    </table>
                 </div>
             </div>
         </div>
@@ -292,6 +305,15 @@ $(document).ready(function(){
         }else{
             $('input[type="checkbox"].option-variant').attr('checked', false)
         }
+    });
+    $('select#variant-select-options').live('change', function(event) {
+        event.preventDefault();
+        num_items_selected = $('input[type="checkbox"].option-variant:checked').length;
+        if (num_items_selected > 0) {
+            items_selected = $('input[type="checkbox"].option-variant:checked');
+            console.log('Send '+ $(this).val() +' event to backend for ids: ' + items_selected);
+        }
+        $(this).prop('selectedIndex', 0);
     });
     /**
     * Primary view acts as a holder for the other views
