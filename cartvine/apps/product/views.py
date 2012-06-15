@@ -70,7 +70,7 @@ class ProductVariantView(FormView):
             'pk': self.variant.pk if hasattr(self, 'variant') else None,
             'status': '',
             'message': '',
-            'object': ''
+            'object': None,
         }
 
     def get_form_kwargs(self, **kwargs):

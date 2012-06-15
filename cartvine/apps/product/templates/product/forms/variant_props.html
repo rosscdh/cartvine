@@ -4,11 +4,32 @@
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal">&times;</button>
 <h3 id="title-action" data-bind="text: formTitle"></h3>
-<div id="form-variant-message" data-bind="html: formSubmitMessage"></div>
+<div id="form-variant-message" class="form-message" data-bind="html: formSubmitMessage"></div>
 </div>
 <div class="modal-body">
     <form id="form-variant-props" method="POST" class="form-horizontal">{% csrf_token %}
         <fieldset>
+        <!-- The primary most important required Fields -->
+        <div>
+            <div class="span2">
+                <label>{% trans 'SKU' %}</label>
+                <input type="text" name="sku" id="" class="span2" data-bind="value: selectedVariant().sku"/>
+            </div>
+            <div class="span2">
+                <label>{% trans 'Selling Price' %}</label>
+                <div class="input-append">
+                    <input type="text" name="price" id="" class="span1" data-bind="value: selectedVariant().cost"/><span class="add-on" data-bind="html: currencySymbol"></span>
+                </div>
+            </div>
+            <div class="span2">
+                <label>{% trans 'Stock Level' %}</label>
+                <div class="input-prepend">
+                    <span class="add-on">#</span><input type="text" name="inventory_quantity" id="" class="span1" data-bind="value: selectedVariant().inventory_quantity"/>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <hr/>
         <!-- basic properties - thanks shopify  -->
         <div data-bind="foreach: selectedVariant().basic_props" class="control-group">
             <label class="control-label" for="input01" data-bind="text: name"></label>
@@ -27,27 +48,17 @@
         <hr/>
         <div>
             <div class="span2">
-                <label>{% trans 'Selling Price' %}</label>
-                <div class="input-append">
-                    <input type="text" name="price" id="" class="span1" data-bind="value: selectedVariant().cost"/><span class="add-on" data-bind="html: currencySymbol"></span>
-                </div>
-            </div>
-            <div class="span2">
                 <label>{% trans 'Compare at price' %}</label>
                 <div class="input-append">
                     <input type="text" name="compare_at_price" id="" class="span1" data-bind="value: selectedVariant().compare_at_price"/><span class="add-on" data-bind="html: currencySymbol"></span>
                 </div>
             </div>  
             <div class="span2">
-                <label>{% trans 'SKU' %}</label>
-                <input type="text" name="sku" id="" class="span2" data-bind="value: selectedVariant().sku"/>
-            </div>
-        </div>
-        <div class="span2">
-            <br />
             <label>{% trans 'Weight' %}</label>
-            <div class="input-append">
-                <input type="text" name="grams" id="" class="span1" data-bind="value: selectedVariant().weight"/><span class="add-on">{% trans 'KG' %}</span>
+
+                <div class="input-append">
+                    <input type="text" name="grams" id="" class="span1" data-bind="value: selectedVariant().weight"/><span class="add-on">{% trans 'grams' %}</span>
+                </div>
             </div>
         </div>
         <div class="span4">
@@ -71,12 +82,12 @@
 </div>
 <div class="modal-footer">
     <a href="#" class="btn" data-dismiss="modal" >{% trans 'Close' %}</a>
-    <a href="#" data-bind="attr: {'data-form_action': formVariantPropsPostUrl()}" class="btn btn-warning submit-btn">{% trans 'Save changes' %}</a>
+    <a href="#" class="btn btn-warning submit-btn">{% trans 'Save changes' %}</a>
 </div>
 </div>
 
 <script type="text/javascript" id="data-variant_list">
 [{% for v in variants %}
-{ 'pk': '{{ v.pk }}', 'provider_id':'{{ v.provider_id }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'basic_options': { {% for option_id,o in v.basic_options.iteritems %}'{{ option_id }}': {'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %} } }{% if not forloop.last %}, {% endif %}
+{ 'pk': '{{ v.pk }}', 'provider_id':'{{ v.provider_id }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'inventory_quantity': '{{ v.inventory_quantity }}', 'basic_options': { {% for option_id,o in v.basic_options.iteritems %}'{{ option_id }}': {'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %} } }{% if not forloop.last %}, {% endif %}
 {% endfor %}]
 </script>

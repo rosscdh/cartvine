@@ -107,11 +107,7 @@ class ProductVariant(models.Model):
 
     @property
     def weight_as_kg(self):
-        return '%d' %(self.data['grams']/1000 if 'grams' in self.data else 0,)
-
-    @property
-    def num_in_stock(self):
-        return '%d' %(self.data['inventory_quantity'] if 'inventory_quantity' in self.data else 0,)
+        return '%d' %(self.data['grams'] if 'grams' in self.data else 0,)
 
     def basic_options(self):
         options = {}

@@ -114,7 +114,7 @@
                                 <td class="cen"><input type="checkbox" class="option-variant" value=""/></td>
                                 <td class="value">{{variant.sku}}</td>
                                 <td class="value">{{variant.cost}}</td>
-                                <td class="value">{{variant.num_in_stock}}</td>
+                                <td class="value">{{variant.inventory_quantity}}</td>
                                 {% for option_id,option in variant.basic_options.iteritems %}
                                 <td class="value">{{ option.value }}</td>
                                 {% endfor %}
@@ -152,7 +152,7 @@ $(document).ready(function(){
     function VariantViewModel() {
         var self = this;
 
-        self.blankVariant = new Variant(null,null,0,null,0,0,false,false,false,[]);
+        self.blankVariant = new Variant(null,null,0,null,0,0,false,false,false,0,[]);
         self.currency = '{{ object.shop.currency_symbol|safe }}';
         self.selectedVariant = ko.observable(self.blankVariant);
         self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
@@ -161,29 +161,30 @@ $(document).ready(function(){
 
         self.formTitle = ko.observable('');
         self.formSubmitMessage = ko.observable('');
+        self.formPostUrl = ko.observable('');
 
         self.variantsList = ko.observableArray([]);
         var variant_list = eval($('script#data-variant_list').html());
         for (var i = 0; i < variant_list.length; i++) {
             v = variant_list[i];
-            variant = new Variant(v.pk,v.provider_id,v.cost,v.sku,v.compare_at_price,v.weight,v.taxable,v.requires_shipping,v.inventory_management,v.basic_options);
+            variant = new Variant(v.pk,v.provider_id,v.cost,v.sku,v.compare_at_price,v.weight,v.taxable,v.requires_shipping,v.inventory_management,v.inventory_quantity,v.basic_options);
             self.variantsList.push(variant);
         }
 
-        //self.formProductPropsPostUrl = ko.observable('');
-        self.formVariantPropsPostUrl = ko.observable('');
-
         self.appendToVariantList = function(variant) {
             var is_present = false;
-            for (var i=0; i < self.variantsList().length; i++) {
-                if (self.variantsList()[i].pk == variant.pk) {
-                    is_present = true;
-                    break;
+            if (variant.pk != undefined) {
+                for (var i=0; i < self.variantsList().length; i++) {
+                    if (self.variantsList()[i].pk == variant.pk) {
+                        is_present = true;
+                        break;
+                    }
                 }
-            }
-            if (is_present == false) {
-                self.variantsList.push(variant);
-                self.setSelectedVariant(variant.pk);
+                if (is_present == false) {
+                    self.variantsList.push(variant);
+                    console.log('appendToVariantList: ' + variant)
+                    self.setSelectedVariant(variant.pk);
+                }
             }
         }
 
@@ -216,12 +217,12 @@ $(document).ready(function(){
                 self.formTitle('{% trans "Add a Variant" %}');
                 url = "{% url 'product:add_variant' slug=object.slug %}";
             }
-            self.formVariantPropsPostUrl(url);
-            return self.formVariantPropsPostUrl;
+            self.formPostUrl(url);
+            return self.formPostUrl;
         }
     };
 
-    function Variant(pk,provider_id,cost,sku,compare_at_price,weight,taxable,requires_shipping,inventory_management,basic_product_options) {
+    function Variant(pk,provider_id,cost,sku,compare_at_price,weight,taxable,requires_shipping,inventory_management,inventory_quantity,basic_product_options) {
         var self = this;
         self.pk = pk;
         self.provider_id = provider_id;
@@ -232,7 +233,7 @@ $(document).ready(function(){
         self.taxable = taxable;
         self.requires_shipping = requires_shipping;
         self.inventory_management = inventory_management;
-        self.stock_level = 0;
+        self.inventory_quantity = inventory_quantity;
         self.basic_product_options = basic_product_options;
         self.basic_props = ko.observableArray([]);
 
@@ -272,7 +273,7 @@ $(document).ready(function(){
 
     $('#editVariationModal a.submit-btn:last').live('click', function(event) {
         event.preventDefault();
-        App.submitModalWindow($('editVariationModal'));
+        App.submitModalWindow(App.VariantView, $('div#editVariationModal'));
     });
     
     $('a.btn-modal-form').live('click', function(event) {
@@ -300,53 +301,56 @@ $(document).ready(function(){
         self.VariantView = new VariantViewModel();
         self.ProductView = new ProductViewModel();
 
-        self.submitModalWindow = function(baseElement) {
+        self.submitModalWindow = function(KOView, baseElement) {
             // hide sumit button so suer cant double click
-
             footer = baseElement.find('div.modal-footer:last');
             submit_button = baseElement.find('.submit-btn');
-            console.log(submit_button)
-            submit_url = submit_button.attr('data-form_action')
-
+            form_message = $('div.form-message:first');
             submit_button.css('visibility','hidden');
             submit_button.attr('disabled',true);
 
             $.ajax({
               type: 'POST',
-              url: '',
+              url: KOView.formPostUrl(),
               data: $('#form-variant-props').serialize(),
               dataType: 'json'
             })
             .success(function(data, textStatus, jqXHR) { 
-
+                // make the JSON response usable
                 response = eval(data);
 
-                App.VariantView.formSubmitMessage(response.message);
+                form_message.hide().removeClass('btn-success,btn-warning');
 
-                v = response.object;
-                variant = new Variant(v.pk,v.provider_id,v.price,v.sku,v.compare_at_price,v.grams,v.taxable,v.requires_shipping,v.inventory_policy,v.basic_options);
-                App.VariantView.appendToVariantList(variant);
-
+                console.log(response.status)
                 if (response.status == 'success') {
                     status_class = 'btn-success';
+                    // successful post now update the variants list
+                    if (response.object != null) {
+                        v = response.object;
+                        variant = new Variant(v.pk,v.provider_id,v.price,v.sku,v.compare_at_price,v.grams,v.taxable,v.requires_shipping,v.inventory_policy,v.inventory_quantity,v.basic_options);
+                        KOView.appendToVariantList(variant);
+                    }
                 }else{
                     status_class = 'btn-warning';
                 }
-                $('div#form-variant-message').hide().fadeIn('fast').removeClass().addClass(status_class).addClass('messages')
+
+                // Set the form Message
+                KOView.formSubmitMessage(response.message);
+                form_message.fadeIn('fast').addClass(status_class).addClass('messages')
 
                 if (response.status == 'success') {
                     setTimeout(function () {
                         $('#editVariationModal').modal('hide');
                     }, 1500);
                 }
-                $('#submit-variant-props').css('visibility','visible');
-                $('#submit-variant-props').attr('disabled',false);
+                submit_button.css('visibility','visible');
+                submit_button.attr('disabled',false);
             })
             .error(function() { 
-                App.VariantView.formSubmitMessage('Sorry, something bad happened!');
-                $('div#form-variant-message').hide().fadeIn('slow').removeClass().addClass('btn-danger').addClass('messages')
-                $('#submit-variant-props').css('visibility','visible');
-                $('#submit-variant-props').attr('disabled',false);
+                KOView.formSubmitMessage('Sorry, something bad happened!');
+                form_message.hide().fadeIn('slow').removeClass().addClass('btn-danger').addClass('messages')
+                submit_button.css('visibility','visible');
+                submit_button.attr('disabled',false);
             })
             .complete(function() {});
         }
