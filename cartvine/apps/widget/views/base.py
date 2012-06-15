@@ -32,7 +32,7 @@ class MyWidgetView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MyWidgetView, self).get_context_data(**kwargs)
-        context['available_widgets'] = Widget.objects.all()
+        context['available_widgets'] = Widget.objects.filter(active=True)
         return context
 
 
