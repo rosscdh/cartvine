@@ -49,7 +49,7 @@ class ProductPropertiesForm(forms.Form):
     ))
 
     property_type = forms.ChoiceField(label=_('Type of Property'),choices=PROPERTY_TYPES.get_choices(),required=True)
-    name = forms.CharField(label=_('New Option'),required=True)
+    name = forms.CharField(label=_('New Property'),required=True)
 
     def clean_name(self):
         return self.cleaned_data['name']

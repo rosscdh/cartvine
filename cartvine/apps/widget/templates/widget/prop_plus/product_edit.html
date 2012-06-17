@@ -54,17 +54,17 @@
                         </tbody>
                         <tbody id="addPropertyInterface" class="addProperties" data-bind="visible: showAddForm()">
                             <tr>
-                                <td  colspan="2"class="name modal-footer">
+                                <td colspan="2"class="name modal-footer">
                                     <div class="form-message" data-bind="html: formSubmitMessage"></div>
-                                    <form id="addPlusProperty" action="" method="POST">{% csrf_token %}
+                                    <form id="addPlusProperty" class="" action="" method="POST">{% csrf_token %}
                                         <input type="hidden" name="property_type" id="" value="2"/>
-                                        <label>{% trans 'New Option' %}</label>
+                                        <label>{% trans 'New Property' %}</label>
                                         <input type="text" data-bind="" name="name" id="" value=""/>
+                                        <div class="pull-right">
+                                            <button type="add" id="saveNewProperty" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
+                                            <a onclick="App.ProductView.hideAddForm();" href="" class="delete btn btn-small btn"><i class="icon-remove"></i></a>
+                                        </div>
                                     </form>
-                                    <div class="pull-right">
-                                        <button type="add" id="saveNewProperty" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
-                                        <a onclick="App.ProductView.hideAddForm();" href="" class="delete btn btn-small btn"><i class="icon-remove"></i></a>
-                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -148,7 +148,7 @@
                                 {% endfor %}
                                 <td class="value cen">
                                     <div class="controls">
-                                        <a data-toggle="modal" data-variant_pk="{{ variant.pk }}" href="#editVariationModal" class="btn-modal-form"><i class="icon-pencil"></i></a>
+                                        <a data-toggle="modal" data-variant_pk="{{ variant.pk }}" href="#editVariationModal" class="edit btn-modal-form"><i class="icon-pencil"></i></a>
                                         <a href="" class="delete"><i class="icon-remove"></i></a>
                                         <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a>
                                     </div>
@@ -190,7 +190,13 @@
 div.controls{
 }
 div.controls a.edit, div.controls a.delete{
-    margin:0px 2px;
+    margin:0px 5px;
+}
+div.controls a.edit:hover, div.controls a.delete:hover{
+color: #da4f49;
+*color: #bd362f;
+  border-color: #bd362f #bd362f #802420;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
 </style>
 
