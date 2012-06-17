@@ -54,17 +54,16 @@
                         </tbody>
                         <tbody id="addPropertyInterface" class="addProperties" data-bind="visible: showAddForm()">
                             <tr>
-                                <td class="name">
+                                <td  colspan="2"class="name modal-footer">
+                                    <div class="form-message" data-bind="html: formSubmitMessage"></div>
                                     <form id="addPlusProperty" action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="property_type" id="" value="2"/>
                                         <label>{% trans 'New Option' %}</label>
                                         <input type="text" data-bind="" name="name" id="" value=""/>
                                     </form>
-                                </td>
-                                <td class="value modal-footer">
-                                    <div class="form-message"></div>
                                     <div class="pull-right">
                                         <button type="add" id="saveNewProperty" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
-                                        <a onclick="App.ProductView.showAddForm(false);return false;" href="" class="delete btn btn-small btn"><i class="icon-remove"></i></a>
+                                        <a onclick="App.ProductView.hideAddForm();" href="" class="delete btn btn-small btn"><i class="icon-remove"></i></a>
                                     </div>
                                 </td>
                             </tr>
@@ -213,7 +212,7 @@ $(document).ready(function(){
         self.formSubmitMessage = ko.observable('');
         self.formPostUrl = ko.observable('{% url 'product:properties' slug=object.slug %}');
 
-        self.theForm = 'form#addPlusProperty';
+        self.theFormName = 'form#addPlusProperty';
         self.showAddForm = ko.observable(false);
         self.selectedProperty = ko.observable();
         self.basicProperties = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
@@ -229,6 +228,11 @@ $(document).ready(function(){
 
         self.showAddPropButton = function() {
             return (self.showAddForm() === true) ? false : true ;
+        }
+
+        self.hideAddForm = function() {
+            self.showAddForm(false);
+            self.formSubmitMessage('');
         }
 
         self.addPropertyPlus = function(internal_name,name) {
@@ -251,7 +255,7 @@ $(document).ready(function(){
         self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
         self.extraProductOptions = ko.observableArray([]);
 
-        self.theForm = '#form-variant-props';
+        self.theFormName = '#form-variant-props';
         self.formTitle = ko.observable('');
         self.formSubmitMessage = ko.observable('');
         self.formPostUrl = ko.observable('');
@@ -387,7 +391,7 @@ $(document).ready(function(){
 
     $('div#ProductProperties button#saveNewProperty').live('click', function(event) {
         event.preventDefault();
-        App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $('div#addPropertyInterface'));
+        App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $('#addPropertyInterface'));
     });
 
     propertyControls = function(type) {
@@ -475,11 +479,11 @@ $(document).ready(function(){
             form_message = baseElement.find('div.form-message:first');
             submit_button.css('visibility','hidden');
             submit_button.attr('disabled',true);
-console.log($(KOView.theForm).serialize())
+
             $.ajax({
               type: 'POST',
               url: KOView.formPostUrl(),
-              data: $(KOView.theForm).serialize(),
+              data: $(KOView.theFormName).serialize(),
               dataType: 'json'
             })
             .success(function(data, textStatus, jqXHR) { 

@@ -42,9 +42,17 @@ class ProductVariantForm(bootstrap.BootstrapForm):
         pass
 
 
-class ProductPropertiesForm(forms.ModelForm):
-    class Meta:
-        model = Product
+class ProductPropertiesForm(forms.Form):
+    PROPERTY_TYPES = get_namedtuple_choices('PROPERTY_TYPES', (
+        (1, 'basic', 'Basic'),
+        (2, 'plus', 'PropertiesPlus'),
+    ))
+
+    property_type = forms.ChoiceField(label=_('Type of Property'),choices=PROPERTY_TYPES.get_choices(),required=True)
+    name = forms.CharField(label=_('New Option'),required=True)
+
+    def clean_name(self):
+        return self.cleaned_data['name']
 
     def clean(self):
         cleaned_data = super(ProductPropertiesForm, self).clean()

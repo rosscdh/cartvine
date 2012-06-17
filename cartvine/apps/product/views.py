@@ -54,12 +54,38 @@ def ProductSearchView(request):
 
 class ProductPropertiesView(FormView):
     form_class = ProductPropertiesForm
-    def post(self, request, *args, **kwargs):
-        response = {
-            'pk': 1,
-            'message': 'yay'
+
+    def get_response_json(self):
+        return {
+            'pk': self.object.pk if hasattr(self, 'object') else None,
+            'status': '',
+            'message': '',
+            'object': None,
         }
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form(self.get_form_class())
+
+        response = self.get_response_json()
+        if not form.is_valid():
+            response['status'] = 'error'
+            response['message'] = str(form.errors)
+        else:
+            try:
+                variant = form.save()
+                response['pk'] = variant.pk
+                response['object'] = variant.data
+                response['object']['pk'] = variant.pk
+                response['object']['basic_options'] = variant.basic_options()
+
+                response['status'] = 'success'
+                response['message'] = unicode(_('Success, We saved your variant!'))
+            except:
+                response['status'] = 'error'
+                response['message'] = unicode(_('Strange an error occurred; but were not sure what.'))
+
         return HttpResponse(json.dumps(response), content_type='text/json')
+
 
 
 class ProductVariantView(FormView):
@@ -106,6 +132,6 @@ class ProductVariantView(FormView):
                 response['message'] = unicode(_('Success, We saved your variant!'))
             except:
                 response['status'] = 'error'
-                response['message'] = unicode(_('Strange and error occurred; but were not sure what.'))
+                response['message'] = unicode(_('Strange an error occurred; but were not sure what.'))
 
         return HttpResponse(json.dumps(response), content_type='text/json')
