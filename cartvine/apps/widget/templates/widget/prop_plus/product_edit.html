@@ -13,7 +13,7 @@
 <div class="main">
     <div class="row">
         <div class="span9">
-            <div class="widget widget-table" data-bind="with: ProductView">
+            <div id="ProductProperties" class="widget widget-table" data-bind="with: ProductView">
                 <div class="widget-header">
                     <span class="icon-list-alt"></span>
                     <h3>{% trans 'Product Properties' %}</h3>
@@ -52,8 +52,25 @@
                                 <td class="value" data-bind="html: value"></td>
                             </tr>
                         </tbody>
+                        <tbody id="addPropertyInterface" class="addProperties" data-bind="visible: showAddForm()">
+                            <tr>
+                                <td class="name">
+                                    <form id="addPlusProperty" action="" method="POST">{% csrf_token %}
+                                        <label>{% trans 'New Option' %}</label>
+                                        <input type="text" data-bind="" name="name" id="" value=""/>
+                                    </form>
+                                </td>
+                                <td class="value modal-footer">
+                                    <div class="form-message"></div>
+                                    <div class="pull-right">
+                                        <button type="add" id="saveNewProperty" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
+                                        <a onclick="App.ProductView.showAddForm(false);return false;" href="" class="delete btn btn-small btn"><i class="icon-remove"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
-                    <table class="table table-condensed">
+                    <table class="table table-condensed" data-bind="visible: showAddPropButton()">
                     <tr>
                         <td class="span12">
                             <div class="pull-right">
@@ -192,9 +209,27 @@ $(document).ready(function(){
 
     function ProductViewModel() {
         var self = this;
+
+        self.formSubmitMessage = ko.observable('');
+        self.formPostUrl = ko.observable('{% url 'product:properties' slug=object.slug %}');
+
+        self.theForm = 'form#addPlusProperty';
+        self.showAddForm = ko.observable(false);
         self.selectedProperty = ko.observable();
         self.basicProperties = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
         self.plusProperties = ko.observableArray([]);
+
+        /**
+        * method to process the form postback
+        */
+        self.processFormResponseObject = function(response) {
+            console.log('yay in processFormResponseObject')
+            console.log(response);
+        }
+
+        self.showAddPropButton = function() {
+            return (self.showAddForm() === true) ? false : true ;
+        }
 
         self.addPropertyPlus = function(internal_name,name) {
             self.plusProperties.push({
@@ -206,13 +241,6 @@ $(document).ready(function(){
         self.delPropertyPlus = function(prop) {
             self.plusProperties.remove(prop);
         }
-
-        self.showControls = function() {
-            alert('show')
-        }
-        self.hideControls = function() {
-            alert('show')
-        }
     }
 
     function VariantViewModel() {
@@ -223,6 +251,7 @@ $(document).ready(function(){
         self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
         self.extraProductOptions = ko.observableArray([]);
 
+        self.theForm = '#form-variant-props';
         self.formTitle = ko.observable('');
         self.formSubmitMessage = ko.observable('');
         self.formPostUrl = ko.observable('');
@@ -286,6 +315,19 @@ $(document).ready(function(){
             self.formPostUrl(url);
             return self.formPostUrl;
         }
+
+        /**
+        * method to process the form postback
+        */
+        self.processFormResponseObject = function(response) {
+            if (response.object != null) {
+                v = response.object;
+                variant = new Variant(v.pk,v.provider_id,v.price,v.sku,v.compare_at_price,v.grams,v.taxable,v.requires_shipping,v.inventory_policy,v.inventory_quantity,v.basic_options);
+                self.updateVariantList(variant);
+            }else{
+                console.log('response.object is null in VariantViewModel.processFormResponseObject')
+            }
+        }
     };
 
     function Variant(pk,provider_id,cost,sku,compare_at_price,weight,taxable,requires_shipping,inventory_management,inventory_quantity,basic_product_options) {
@@ -338,9 +380,14 @@ $(document).ready(function(){
     }
 
     // Product Property helpers
-    $('button#addProperty').live('click', function(event) {
+    $('div#ProductProperties button#addProperty').live('click', function(event) {
         event.preventDefault();
-        console.log('add form item')
+        App.ProductView.showAddForm(true);
+    });
+
+    $('div#ProductProperties button#saveNewProperty').live('click', function(event) {
+        event.preventDefault();
+        App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $('div#addPropertyInterface'));
     });
 
     propertyControls = function(type) {
@@ -357,7 +404,7 @@ $(document).ready(function(){
         return controls;
     }
 
-    $('tbody.basicProperties tr').live('mouseenter mouseleave', function(event) {
+    $('div#ProductProperties tbody.basicProperties tr').live('mouseenter mouseleave', function(event) {
         event.preventDefault();
         var target = $(this).find('td:last');
         var controls = propertyControls('basic');
@@ -368,7 +415,7 @@ $(document).ready(function(){
             target.append(controls);
         }
     });
-    $('tbody.plusProperties tr').live('mouseenter mouseleave', function(event) {
+    $('div#ProductProperties tbody.plusProperties tr').live('mouseenter mouseleave', function(event) {
         event.preventDefault();
         if (event.type == 'mouseleave') {
 
@@ -380,7 +427,7 @@ $(document).ready(function(){
     // Variant Helpers
     $('#editVariationModal a.submit-btn:last').live('click', function(event) {
         event.preventDefault();
-        App.submitModalWindow(App.VariantView, $('div#editVariationModal'));
+        App.submitModalWindow(App.VariantView, App.VariantView.processFormResponseObject, $('div#editVariationModal'));
     });
     
     $('a.btn-modal-form').live('click', function(event) {
@@ -416,23 +463,23 @@ $(document).ready(function(){
     */
     function PageMasterViewModel() {
         var self = this;
-        self.VariantView = new VariantViewModel();
         self.ProductView = new ProductViewModel();
+        self.VariantView = new VariantViewModel();
 
         self.currencySymbol = '{{ object.shop.currency_symbol|safe }}';
 
-        self.submitModalWindow = function(KOView, baseElement) {
+        self.submitModalWindow = function(KOView, successProcessCallback, baseElement) {
             // hide sumit button so suer cant double click
             footer = baseElement.find('div.modal-footer:last');
             submit_button = baseElement.find('.submit-btn');
-            form_message = $('div.form-message:first');
+            form_message = baseElement.find('div.form-message:first');
             submit_button.css('visibility','hidden');
             submit_button.attr('disabled',true);
-
+console.log($(KOView.theForm).serialize())
             $.ajax({
               type: 'POST',
               url: KOView.formPostUrl(),
-              data: $('#form-variant-props').serialize(),
+              data: $(KOView.theForm).serialize(),
               dataType: 'json'
             })
             .success(function(data, textStatus, jqXHR) { 
@@ -444,11 +491,7 @@ $(document).ready(function(){
                 if (response.status == 'success') {
                     status_class = 'btn-success';
                     // successful post now update the variants list
-                    if (response.object != null) {
-                        v = response.object;
-                        variant = new Variant(v.pk,v.provider_id,v.price,v.sku,v.compare_at_price,v.grams,v.taxable,v.requires_shipping,v.inventory_policy,v.inventory_quantity,v.basic_options);
-                        KOView.updateVariantList(variant);
-                    }
+                    successProcessCallback(response);
                 }else{
                     status_class = 'btn-warning';
                 }
