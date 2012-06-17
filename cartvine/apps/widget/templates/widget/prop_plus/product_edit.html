@@ -461,12 +461,11 @@ $(document).ready(function(){
                     setTimeout(function () {
                         $('#editVariationModal').modal('hide');
                     }, 1500);
+                    // @TEMPORARY @TODO remove this and update inline
+                    document.location.reload();
                 }
                 submit_button.css('visibility','visible');
                 submit_button.attr('disabled',false);
-
-                // @TEMPORARY @TODO remove this and update inline
-                document.location.reload();
             })
             .error(function() { 
                 KOView.formSubmitMessage('Sorry, something bad happened!');
