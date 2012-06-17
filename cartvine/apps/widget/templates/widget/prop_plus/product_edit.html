@@ -17,7 +17,6 @@
                 <div class="widget-header">
                     <span class="icon-list-alt"></span>
                     <h3>{% trans 'Product Properties' %}</h3>
-                    <button type="edit" class="btn btn-warning pull-right" data-toggle="modal" href="#editPropertiesModal" >{% trans 'Edit Properties' %}</button>
                 </div>                  
                 <div class="widget-content">
                     <table class="table table-bordered table-striped">
@@ -27,7 +26,7 @@
                                 <th>{% trans 'Value' %}</th>                                
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="basicProperties">
                             <tr>
                                 <td class="name">{% trans 'Product' %}</td>
                                 <td class="value"><span>{{ object.name }}</span></td>
@@ -41,20 +40,26 @@
                                 <td class="value"><span>{{ object.data.vendor }}</span></td>
                             </tr>
                             {% for property in object.basic_props %}
-                            <tr>
+                            <tr data-bind="event: {mouseover: $parent.showControls, mouseout: $parent.hideControls}">
                                 <td class="name">{{ property.name }}</td>
                                 <td class="value">{% for p in property.value %}<span class="label label-info">{{ p }}</span>&nbsp;{% endfor %}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
-                        <tbody data-bind="foreach: plusProperties">
-                        {% for property in object.properties_plus %}
-                        {% endfor %}
+                        <tbody class="plusProperties" data-bind="foreach: plusProperties">
+                            <tr>
+                                <td class="name" data-bind="html: name"></td>
+                                <td class="value" data-bind="html: value"></td>
+                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-condensed">
                     <tr>
-                        <td class="span12"><a data-toggle="modal" href="#addProperty" class="btn btn-small">{% trans 'Add Property' %}</a></td>
+                        <td class="span12">
+                            <div class="pull-right">
+                            <button type="add" id="addProperty" href="#" class="btn btn-small btn-inverse"><i class="icon-plus"></i>&nbsp;{% trans 'Add Property' %}</button>
+                            </div>
+                        </td>
                     </tr>
                     </table>
                 </div>
@@ -99,7 +104,7 @@
             <div class="widget widget-table" data-bind="with: VariantView">
                 <div class="widget-header">
                     <span class="icon-barcode"></span>
-                    <h3>{% trans 'Product Inventory' %} (<span data-bind="text: variantsList().length"></span>)</h3>
+                    <h3>{% trans 'Product Inventory' %}</h3>
                 </div>
                 <div class="widget-content">
 					<table class="table table-bordered table-striped table-condensed">
@@ -112,7 +117,7 @@
 								{% for option in object.basic_props %}
 								<th>{{ option.name }}</th>
 								{% endfor %}
-								<th></th>
+								<th class="cen">(<i data-bind="text: variantsList().length"></i> {% trans 'items' %})</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -126,8 +131,11 @@
                                 <td class="value">{{ option.value }}</td>
                                 {% endfor %}
                                 <td class="value cen">
-                                <a data-toggle="modal" data-variant_pk="{{ variant.pk }}" href="#editVariationModal" class="btn-modal-form btn btn-mini btn-warning">{% trans 'Edit' %}</a>
-                                <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a>
+                                    <div class="controls">
+                                        <a data-toggle="modal" data-variant_pk="{{ variant.pk }}" href="#editVariationModal" class="btn-modal-form btn btn-mini"><i class="icon-pencil"></i>&nbsp;{% trans 'Edit' %}</a>
+                                        <a href="" class="delete btn btn-mini btn-danger"><i class="icon-remove"></i></a>
+                                        <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a>
+                                    </div>
                                 </td>
 						    </tr>
 						    {% endfor %}
@@ -146,7 +154,11 @@
                                 </optgroup>
                             </select>
                         </td>
-                        <td class="span2"><a data-toggle="modal" data-variant_pk="add" href="#editVariationModal" class="btn-modal-form btn btn-small btn-success pull-right">{% trans 'Add Variation' %}</a></td>
+                        <td class="span2">
+                            <div class="pull-right">
+                                <a data-toggle="modal" data-variant_pk="add" href="#editVariationModal" class="btn-modal-form btn btn-small btn-inverse"><i class="icon-plus"></i>&nbsp;{% trans 'Add Variation' %}</a>
+                            </div>
+                        </td>
                     </tr>
                     </table>
                 </div>
@@ -154,6 +166,19 @@
         </div>
     </div>
 </div>
+
+{% block css %}
+
+<style>
+
+div.controls{
+}
+div.controls a.edit, div.controls a.delete{
+    margin:0px 2px;
+}
+</style>
+
+{% endblock %}
 
 <script type="text/javascript" src="{{ STATIC_URL }}knockoutjs/js/knockout-2.1.0.js"></script>
 <div data-bind="with: ProductView">
@@ -170,6 +195,24 @@ $(document).ready(function(){
         self.selectedProperty = ko.observable();
         self.basicProperties = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
         self.plusProperties = ko.observableArray([]);
+
+        self.addPropertyPlus = function(internal_name,name) {
+            self.plusProperties.push({
+                'is_new': true,
+                'internal_name': '',
+                'name': '',
+            });
+        }
+        self.delPropertyPlus = function(prop) {
+            self.plusProperties.remove(prop);
+        }
+
+        self.showControls = function() {
+            alert('show')
+        }
+        self.hideControls = function() {
+            alert('show')
+        }
     }
 
     function VariantViewModel() {
@@ -294,6 +337,47 @@ $(document).ready(function(){
         self.value = value;
     }
 
+    // Product Property helpers
+    $('button#addProperty').live('click', function(event) {
+        event.preventDefault();
+        console.log('add form item')
+    });
+
+    propertyControls = function(type) {
+        var controls = $('<div class="controls pull-right"></div>');
+
+        // basic edit control
+        controls.append($('<a href="" class="edit btn btn-mini"><i class="icon-pencil"></i>&nbsp;{% trans 'Edit' %}</a>'));
+
+        // delete - only if this is a property plus item
+        if (type == 'plus') {
+            controls.append($('<a href="" class="delete btn btn-mini btn-danger"><i class="icon-remove"></i></a>'));
+        }
+
+        return controls;
+    }
+
+    $('tbody.basicProperties tr').live('mouseenter mouseleave', function(event) {
+        event.preventDefault();
+        var target = $(this).find('td:last');
+        var controls = propertyControls('basic');
+
+        if (event.type == 'mouseleave') {
+            target.find('div.controls').remove();
+        }else{
+            target.append(controls);
+        }
+    });
+    $('tbody.plusProperties tr').live('mouseenter mouseleave', function(event) {
+        event.preventDefault();
+        if (event.type == 'mouseleave') {
+
+        }else{
+            
+        }
+    });
+
+    // Variant Helpers
     $('#editVariationModal a.submit-btn:last').live('click', function(event) {
         event.preventDefault();
         App.submitModalWindow(App.VariantView, $('div#editVariationModal'));
@@ -325,6 +409,8 @@ $(document).ready(function(){
         }
         $(this).prop('selectedIndex', 0);
     });
+
+
     /**
     * Primary view acts as a holder for the other views
     */
@@ -378,6 +464,9 @@ $(document).ready(function(){
                 }
                 submit_button.css('visibility','visible');
                 submit_button.attr('disabled',false);
+
+                // @TEMPORARY @TODO remove this and update inline
+                document.location.reload();
             })
             .error(function() { 
                 KOView.formSubmitMessage('Sorry, something bad happened!');
