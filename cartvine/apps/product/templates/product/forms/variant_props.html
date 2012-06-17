@@ -18,7 +18,7 @@
             <div class="span2">
                 <label>{% trans 'Selling Price' %}</label>
                 <div class="input-append">
-                    <input type="text" name="price" id="" class="span1" data-bind="value: selectedVariant().cost"/><span class="add-on" data-bind="html: currencySymbol"></span>
+                    <input type="text" name="price" id="" class="span1" data-bind="value: selectedVariant().cost"/><span class="add-on" data-bind="html: $parent.currencySymbol"></span>
                 </div>
             </div>
             <div class="span2">
@@ -50,7 +50,7 @@
             <div class="span2">
                 <label>{% trans 'Compare at price' %}</label>
                 <div class="input-append">
-                    <input type="text" name="compare_at_price" id="" class="span1" data-bind="value: selectedVariant().compare_at_price"/><span class="add-on" data-bind="html: currencySymbol"></span>
+                    <input type="text" name="compare_at_price" id="" class="span1" data-bind="value: selectedVariant().compare_at_price"/><span class="add-on" data-bind="html: $parent.currencySymbol"></span>
                 </div>
             </div>  
             <div class="span2">

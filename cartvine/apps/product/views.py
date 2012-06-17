@@ -99,6 +99,7 @@ class ProductVariantView(FormView):
                 variant = form.save()
                 response['pk'] = variant.pk
                 response['object'] = variant.data
+                response['object']['pk'] = variant.pk
                 response['object']['basic_options'] = variant.basic_options()
 
                 response['status'] = 'success'

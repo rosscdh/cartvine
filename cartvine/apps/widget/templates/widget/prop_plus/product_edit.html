@@ -13,7 +13,7 @@
 <div class="main">
     <div class="row">
         <div class="span9">
-            <div class="widget widget-table">
+            <div class="widget widget-table" data-bind="with: ProductView">
                 <div class="widget-header">
                     <span class="icon-list-alt"></span>
                     <h3>{% trans 'Product Properties' %}</h3>
@@ -46,9 +46,16 @@
                                 <td class="value">{% for p in property.value %}<span class="label label-info">{{ p }}</span>&nbsp;{% endfor %}</td>
                             </tr>
                             {% endfor %}
-                            {% for property in object.properties_plus %}
-                            {% endfor %}
                         </tbody>
+                        <tbody data-bind="foreach: plusProperties">
+                        {% for property in object.properties_plus %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <table class="table table-condensed">
+                    <tr>
+                        <td class="span12"><a data-toggle="modal" href="#addProperty" class="btn btn-small">{% trans 'Add Property' %}</a></td>
+                    </tr>
                     </table>
                 </div>
             </div>
@@ -113,7 +120,7 @@
 						    <tr>
                                 <td class="cen"><input type="checkbox" class="option-variant" value=""/></td>
                                 <td class="value">{{variant.sku}}</td>
-                                <td class="value">{{variant.cost}}</td>
+                                <td class="value"><span data-bind="html: $parent.currencySymbol"></span>{{variant.cost}}</td>
                                 <td class="value">{{variant.inventory_quantity}}</td>
                                 {% for option_id,option in variant.basic_options.iteritems %}
                                 <td class="value">{{ option.value }}</td>
@@ -160,17 +167,18 @@ $(document).ready(function(){
 
     function ProductViewModel() {
         var self = this;
+        self.selectedProperty = ko.observable();
+        self.basicProperties = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
+        self.plusProperties = ko.observableArray([]);
     }
 
     function VariantViewModel() {
         var self = this;
 
         self.blankVariant = new Variant(null,null,0,null,0,0,false,false,false,0,[]);
-        self.currency = '{{ object.shop.currency_symbol|safe }}';
         self.selectedVariant = ko.observable(self.blankVariant);
         self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
         self.extraProductOptions = ko.observableArray([]);
-        self.currencySymbol = '{{ object.shop.currency_symbol|safe }}';
 
         self.formTitle = ko.observable('');
         self.formSubmitMessage = ko.observable('');
@@ -184,18 +192,20 @@ $(document).ready(function(){
             self.variantsList.push(variant);
         }
 
-        self.appendToVariantList = function(variant) {
+        self.updateVariantList = function(variant) {
             var is_present = false;
             if (variant.pk != undefined) {
                 for (var i=0; i < self.variantsList().length; i++) {
                     if (self.variantsList()[i].pk == variant.pk) {
+                        // update the variant
+                        self.variantsList()[i] = variant;
                         is_present = true;
                         break;
                     }
                 }
                 if (is_present == false) {
+                    // is a new variant so push it in
                     self.variantsList.push(variant);
-                    console.log('appendToVariantList: ' + variant)
                     self.setSelectedVariant(variant.pk);
                 }
             }
@@ -323,6 +333,8 @@ $(document).ready(function(){
         self.VariantView = new VariantViewModel();
         self.ProductView = new ProductViewModel();
 
+        self.currencySymbol = '{{ object.shop.currency_symbol|safe }}';
+
         self.submitModalWindow = function(KOView, baseElement) {
             // hide sumit button so suer cant double click
             footer = baseElement.find('div.modal-footer:last');
@@ -343,14 +355,13 @@ $(document).ready(function(){
 
                 form_message.hide().removeClass('btn-success,btn-warning');
 
-                console.log(response.status)
                 if (response.status == 'success') {
                     status_class = 'btn-success';
                     // successful post now update the variants list
                     if (response.object != null) {
                         v = response.object;
                         variant = new Variant(v.pk,v.provider_id,v.price,v.sku,v.compare_at_price,v.grams,v.taxable,v.requires_shipping,v.inventory_policy,v.inventory_quantity,v.basic_options);
-                        KOView.appendToVariantList(variant);
+                        KOView.updateVariantList(variant);
                     }
                 }else{
                     status_class = 'btn-warning';
