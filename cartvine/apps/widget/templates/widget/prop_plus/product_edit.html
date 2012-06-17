@@ -398,11 +398,11 @@ $(document).ready(function(){
         var controls = $('<div class="controls pull-right"></div>');
 
         // basic edit control
-        controls.append($('<a href="" class="edit btn btn-small"><i class="icon-pencil"></i></a>'));
+        controls.append($('<a href="" class="edit"><i class="icon-pencil"></i></a>'));
 
         // delete - only if this is a property plus item
         if (type == 'plus') {
-            controls.append($('<a href="" class="delete btn btn-small btn-danger"><i class="icon-remove"></i></a>'));
+            controls.append($('<a href="" class="delete"><i class="icon-remove"></i></a>'));
         }
 
         return controls;
