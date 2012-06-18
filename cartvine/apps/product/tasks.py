@@ -63,7 +63,7 @@ def sync_products(shop):
                 pv, is_new = ProductVariant.objects.get_or_create(product=p, provider_id=v['id'])
                 pv.sku = v['sku']
                 pv.inventory_quantity = v['inventory_quantity']
-                pv.position = v['position ']
+                pv.position = v['position']
                 pv.data = v
                 pv.save()
 
