@@ -101,7 +101,11 @@ class ProductVariant(models.Model):
     sku = models.CharField(max_length=128,null=True,db_index=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
     inventory_quantity = models.IntegerField(default=0)
+    position = models.IntegerField(default=0)
     data = JSONField()
+
+    class Meta:
+        ordering = ['position']
 
     def set_slug(self):
         if 'extra_options' in self.data:

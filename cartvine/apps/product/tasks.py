@@ -63,8 +63,25 @@ def sync_products(shop):
                 pv, is_new = ProductVariant.objects.get_or_create(product=p, provider_id=v['id'])
                 pv.sku = v['sku']
                 pv.inventory_quantity = v['inventory_quantity']
+                pv.position = v['position ']
                 pv.data = v
                 pv.save()
+
+    return None
+
+
+@task(name="set_variant_order")
+def set_variant_order():
+    """ Task make all product variants order by their position argument """
+    logger.info('Start Task: set_variant_order')
+
+    for v in ProductVariant.objects.all():
+        if 'position' in v.data:
+            v.position = v.data['position']
+            v.save()
+        else:
+            logger.warn('No "position" key found in Variant.data variant(%d)'%(v.pk,))            
+
 
     return None
 
