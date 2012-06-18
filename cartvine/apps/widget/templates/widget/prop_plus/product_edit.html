@@ -448,7 +448,7 @@ $(document).ready(function(){
         event.preventDefault();
         // only if there is no edit form there and the edit control is not already there
         var target = $(this).find('td:last');
-        if ($(this).find('td:first form').length == 0 && $(this).find('div.property-controls').length == 0) {
+        if ($(this).find('td form').length == 0 && $(this).find('div.property-controls').length == 0) {
 
             var option_id = target.attr('data-option_id')
             var property_type = ($(this).find('td:first div.basic').length == 0) ? 'base' : 'basic' ;
