@@ -29,23 +29,23 @@
                         <tbody class="basicProperties">
                             <tr>
                                 <td class="name">{% trans 'Product' %}</td>
-                                <td class="value"><span>{{ object.name }}</span></td>
+                                <td class="value" data-option_id="name"><span>{{ object.name }}</span></td>
                             </tr>
                             <tr>
                                 <td class="name">{% trans 'Product type' %}</td>
-                                <td class="value"><span>{{ object.product_type }}</span></td>
+                                <td class="value" data-option_id="product_type"><span>{{ object.product_type }}</span></td>
                             </tr>
                             <tr>
                                 <td class="name">{% trans 'Product vendor' %}</td>
-                                <td class="value"><span>{{ object.data.vendor }}</span></td>
+                                <td class="value" data-option_id="vendor"><span>{{ object.data.vendor }}</span></td>
                             </tr>
                             {% for property in object.basic_props %}
                             <tr data-bind="event: {mouseover: $parent.showControls, mouseout: $parent.hideControls}">
                                 <td class="name">
-                                    {{ property.name }}
+                                    <span class="value">{{ property.name }}</span>
                                     <div class="pull-right"><span class="tiny" style="color:{{ property.option_id|option_color }};">{{ property.option_id }}</span></div>
                                 </td>
-                                <td class="value">
+                                <td class="value" data-option_id="{{ property.option_id }}">
                                     {% for p in property.value %}<span class="label label-info">{{ p }}</span>&nbsp;{% endfor %}
                                 </td>
                             </tr>
@@ -59,7 +59,7 @@
                         </tbody>
                         <tbody id="addPropertyInterface" class="addProperties" data-bind="visible: showAddForm()">
                             <tr>
-                                <td colspan="2"class="name modal-footer">
+                                <td colspan="2" class="name modal-footer">
                                     <div class="form-message" data-bind="html: formSubmitMessage"></div>
                                     <form id="addPlusProperty" class="" action="" method="POST">{% csrf_token %}
                                         <input type="hidden" name="property_type" id="" value="2"/>
@@ -188,9 +188,9 @@
     </div>
 </div>
 
-<div data-bind="with: ProductView">
+<!-- <div data-bind="with: ProductView">
 {% include 'product/forms/product_props.html' %}
-</div>
+</div> -->
 <div data-bind="with: VariantView">
 {% include 'product/forms/variant_props.html' %}
 </div>
@@ -213,6 +213,26 @@ color: #da4f49;
 
 {% handlebars_js %}
 {% tplhandlebars "property-form" %}
+<td id="edit-properties-form" colspan="2" class="name modal-footer">
+<form id="addPlusProperty" class="" action="{{form_url}}" method="POST">{% csrf_token %}
+    <input type="hidden" name="property_type" id="" value="{{property_type}}"/>
+    <label>{{label}}</label>
+    <input type="text" data-bind="" name="name" id="" value="{{value}}"/>
+    <div class="pull-right">
+        <button type="add" id="{{#if is_new}}saveNewProperty{{else}}saveProperty{{/if}}" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
+        <a onclick="App.ProductView.hideAddForm();" href="" class="delete btn btn-small btn"><i class="icon-remove"></i></a>
+    </div>
+</form>
+</td>
+{% endtplhandlebars %}
+
+{% tplhandlebars "edit-helper" %}
+<div class="property-controls controls pull-right">
+    <a href="" data-option_id="{{option_id}}" data-property_type="{{property_type}}" class="edit"><i class="icon-pencil"></i></a>
+    {{#if is_plus}}
+    <a href="" data-option_id="{{option_id}}" data-property_type="{{property_type}}" class="delete"><i class="icon-remove"></i></a>
+    {{/if}}
+</div>
 {% endtplhandlebars %}
 
 <script type="text/javascript" src="{{ STATIC_URL }}knockoutjs/js/knockout-2.1.0.js"></script>
@@ -407,24 +427,12 @@ $(document).ready(function(){
         App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $('#addPropertyInterface'));
     });
 
-    propertyControls = function(type) {
-        var controls = $('<div class="controls pull-right"></div>');
-
-        // basic edit control
-        controls.append($('<a href="" class="edit"><i class="icon-pencil"></i></a>'));
-
-        // delete - only if this is a property plus item
-        if (type == 'plus') {
-            controls.append($('<a href="" class="delete"><i class="icon-remove"></i></a>'));
-        }
-
-        return controls;
-    }
 
     $('div#ProductProperties tbody.basicProperties tr').live('mouseenter mouseleave', function(event) {
         event.preventDefault();
         var target = $(this).find('td:last');
-        var controls = propertyControls('basic');
+        var option_id = target.attr('data-option_id')
+        var controls = App.propertyControls($(this), option_id, 'basic');
 
         if (event.type == 'mouseleave') {
             target.find('div.controls').remove();
@@ -434,13 +442,32 @@ $(document).ready(function(){
     });
     $('div#ProductProperties tbody.plusProperties tr').live('mouseenter mouseleave', function(event) {
         event.preventDefault();
-        if (event.type == 'mouseleave') {
+        var target = $(this).find('td:last');
+        var option_id = target.attr('data-option_id')
+        var controls = App.propertyControls($(this), option_id, 'basic');
 
+        if (event.type == 'mouseleave') {
+            target.find('div.controls').remove();
         }else{
-            
+            target.append(controls);
         }
     });
 
+    $('div.property-controls a.edit').live('click', function(event) {
+        event.preventDefault();
+        var option_id = $(this).attr('data-option_id');
+        var property_type = $(this).attr('data-property_type');
+
+        var tr = $(this).closest('tr');
+        var original_tr = tr.html();
+
+        if (tr.find('td.name span.value').text() != undefined) {
+            $('td#edit-properties-form').remove();
+            var value = tr.find('td.name span.value').text();
+            var controls = App.propertyForm(false,property_type,value,option_id);
+            tr.html(controls);
+        }
+    });
     // Variant Helpers
     $('#editVariationModal a.submit-btn:last').live('click', function(event) {
         event.preventDefault();
@@ -484,6 +511,27 @@ $(document).ready(function(){
         self.VariantView = new VariantViewModel();
 
         self.currencySymbol = '{{ object.shop.currency_symbol|safe }}';
+
+        self.propertyForm = function(is_new, property_type, value, option_id) {
+            var source   = $("script#property-form").html();
+            var template = Handlebars.compile(source);
+            var context = {
+                option_id: option_id,
+                label: (is_new == true) ? "{% trans 'New Property' %}" : "&nbsp;",
+                property_type: property_type,
+                form_url: "",
+                value: value,
+            };
+            return template(context);
+        }
+
+        self.propertyControls = function(element, option_id, type) {
+            var source   = $("script#edit-helper").html();
+            var template = Handlebars.compile(source);
+
+            var is_plus = (type == 'plus')? true : false ;
+            return template({is_plus: is_plus, property_type: type, option_id: option_id});
+        }
 
         self.submitModalWindow = function(KOView, successProcessCallback, baseElement) {
             // hide sumit button so suer cant double click

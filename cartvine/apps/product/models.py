@@ -8,6 +8,10 @@ from managers import ProductManager
 
 
 class Product(models.Model):
+    PROPERTY_TYPE = get_namedtuple_choices('PROPERTY_TYPE', (
+        (1, 'basic', 'Basic'),
+        (2, 'plus', 'PropertiesPlus'),
+    ))
     BASIC_OPTIONS = get_namedtuple_choices('BASIC_OPTIONS', (
         ('option1', 'option1', 'Option 1'),
         ('option2', 'option2', 'Option 2'),
