@@ -298,7 +298,8 @@ TEST_RUNNER = 'cartvine.test_runner.CartvineAppTestRunner'
 # Remote images are downloaded and stored in this folder relative to the MEDIA_ROOT
 REMOTE_IMAGE_STORAGE_PATH = 'remote'
 
-USE_EMBER_STYLE_ATTRS = True
+# Handlebars render style
+USE_EMBER_STYLE_ATTRS = False
 
 try:
     from shopify_settings import *

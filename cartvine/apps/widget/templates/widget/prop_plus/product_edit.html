@@ -188,10 +188,15 @@
     </div>
 </div>
 
+<div data-bind="with: ProductView">
+{% include 'product/forms/product_props.html' %}
+</div>
+<div data-bind="with: VariantView">
+{% include 'product/forms/variant_props.html' %}
+</div>
+
 {% block css %}
-
 <style>
-
 div.controls{
 }
 div.controls a.edit, div.controls a.delete{
@@ -204,16 +209,13 @@ color: #da4f49;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
 </style>
-
 {% endblock %}
 
+{% handlebars_js %}
+{% tplhandlebars "property-form" %}
+{% endtplhandlebars %}
+
 <script type="text/javascript" src="{{ STATIC_URL }}knockoutjs/js/knockout-2.1.0.js"></script>
-<div data-bind="with: ProductView">
-{% include 'product/forms/product_props.html' %}
-</div>
-<div data-bind="with: VariantView">
-{% include 'product/forms/variant_props.html' %}
-</div>
 <script type="text/javascript">
 $(document).ready(function(){
 
