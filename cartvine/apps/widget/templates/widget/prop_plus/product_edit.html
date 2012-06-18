@@ -430,27 +430,24 @@ $(document).ready(function(){
 
     $('div#ProductProperties tbody.basicProperties tr').live('mouseenter mouseleave', function(event) {
         event.preventDefault();
+        // only if there is no edit form there and the edit control is not already there
         var target = $(this).find('td:last');
-        var option_id = target.attr('data-option_id')
-        var controls = App.propertyControls($(this), option_id, 'basic');
+        if ($(this).find('td:first form').length == 0 && $(this).find('div.property-controls').length == 0) {
 
-        if (event.type == 'mouseleave') {
-            target.find('div.controls').remove();
+            var option_id = target.attr('data-option_id')
+            var controls = App.propertyControls($(this), option_id, 'basic');
+
+            if (event.type == 'mouseleave') {
+                target.find('div.controls').remove();
+            }else{
+                target.append(controls);
+            }
         }else{
-            target.append(controls);
+            target.find('div.controls').remove();
         }
     });
     $('div#ProductProperties tbody.plusProperties tr').live('mouseenter mouseleave', function(event) {
         event.preventDefault();
-        var target = $(this).find('td:last');
-        var option_id = target.attr('data-option_id')
-        var controls = App.propertyControls($(this), option_id, 'basic');
-
-        if (event.type == 'mouseleave') {
-            target.find('div.controls').remove();
-        }else{
-            target.append(controls);
-        }
     });
 
     $('div.property-controls a.edit').live('click', function(event) {
@@ -459,12 +456,18 @@ $(document).ready(function(){
         var property_type = $(this).attr('data-property_type');
 
         var tr = $(this).closest('tr');
-        var original_tr = tr.html();
 
         if (tr.find('td.name span.value').text() != undefined) {
-            $('td#edit-properties-form').remove();
+            // restore teh previous tr html
+            if ($('td#edit-properties-form').length > 0) {
+                $('td#edit-properties-form').closest('tr').html(App.currentPropertyTrHtml);
+            }
+            // set the current tr html to this ones html value
+            App.currentPropertyTrHtml = tr.html();
+
             var value = tr.find('td.name span.value').text();
             var controls = App.propertyForm(false,property_type,value,option_id);
+            // replace the current tr html with our control form
             tr.html(controls);
         }
     });
@@ -511,6 +514,8 @@ $(document).ready(function(){
         self.VariantView = new VariantViewModel();
 
         self.currencySymbol = '{{ object.shop.currency_symbol|safe }}';
+
+        self.currentPropertyTrHtml = null;
 
         self.propertyForm = function(is_new, property_type, value, option_id) {
             var source   = $("script#property-form").html();
