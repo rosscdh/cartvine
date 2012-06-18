@@ -14,9 +14,9 @@ class Product(models.Model):
         ('option3', 'option3', 'Option 3'),
     ))
     OPTION_COLORS = get_namedtuple_choices('OPTION_COLORS', (
-        ('#ff0000', 'option1', 'Option 1'),
-        ('#00ff00', 'option2', 'Option 2'),
-        ('#0000ff', 'option3', 'Option 3'),
+        ('#237FAD', 'option1', 'Option 1'),
+        ('#7EA336', 'option2', 'Option 2'),
+        ('#A95A05', 'option3', 'Option 3'),
     ))
     shop = models.ForeignKey(Shop)
     provider_id = models.IntegerField(db_index=True)
