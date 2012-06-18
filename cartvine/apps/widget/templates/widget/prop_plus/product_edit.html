@@ -43,7 +43,7 @@
                             <tr data-bind="event: {mouseover: $parent.showControls, mouseout: $parent.hideControls}">
                                 <td class="name">
                                     <span class="value">{{ property.name }}</span>
-                                    <div class="pull-right"><span class="tiny" style="color:{{ property.option_id|option_color }};">{{ property.option_id }}</span></div>
+                                    <div class="basic pull-right"><span class="tiny" style="color:{{ property.option_id|option_color }};">{{ property.option_id }}</span></div>
                                 </td>
                                 <td class="value" data-option_id="{{ property.option_id }}">
                                     {% for p in property.value %}<span class="label label-info">{{ p }}</span>&nbsp;{% endfor %}
@@ -212,7 +212,23 @@ color: #da4f49;
 {% endblock %}
 
 {% handlebars_js %}
-{% tplhandlebars "property-form" %}
+{% tplhandlebars "base-property-form" %}
+<td id="edit-properties-form" class="name modal-footer">
+    <label>{{label}}</label>
+</td>
+<td>
+<form id="addPlusProperty" class="" action="{{form_url}}" method="POST">{% csrf_token %}
+    <input type="hidden" name="property_type" id="" value="{{property_type}}"/>
+    <label>&nbsp;</label>
+    <input type="text" data-bind="" name="name" id="" value="{{value}}"/>
+    <div class="pull-right">
+        <button type="add" id="{{#if is_new}}saveNewProperty{{else}}saveProperty{{/if}}" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
+    </div>
+</form>
+</td>
+{% endtplhandlebars %}
+
+{% tplhandlebars "basic-property-form" %}
 <td id="edit-properties-form" colspan="2" class="name modal-footer">
 <form id="addPlusProperty" class="" action="{{form_url}}" method="POST">{% csrf_token %}
     <input type="hidden" name="property_type" id="" value="{{property_type}}"/>
@@ -220,7 +236,6 @@ color: #da4f49;
     <input type="text" data-bind="" name="name" id="" value="{{value}}"/>
     <div class="pull-right">
         <button type="add" id="{{#if is_new}}saveNewProperty{{else}}saveProperty{{/if}}" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
-        <a onclick="App.ProductView.hideAddForm();" href="" class="delete btn btn-small btn"><i class="icon-remove"></i></a>
     </div>
 </form>
 </td>
@@ -408,6 +423,7 @@ $(document).ready(function(){
             }
         }
     }
+
     function ProductOption(prop_type,internal_name,name,value) {
         var self = this;
         self.prop_type = prop_type;
@@ -435,7 +451,8 @@ $(document).ready(function(){
         if ($(this).find('td:first form').length == 0 && $(this).find('div.property-controls').length == 0) {
 
             var option_id = target.attr('data-option_id')
-            var controls = App.propertyControls($(this), option_id, 'basic');
+            var property_type = ($(this).find('td:first div.basic').length == 0) ? 'base' : 'basic' ;
+            var controls = App.propertyControls($(this), option_id, property_type);
 
             if (event.type == 'mouseleave') {
                 target.find('div.controls').remove();
@@ -463,10 +480,16 @@ $(document).ready(function(){
                 $('td#edit-properties-form').closest('tr').html(App.currentPropertyTrHtml);
             }
             // set the current tr html to this ones html value
+            tr.find('div.property-controls').remove();
             App.currentPropertyTrHtml = tr.html();
-
-            var value = tr.find('td.name span.value').text();
-            var controls = App.propertyForm(false,property_type,value,option_id);
+            if (property_type == 'base') {
+                var name = tr.find('td.name').text();
+                var value = tr.find('td.value').text();
+            }else{
+                var name = tr.find('td.name').text();
+                var value = tr.find('td.name span.value').text();
+            }
+            var controls = App.propertyForm(false,property_type,name,value,option_id);
             // replace the current tr html with our control form
             tr.html(controls);
         }
@@ -517,9 +540,8 @@ $(document).ready(function(){
 
         self.currentPropertyTrHtml = null;
 
-        self.propertyForm = function(is_new, property_type, value, option_id) {
-            var source   = $("script#property-form").html();
-            var template = Handlebars.compile(source);
+        self.propertyForm = function(is_new, property_type, name, value, option_id) {
+
             var context = {
                 option_id: option_id,
                 label: (is_new == true) ? "{% trans 'New Property' %}" : "&nbsp;",
@@ -527,6 +549,14 @@ $(document).ready(function(){
                 form_url: "",
                 value: value,
             };
+
+            if (property_type == 'base') {
+                var source   = $("script#base-property-form").html();
+                context.label = name;
+            }else{
+                var source   = $("script#basic-property-form").html();
+            }
+            var template = Handlebars.compile(source);
             return template(context);
         }
 
