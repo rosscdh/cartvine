@@ -505,8 +505,10 @@ $(document).ready(function(){
                     status_class = 'btn-success';
                     // successful post now update the variants list
                     successProcessCallback(response);
-                }else{
+                }else if (response.status == 'warning') {
                     status_class = 'btn-warning';
+                }else{
+                    status_class = 'btn-danger';
                 }
 
                 // Set the form Message
@@ -525,7 +527,7 @@ $(document).ready(function(){
             })
             .error(function() { 
                 KOView.formSubmitMessage('Sorry, something bad happened!');
-                form_message.hide().fadeIn('slow').removeClass().addClass('btn-danger').addClass('messages')
+                form_message.hide().fadeIn('slow').removeClass('btn-success,btn-warning').addClass('btn-danger').addClass('messages')
                 submit_button.css('visibility','visible');
                 submit_button.attr('disabled',false);
             })
