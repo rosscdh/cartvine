@@ -3,7 +3,9 @@ from django import template
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
 from urlparse import urlparse
+
 from cartvine.utils import get_namedtuple_choices
+from cartvine.apps.product.models import Product
 
 register = template.Library()
 
@@ -34,3 +36,8 @@ def image_resize(src, size=None):
     a,b,c,d,e,f = image
     return '%s://%s%s?%s%s' %(image.scheme, image.netloc, path, image.params, e)
 image_resize.is_safe = True
+
+@register.filter
+def option_color(option_id):
+    return '%s' % (Product.OPTION_COLORS.get_value_by_name(option_id),)
+option_color.is_safe = True

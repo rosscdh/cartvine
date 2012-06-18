@@ -42,7 +42,10 @@
                             {% for property in object.basic_props %}
                             <tr data-bind="event: {mouseover: $parent.showControls, mouseout: $parent.hideControls}">
                                 <td class="name">{{ property.name }}</td>
-                                <td class="value">{% for p in property.value %}<span class="label label-info">{{ p }}</span>&nbsp;{% endfor %}</td>
+                                <td class="value">
+                                    <div class="pull-right"><span class="tiny" style="color:{{ property.option_id|option_color }};">{{ property.option_id }}</span></div>
+                                    {% for p in property.value %}<span class="label label-info">{{ p }}</span>&nbsp;{% endfor %}
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>

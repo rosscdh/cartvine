@@ -13,6 +13,11 @@ class Product(models.Model):
         ('option2', 'option2', 'Option 2'),
         ('option3', 'option3', 'Option 3'),
     ))
+    OPTION_COLORS = get_namedtuple_choices('OPTION_COLORS', (
+        ('#ff0000', 'option1', 'Option 1'),
+        ('#00ff00', 'option2', 'Option 2'),
+        ('#0000ff', 'option3', 'Option 3'),
+    ))
     shop = models.ForeignKey(Shop)
     provider_id = models.IntegerField(db_index=True)
     name = models.CharField(max_length=255)
@@ -72,10 +77,13 @@ class Product(models.Model):
         return options
 
     def basic_props(self):
-        """ assemble properties and lis of variant options uniquified"""
+        """ assemble properties and lis of variant options uniquified ordered by name.. option1 option2... """
         basic = []
         options = self.get_data_options(self.get_variant_prop_groups())
-        for name, p in options.iteritems():
+        for option_id,name in self.BASIC_OPTIONS.get_choices():
+            p = options[option_id]
+            # append the id to the p object
+            p['option_id'] = option_id
             basic.append(p)
         return basic
 
