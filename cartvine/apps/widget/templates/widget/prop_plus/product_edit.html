@@ -213,33 +213,39 @@ color: #da4f49;
 
 {% handlebars_js %}
 {% tplhandlebars "base-property-form" %}
-<td id="edit-properties-form" class="name modal-footer">
+<td id="edit-properties-form" class="name">
     <label>{{label}}</label>
 </td>
-<td>
-<form id="" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
-    <input type="hidden" name="property_type" id="" value="{{property_type}}"/>
-    <label>&nbsp;</label>
-    <input type="text" data-bind="" name="name" id="" value="{{value}}"/>
-    <div class="pull-right">
-        <button type="add" id="{{#if is_new}}saveNewProperty{{else}}saveProperty{{/if}}" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
-        <a href="#" onclick="App.resetPreviousEditTr();" class="delete"><i class="icon-remove"></i></a>
-    </div>
-</form>
+<td class="form">
+
+    <div class="form-message" data-bind="html: App.ProductView.formSubmitMessage"></div>
+
+    <form id="" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
+        <input type="hidden" name="property_type" id="" value="{{property_type}}"/>
+        <label>&nbsp;</label>
+        <input type="text" data-bind="" name="name" id="" value="{{value}}"/>
+        <div class="modal-footer pull-right">
+            <button type="add" id="{{#if is_new}}saveNewProperty{{else}}saveProperty{{/if}}" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
+            <a href="#" onclick="App.resetPreviousEditTr();" class="delete"><i class="icon-remove"></i></a>
+        </div>
+    </form>
 </td>
 {% endtplhandlebars %}
 
 {% tplhandlebars "basic-property-form" %}
-<td id="edit-properties-form" colspan="2" class="name modal-footer">
-<form id="" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
-    <input type="hidden" name="property_type" id="" value="{{property_type}}"/>
-    <label>{{label}}</label>
-    <input type="text" data-bind="" name="name" id="" value="{{value}}"/>
-    <div class="pull-right">
-        <button type="add" id="{{#if is_new}}saveNewProperty{{else}}saveProperty{{/if}}" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
-        <a href="#" onclick="App.resetPreviousEditTr();" class="delete"><i class="icon-remove"></i></a>
-    </div>
-</form>
+<td id="edit-properties-form" colspan="2" class="form name">
+
+    <div class="form-message" data-bind="html: App.ProductView.formSubmitMessage"></div>
+
+    <form id="" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
+        <input type="hidden" name="property_type" id="" value="{{property_type}}"/>
+        <label>{{label}}</label>
+        <input type="text" data-bind="" name="name" id="" value="{{value}}"/>
+        <div class="modal-footer pull-right">
+            <button type="add" id="{{#if is_new}}saveNewProperty{{else}}saveProperty{{/if}}" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
+            <a href="#" onclick="App.resetPreviousEditTr();" class="delete"><i class="icon-remove"></i></a>
+        </div>
+    </form>
 </td>
 {% endtplhandlebars %}
 
@@ -449,7 +455,7 @@ $(document).ready(function(){
 
     $('form.property-form button.submit-btn').live('click', function(event) {
         event.preventDefault();
-        App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $(this).closest('form.property-form'));
+        App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $(this).closest('td.form'));
     });
 
     $('div#ProductProperties tbody.basicProperties tr').live('mouseenter mouseleave', function(event) {
@@ -600,6 +606,7 @@ $(document).ready(function(){
             footer = baseElement.find('div.modal-footer:last');
             submit_button = baseElement.find('.submit-btn');
             form_message = baseElement.find('div.form-message:first');
+
             submit_button.css('visibility','hidden');
             submit_button.attr('disabled',true);
 
@@ -627,6 +634,8 @@ $(document).ready(function(){
 
                 // Set the form Message
                 KOView.formSubmitMessage(response.message);
+                form_message.html(response.message)
+
                 form_message.fadeIn('fast').addClass(status_class).addClass('messages')
 
                 if (response.status == 'success') {

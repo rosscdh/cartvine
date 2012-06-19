@@ -31,7 +31,7 @@ class ProductListView(ListView):
 
 
 class ProductDetailView(DetailView):
-    queryset = Product.objects.filter(pk=-1)
+    queryset = None
     def get_queryset(self):
 		return Product.objects.by_shopify_owner(self.request.user).all()
 
@@ -88,8 +88,12 @@ class ProductPropertiesView(FormView):
 
 class BaseProductPropertiesView(ProductPropertiesView):
     form_class = BaseProductPropertiesForm
+
+
 class BasicProductPropertiesView(ProductPropertiesView):
     form_class = BasicProductPropertiesForm
+
+
 class PlusProductPropertiesView(ProductPropertiesView):
     form_class = PlusProductPropertiesForm
 
