@@ -10,7 +10,7 @@ from django.http import QueryDict
 from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import slugify
 
-from forms import ProductPropertiesForm, ProductVariantForm
+from forms import ProductPropertiesForm, BaseProductPropertiesForm, BasicProductPropertiesForm, PlusProductPropertiesForm, ProductVariantForm
 from models import Product, ProductVariant
 
 import shopify
@@ -86,6 +86,12 @@ class ProductPropertiesView(FormView):
 
         return HttpResponse(json.dumps(response), content_type='text/json')
 
+class BaseProductPropertiesView(ProductPropertiesView):
+    form_class = BaseProductPropertiesForm
+class BasicProductPropertiesView(ProductPropertiesView):
+    form_class = BasicProductPropertiesForm
+class PlusProductPropertiesView(ProductPropertiesView):
+    form_class = PlusProductPropertiesForm
 
 
 class ProductVariantView(FormView):

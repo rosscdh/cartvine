@@ -58,6 +58,12 @@ class ProductPropertiesForm(forms.Form):
         cleaned_data = super(ProductPropertiesForm, self).clean()
         return cleaned_data
 
+class BaseProductPropertiesForm(ProductPropertiesForm):
+    pass
+class BasicProductPropertiesForm(ProductPropertiesForm):
+    pass
+class PlusProductPropertiesForm(ProductPropertiesForm):
+    pass
 
 class ProductVariantForm(forms.Form):
     sku = forms.CharField(initial='',required=True)

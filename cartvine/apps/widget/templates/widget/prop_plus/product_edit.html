@@ -217,7 +217,7 @@ color: #da4f49;
     <label>{{label}}</label>
 </td>
 <td>
-<form id="addPlusProperty" class="" action="{{form_url}}" method="POST">{% csrf_token %}
+<form id="" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
     <input type="hidden" name="property_type" id="" value="{{property_type}}"/>
     <label>&nbsp;</label>
     <input type="text" data-bind="" name="name" id="" value="{{value}}"/>
@@ -231,7 +231,7 @@ color: #da4f49;
 
 {% tplhandlebars "basic-property-form" %}
 <td id="edit-properties-form" colspan="2" class="name modal-footer">
-<form id="addPlusProperty" class="" action="{{form_url}}" method="POST">{% csrf_token %}
+<form id="" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
     <input type="hidden" name="property_type" id="" value="{{property_type}}"/>
     <label>{{label}}</label>
     <input type="text" data-bind="" name="name" id="" value="{{value}}"/>
@@ -260,7 +260,7 @@ $(document).ready(function(){
         var self = this;
 
         self.formSubmitMessage = ko.observable('');
-        self.formPostUrl = ko.observable('{% url 'product:properties' slug=object.slug %}');
+        self.formPostUrl = ko.observable('');
 
         self.theFormName = 'form#addPlusProperty';
         self.showAddForm = ko.observable(false);
@@ -447,6 +447,10 @@ $(document).ready(function(){
         App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $('#addPropertyInterface'));
     });
 
+    $('form.property-form button.submit-btn').live('click', function(event) {
+        event.preventDefault();
+        App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $(this).closest('form.property-form'));
+    });
 
     $('div#ProductProperties tbody.basicProperties tr').live('mouseenter mouseleave', function(event) {
         event.preventDefault();
@@ -491,7 +495,7 @@ $(document).ready(function(){
                 // take the name/value pair
                 var name = tr.find('td.name').text();
                 var value = tr.find('td.value').text();
-            }else{
+            }else if (property_type == 'basic') {
                 // set the value equal to the name as in basic properties this 
                 // is the change case
                 var name = tr.find('td.name').text();
@@ -571,8 +575,13 @@ $(document).ready(function(){
             if (property_type == 'base') {
                 var source   = $("script#base-property-form").html();
                 context.label = name;// set the label to the current name
+                App.ProductView.formPostUrl('{% url 'product:base_properties' slug=object.slug %}');
+            }else if (property_type == 'basic') {
+                var source   = $("script#basic-property-form").html();
+                App.ProductView.formPostUrl('{% url 'product:basic_properties' slug=object.slug %}');
             }else{
                 var source   = $("script#basic-property-form").html();
+                App.ProductView.formPostUrl('{% url 'product:plus_properties' slug=object.slug %}');
             }
             var template = Handlebars.compile(source);
             return template(context);
