@@ -26,24 +26,26 @@
                                 <th>{% trans 'Value' %}</th>                                
                             </tr>
                         </thead>
-                        <tbody class="basicProperties">
+                        <tbody class="baseProperties">
                             <tr>
-                                <td class="name">{% trans 'Product' %}</td>
+                                <td class="name" data-property_type="base">{% trans 'Product' %}</td>
                                 <td class="value" data-option_id="name"><span>{{ object.name }}</span></td>
                             </tr>
                             <tr>
-                                <td class="name">{% trans 'Product type' %}</td>
+                                <td class="name" data-property_type="base">{% trans 'Product type' %}</td>
                                 <td class="value" data-option_id="product_type"><span>{{ object.product_type }}</span></td>
                             </tr>
                             <tr>
-                                <td class="name">{% trans 'Product vendor' %}</td>
+                                <td class="name" data-property_type="base">{% trans 'Product vendor' %}</td>
                                 <td class="value" data-option_id="vendor"><span>{{ object.data.vendor }}</span></td>
                             </tr>
+                        </tbody>
+                        <tbody class="basicProperties">
                             {% for property in object.basic_props %}
                             <tr data-bind="event: {mouseover: $parent.showControls, mouseout: $parent.hideControls}">
-                                <td class="name">
+                                <td class="name" data-property_type="basic" data-option_id="{{ property.option_id }}">
                                     <span class="value">{{ property.name }}</span>
-                                    <div class="basic pull-right"><span class="tiny" style="color:{{ property.option_id|option_color }};">{{ property.option_id }}</span></div>
+                                    <div data-property_type="basic" class="pull-right"><span class="tiny" style="color:{{ property.option_id|option_color }};">{{ property.option_id }}</span></div>
                                 </td>
                                 <td class="value" data-option_id="{{ property.option_id }}">
                                     {% for p in property.value %}<span class="label label-info">{{ p }}</span>&nbsp;{% endfor %}
@@ -53,18 +55,21 @@
                         </tbody>
                         <tbody class="plusProperties" data-bind="foreach: plusProperties">
                             <tr>
-                                <td class="name" data-bind="html: name"></td>
-                                <td class="value" data-bind="html: value"></td>
+                                <td class="name" data-property_type="plus"  data-bind="attr: {'data-option_id': name}">
+                                    <span class="value" data-bind="html: value"></span>
+                                    <div class="pull-right"><span class="tiny" style="color:{{ property.option_id|option_color }};" data-bind="html: name"></span></div>
+                                </td>
+                                <td class="value" data-option_id="{{ property.option_id }}">&nbsp;</td>
                             </tr>
                         </tbody>
                         <tbody id="addPropertyInterface" class="addProperties" data-bind="visible: showAddForm()">
                             <tr>
                                 <td colspan="2" class="name modal-footer">
                                     <div class="form-message" data-bind="html: formSubmitMessage"></div>
-                                    <form id="addPlusProperty" class="" action="" method="POST">{% csrf_token %}
-                                        <input type="hidden" name="property_type" value="2"/>
+                                    <form id="addPlusProperty" class="" action="{% url 'product:plus_properties' slug=object.slug %}" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="option_id" value=""/>
                                         <label>{% trans 'New Property' %}</label>
-                                        <input type="text" data-bind="" name="name" value=""/>
+                                        <input type="text" name="value" value=""/>
                                         <div class="pull-right">
                                             <button type="add" id="saveNewProperty" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
                                             <a onclick="App.ProductView.hideAddForm();" href="" class="delete btn btn-small btn"><i class="icon-remove"></i></a>
@@ -235,12 +240,26 @@ color: #da4f49;
 
 {% tplhandlebars "basic-property-form" %}
 <td id="edit-properties-form" colspan="2" class="form name">
-
     <div class="form-message" data-bind="html: App.ProductView.formSubmitMessage"></div>
-
     <form id="editBasicProperty" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
         <input type="hidden" name="property_type" value="{{property_type}}"/>
         <input type="hidden" name="name" value="{{option_id}}"/>
+        <label>{{label}}</label>
+        <input type="text" data-bind="" name="value" value="{{value}}"/>
+        <div class="modal-footer pull-right">
+            <button type="add" id="" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
+            <a href="#" onclick="App.resetPreviousEditTr();" class="delete"><i class="icon-remove"></i></a>
+        </div>
+    </form>
+</td>
+{% endtplhandlebars %}
+
+{% tplhandlebars "plus-property-form" %}
+<td id="edit-properties-form" colspan="2" class="form name">
+    <div class="form-message" data-bind="html: App.ProductView.formSubmitMessage"></div>
+    <form id="editPlusProperty" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
+        <input type="hidden" name="property_type" value="{{property_type}}"/>
+        <input type="hidden" name="option_id" value="{{option_id}}"/>
         <label>{{label}}</label>
         <input type="text" data-bind="" name="value" value="{{value}}"/>
         <div class="modal-footer pull-right">
@@ -268,13 +287,13 @@ $(document).ready(function(){
         var self = this;
 
         self.formSubmitMessage = ko.observable('');
-        self.formPostUrl = ko.observable('');
+        self.formPostUrl = ko.observable("{% url 'product:plus_properties' slug=object.slug %}");
 
         self.theFormName = ko.observable('form#addPlusProperty');
         self.showAddForm = ko.observable(false);
         self.selectedProperty = ko.observable();
-        self.basicProperties = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
-        self.plusProperties = ko.observableArray([]);
+        self.basicProperties = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('basic', '{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
+        self.plusProperties = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
 
         /**
         * method to process the form postback
@@ -452,6 +471,7 @@ $(document).ready(function(){
 
     $('div#ProductProperties button#saveNewProperty').live('click', function(event) {
         event.preventDefault();
+        App.ProductView.formPostUrl("{% url 'product:plus_properties' slug=object.slug %}");
         App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $('#addPropertyInterface'));
     });
 
@@ -464,14 +484,14 @@ $(document).ready(function(){
         App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $(this).closest('td.form'));
     });
 
-    $('div#ProductProperties tbody.basicProperties tr').live('mouseenter mouseleave', function(event) {
+    $('div#ProductProperties tbody.baseProperties tr, div#ProductProperties tbody.basicProperties tr, div#ProductProperties tbody.plusProperties tr').live('mouseenter mouseleave', function(event) {
         event.preventDefault();
         // only if there is no edit form there and the edit control is not already there
         var target = $(this).find('td:last');
         if ($(this).find('td form').length == 0 && $(this).find('div.property-controls').length == 0) {
 
             var option_id = target.attr('data-option_id')
-            var property_type = ($(this).find('td:first div.basic').length == 0) ? 'base' : 'basic' ;
+            var property_type = $(this).find('td:first').attr('data-property_type');
             var controls = App.propertyControls($(this), option_id, property_type);
 
             if (event.type == 'mouseleave') {
@@ -482,9 +502,6 @@ $(document).ready(function(){
         }else{
             target.find('div.controls').remove();
         }
-    });
-    $('div#ProductProperties tbody.plusProperties tr').live('mouseenter mouseleave', function(event) {
-        event.preventDefault();
     });
 
     $('div.property-controls a.edit').live('click', function(event) {
@@ -512,6 +529,14 @@ $(document).ready(function(){
                 // is the change case
                 var name = tr.find('td.name').text();
                 var value = tr.find('td.name span.value').text();
+                var option_id = tr.find('td.name').attr('data-option_id');
+            }else if (property_type == 'plus') {
+                // set the value equal to the name as in basic properties this 
+                // is the change case
+                var name = tr.find('td.name').text();
+                var value = tr.find('td.name span.value').text();
+                var option_id = tr.find('td.name').attr('data-option_id');
+                property_type = tr.find('td.name').attr('data-property_type');
             }
             var controls = App.productPropertyForm(false,property_type,name,value,option_id);
             // replace the current tr html with our control form
@@ -579,9 +604,9 @@ $(document).ready(function(){
             var context = {
                 option_id: option_id,
                 label: (is_new == true) ? "{% trans 'New Property' %}" : "&nbsp;",
-                property_type: property_type,
+                property_type: $.trim(property_type),
                 form_url: self.ProductView.formPostUrl(),
-                value: value,
+                value: $.trim(value),
             };
             // is a base property, one whose name cannot be changed but value cant
             if (property_type == 'base') {
@@ -594,7 +619,7 @@ $(document).ready(function(){
                 context.property_type = {{ object.PROPERTY_TYPE.basic }};
                 App.ProductView.formPostUrl('{% url 'product:basic_properties' slug=object.slug %}');
             }else{
-                var source   = $("script#basic-property-form").html();
+                var source   = $("script#plus-property-form").html();
                 context.property_type = {{ object.PROPERTY_TYPE.plus }};
                 App.ProductView.formPostUrl('{% url 'product:plus_properties' slug=object.slug %}');
             }
@@ -607,7 +632,7 @@ $(document).ready(function(){
             var template = Handlebars.compile(source);
 
             var is_plus = (type == 'plus')? true : false ;
-            return template({is_plus: is_plus, property_type: type, option_id: option_id});
+            return template({is_plus: is_plus, property_type: $.trim(type), option_id: option_id});
         }
 
         self.submitModalWindow = function(KOView, successProcessCallback, baseElement) {
@@ -652,7 +677,7 @@ $(document).ready(function(){
                         $('#editVariationModal').modal('hide');
                     }, 1500);
                     // @TEMPORARY @TODO remove this and update inline
-                    document.location.reload();
+//                    document.location.reload();
                 }
                 submit_button.css('visibility','visible');
                 submit_button.attr('disabled',false);

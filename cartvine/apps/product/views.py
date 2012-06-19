@@ -95,6 +95,7 @@ class ProductPropertiesView(FormView):
 
 class BaseProductPropertiesView(ProductPropertiesView):
     form_class = BaseProductPropertiesForm
+
     def post(self, request, *args, **kwargs):
 
         form = self.get_form(self.get_form_class())
@@ -104,17 +105,17 @@ class BaseProductPropertiesView(ProductPropertiesView):
             response['status'] = 'error'
             response['message'] = str(form.errors)
         else:
-            # try:
-            product = form.save()
-            response['pk'] = product.pk
-            response['object'] = product.data
-            response['object']['pk'] = product.pk
+            try:
+                product = form.save()
+                response['pk'] = product.pk
+                response['object'] = product.data
+                response['object']['pk'] = product.pk
 
-            response['status'] = 'success'
-            response['message'] = unicode(_('Success, We saved your product!'))
-            # except:
-            #     response['status'] = 'error'
-            #     response['message'] = unicode(_('Strange an error occurred; but were not sure what.'))
+                response['status'] = 'success'
+                response['message'] = unicode(_('Success, We saved your product!'))
+            except:
+                response['status'] = 'error'
+                response['message'] = unicode(_('Strange an error occurred; but were not sure what.'))
 
         return HttpResponse(json.dumps(response), content_type='text/json')
 
@@ -124,6 +125,28 @@ class BasicProductPropertiesView(ProductPropertiesView):
 
 class PlusProductPropertiesView(ProductPropertiesView):
     form_class = PlusProductPropertiesForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form(self.get_form_class())
+
+        response = self.get_response_json()
+        if not form.is_valid():
+            response['status'] = 'error'
+            response['message'] = str(form.errors)
+        else:
+            try:
+                product = form.save()
+                response['pk'] = product.pk
+                response['object'] = product.data
+                response['object']['pk'] = product.pk
+
+                response['status'] = 'success'
+                response['message'] = unicode(_('Success, We saved your product!'))
+            except:
+                response['status'] = 'error'
+                response['message'] = unicode(_('Strange an error occurred; but were not sure what.'))
+
+        return HttpResponse(json.dumps(response), content_type='text/json')
 
 
 class ProductVariantView(FormView):

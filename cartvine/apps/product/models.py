@@ -92,8 +92,31 @@ class Product(models.Model):
             basic.append(p)
         return basic
 
+    @property
+    def has_properties_plus(self):
+        return True if 'properties_plus' in self.data else False
+
+    def reset_properties_plus(self):
+        self.data['properties_plus'] = {}
+
+    def get_next_properties_plus_option_id(self):
+        if not self.has_properties_plus:
+            index = 1
+        else:
+            index = len(self.data['properties_plus']) + 1
+        return 'option%d' %(index,)
+
+    def set_properties_plus(self, value, option_id=None):
+        if not self.has_properties_plus:
+            self.reset_properties_plus()
+
+        if option_id in [None,'']:
+            option_id = self.get_next_properties_plus_option_id()
+
+        self.data['properties_plus'][option_id] = value
+
     def properties_plus(self):
-        return []
+        return [] if not self.has_properties_plus else [(key, self.data['properties_plus'][key]) for key in sorted(self.data['properties_plus'].iterkeys())]
 
     def get_images_src(self):
         return self.data['images'] if 'images' in self.data and isinstance(self.data['images'], type([])) else None

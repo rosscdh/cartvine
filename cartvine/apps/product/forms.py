@@ -78,8 +78,20 @@ class BasicProductPropertiesForm(ProductPropertiesForm):
     pass
 
 
-class PlusProductPropertiesForm(ProductPropertiesForm):
-    pass
+class PlusProductPropertiesForm(forms.Form):
+    option_id = forms.CharField(label=_('Plus Attribute OptionId'),required=False)
+    value = forms.CharField(label=_('Plus Attribute value'),required=True)
+
+    def clean_option_id(self):
+        return self.cleaned_data['option_id'].strip()
+
+    def clean_value(self):
+        return self.cleaned_data['value'].strip()
+
+    def save(self):
+        self.initial['product'].set_properties_plus(self.cleaned_data['value'], self.cleaned_data['option_id'])
+        self.initial['product'].save()
+        return self.initial['product']
 
 
 class ProductVariantForm(forms.Form):
