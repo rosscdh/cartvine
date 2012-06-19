@@ -55,6 +55,11 @@ def ProductSearchView(request):
 class ProductPropertiesView(FormView):
     form_class = ProductPropertiesForm
 
+    def get_initial(self):
+        self.initial['product'] = self.object = Product.objects.get(slug=self.kwargs['slug'])
+
+        return self.initial.copy()
+
     def get_response_json(self):
         return {
             'pk': self.object.pk if hasattr(self, 'object') else None,
@@ -64,6 +69,7 @@ class ProductPropertiesView(FormView):
         }
 
     def post(self, request, *args, **kwargs):
+
         form = self.get_form(self.get_form_class())
 
         response = self.get_response_json()
@@ -86,9 +92,31 @@ class ProductPropertiesView(FormView):
 
         return HttpResponse(json.dumps(response), content_type='text/json')
 
+
 class BaseProductPropertiesView(ProductPropertiesView):
     form_class = BaseProductPropertiesForm
+    def post(self, request, *args, **kwargs):
 
+        form = self.get_form(self.get_form_class())
+
+        response = self.get_response_json()
+        if not form.is_valid():
+            response['status'] = 'error'
+            response['message'] = str(form.errors)
+        else:
+            # try:
+            product = form.save()
+            response['pk'] = product.pk
+            response['object'] = product.data
+            response['object']['pk'] = product.pk
+
+            response['status'] = 'success'
+            response['message'] = unicode(_('Success, We saved your product!'))
+            # except:
+            #     response['status'] = 'error'
+            #     response['message'] = unicode(_('Strange an error occurred; but were not sure what.'))
+
+        return HttpResponse(json.dumps(response), content_type='text/json')
 
 class BasicProductPropertiesView(ProductPropertiesView):
     form_class = BasicProductPropertiesForm

@@ -49,7 +49,7 @@ class ProductPropertiesForm(forms.Form):
     name = forms.CharField(label=_('New Property'),required=True)
 
     def clean_name(self):
-        return self.cleaned_data['name']
+        return self.cleaned_data['name'].strip()
 
     def clean(self):
         cleaned_data = super(ProductPropertiesForm, self).clean()
@@ -59,12 +59,25 @@ class BaseProductPropertiesForm(forms.Form):
     value = forms.CharField(label=_('Attribute Name'),required=True)
     name = forms.CharField(label=_('Attribute Value'),required=True)
 
-    def clean(self):
-        cleaned_data = super(BaseProductPropertiesForm, self).clean()
-        return cleaned_data
+    def clean_value(self):
+        return self.cleaned_data['value'].strip()
+
+    def save(self):
+
+        if self.cleaned_data['name'] in self.initial['product']._meta.get_all_field_names():
+            setattr(self.initial['product'], self.cleaned_data['name'], self.cleaned_data['value'])
+
+        if self.cleaned_data['name'] in self.initial['product'].data:
+            self.initial['product'].data[self.cleaned_data['name']] = self.cleaned_data['value']
+
+        self.initial['product'].save()
+        return self.initial['product']
+
 
 class BasicProductPropertiesForm(ProductPropertiesForm):
     pass
+
+
 class PlusProductPropertiesForm(ProductPropertiesForm):
     pass
 
