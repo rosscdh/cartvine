@@ -223,6 +223,7 @@ color: #da4f49;
     <input type="text" data-bind="" name="name" id="" value="{{value}}"/>
     <div class="pull-right">
         <button type="add" id="{{#if is_new}}saveNewProperty{{else}}saveProperty{{/if}}" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
+        <a href="#" onclick="App.resetPreviousEditTr();" class="delete"><i class="icon-remove"></i></a>
     </div>
 </form>
 </td>
@@ -236,6 +237,7 @@ color: #da4f49;
     <input type="text" data-bind="" name="name" id="" value="{{value}}"/>
     <div class="pull-right">
         <button type="add" id="{{#if is_new}}saveNewProperty{{else}}saveProperty{{/if}}" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
+        <a href="#" onclick="App.resetPreviousEditTr();" class="delete"><i class="icon-remove"></i></a>
     </div>
 </form>
 </td>
