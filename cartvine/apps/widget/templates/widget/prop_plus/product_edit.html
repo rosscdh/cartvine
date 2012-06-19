@@ -62,9 +62,9 @@
                                 <td colspan="2" class="name modal-footer">
                                     <div class="form-message" data-bind="html: formSubmitMessage"></div>
                                     <form id="addPlusProperty" class="" action="" method="POST">{% csrf_token %}
-                                        <input type="hidden" name="property_type" id="" value="2"/>
+                                        <input type="hidden" name="property_type" value="2"/>
                                         <label>{% trans 'New Property' %}</label>
-                                        <input type="text" data-bind="" name="name" id="" value=""/>
+                                        <input type="text" data-bind="" name="name" value=""/>
                                         <div class="pull-right">
                                             <button type="add" id="saveNewProperty" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
                                             <a onclick="App.ProductView.hideAddForm();" href="" class="delete btn btn-small btn"><i class="icon-remove"></i></a>
@@ -220,12 +220,13 @@ color: #da4f49;
 
     <div class="form-message" data-bind="html: App.ProductView.formSubmitMessage"></div>
 
-    <form id="" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
-        <input type="hidden" name="property_type" id="" value="{{property_type}}"/>
+    <form id="editBaseProperty" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
+        <input type="hidden" name="property_type" value="{{property_type}}"/>
+        <input type="hidden" name="name" value="{{option_id}}"/>
         <label>&nbsp;</label>
-        <input type="text" data-bind="" name="name" id="" value="{{value}}"/>
+        <input type="text" name="value" value="{{value}}"/>
         <div class="modal-footer pull-right">
-            <button type="add" id="{{#if is_new}}saveNewProperty{{else}}saveProperty{{/if}}" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
+            <button type="add" id="" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
             <a href="#" onclick="App.resetPreviousEditTr();" class="delete"><i class="icon-remove"></i></a>
         </div>
     </form>
@@ -237,12 +238,13 @@ color: #da4f49;
 
     <div class="form-message" data-bind="html: App.ProductView.formSubmitMessage"></div>
 
-    <form id="" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
-        <input type="hidden" name="property_type" id="" value="{{property_type}}"/>
+    <form id="editBasicProperty" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
+        <input type="hidden" name="property_type" value="{{property_type}}"/>
+        <input type="hidden" name="name" value="{{option_id}}"/>
         <label>{{label}}</label>
-        <input type="text" data-bind="" name="name" id="" value="{{value}}"/>
+        <input type="text" data-bind="" name="value" value="{{value}}"/>
         <div class="modal-footer pull-right">
-            <button type="add" id="{{#if is_new}}saveNewProperty{{else}}saveProperty{{/if}}" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
+            <button type="add" id="" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
             <a href="#" onclick="App.resetPreviousEditTr();" class="delete"><i class="icon-remove"></i></a>
         </div>
     </form>
@@ -268,7 +270,7 @@ $(document).ready(function(){
         self.formSubmitMessage = ko.observable('');
         self.formPostUrl = ko.observable('');
 
-        self.theFormName = 'form#addPlusProperty';
+        self.theFormName = ko.observable('form#addPlusProperty');
         self.showAddForm = ko.observable(false);
         self.selectedProperty = ko.observable();
         self.basicProperties = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
@@ -455,6 +457,10 @@ $(document).ready(function(){
 
     $('form.property-form button.submit-btn').live('click', function(event) {
         event.preventDefault();
+
+        var formName = 'form#' + $(this).closest('form').attr('id');
+        App.ProductView.theFormName(formName);
+
         App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $(this).closest('td.form'));
     });
 
@@ -574,19 +580,22 @@ $(document).ready(function(){
                 option_id: option_id,
                 label: (is_new == true) ? "{% trans 'New Property' %}" : "&nbsp;",
                 property_type: property_type,
-                form_url: "",
+                form_url: self.ProductView.formPostUrl(),
                 value: value,
             };
             // is a base property, one whose name cannot be changed but value cant
             if (property_type == 'base') {
                 var source   = $("script#base-property-form").html();
                 context.label = name;// set the label to the current name
+                context.property_type = {{ object.PROPERTY_TYPE.base }};
                 App.ProductView.formPostUrl('{% url 'product:base_properties' slug=object.slug %}');
             }else if (property_type == 'basic') {
                 var source   = $("script#basic-property-form").html();
+                context.property_type = {{ object.PROPERTY_TYPE.basic }};
                 App.ProductView.formPostUrl('{% url 'product:basic_properties' slug=object.slug %}');
             }else{
                 var source   = $("script#basic-property-form").html();
+                context.property_type = {{ object.PROPERTY_TYPE.plus }};
                 App.ProductView.formPostUrl('{% url 'product:plus_properties' slug=object.slug %}');
             }
             var template = Handlebars.compile(source);
@@ -609,11 +618,11 @@ $(document).ready(function(){
 
             submit_button.css('visibility','hidden');
             submit_button.attr('disabled',true);
-
+            console.log(KOView.theFormName())
             $.ajax({
               type: 'POST',
               url: KOView.formPostUrl(),
-              data: $(KOView.theFormName).serialize(),
+              data: $(KOView.theFormName()).serialize(),
               dataType: 'json'
             })
             .success(function(data, textStatus, jqXHR) { 

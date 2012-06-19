@@ -43,10 +43,7 @@ class ProductVariantForm(bootstrap.BootstrapForm):
 
 
 class ProductPropertiesForm(forms.Form):
-    PROPERTY_TYPES = get_namedtuple_choices('PROPERTY_TYPES', (
-        (1, 'basic', 'Basic'),
-        (2, 'plus', 'PropertiesPlus'),
-    ))
+    PROPERTY_TYPES = Product.PROPERTY_TYPE
 
     property_type = forms.ChoiceField(label=_('Type of Property'),choices=PROPERTY_TYPES.get_choices(),required=True)
     name = forms.CharField(label=_('New Property'),required=True)
@@ -58,12 +55,19 @@ class ProductPropertiesForm(forms.Form):
         cleaned_data = super(ProductPropertiesForm, self).clean()
         return cleaned_data
 
-class BaseProductPropertiesForm(ProductPropertiesForm):
-    pass
+class BaseProductPropertiesForm(forms.Form):
+    value = forms.CharField(label=_('Attribute Name'),required=True)
+    name = forms.CharField(label=_('Attribute Value'),required=True)
+
+    def clean(self):
+        cleaned_data = super(BaseProductPropertiesForm, self).clean()
+        return cleaned_data
+
 class BasicProductPropertiesForm(ProductPropertiesForm):
     pass
 class PlusProductPropertiesForm(ProductPropertiesForm):
     pass
+
 
 class ProductVariantForm(forms.Form):
     sku = forms.CharField(initial='',required=True)
