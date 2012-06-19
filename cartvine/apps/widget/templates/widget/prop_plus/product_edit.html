@@ -435,6 +435,8 @@ $(document).ready(function(){
     // Product Property helpers
     $('div#ProductProperties button#addProperty').live('click', function(event) {
         event.preventDefault();
+        // restore the previous tr html
+        App.resetPreviousEditTr();
         App.ProductView.showAddForm(true);
     });
 
@@ -475,25 +477,30 @@ $(document).ready(function(){
         var tr = $(this).closest('tr');
 
         if (tr.find('td.name span.value').text() != undefined) {
-            // restore teh previous tr html
-            if ($('td#edit-properties-form').length > 0) {
-                $('td#edit-properties-form').closest('tr').html(App.currentPropertyTrHtml);
-            }
+            // restore the previous tr html
+            App.resetPreviousEditTr();
+            App.resetProductFormTr();
+
             // set the current tr html to this ones html value
             tr.find('div.property-controls').remove();
             App.currentPropertyTrHtml = tr.html();
+
             if (property_type == 'base') {
+                // take the name/value pair
                 var name = tr.find('td.name').text();
                 var value = tr.find('td.value').text();
             }else{
+                // set the value equal to the name as in basic properties this 
+                // is the change case
                 var name = tr.find('td.name').text();
                 var value = tr.find('td.name span.value').text();
             }
-            var controls = App.propertyForm(false,property_type,name,value,option_id);
+            var controls = App.productPropertyForm(false,property_type,name,value,option_id);
             // replace the current tr html with our control form
             tr.html(controls);
         }
     });
+
     // Variant Helpers
     $('#editVariationModal a.submit-btn:last').live('click', function(event) {
         event.preventDefault();
@@ -540,8 +547,17 @@ $(document).ready(function(){
 
         self.currentPropertyTrHtml = null;
 
-        self.propertyForm = function(is_new, property_type, name, value, option_id) {
+        self.resetPreviousEditTr = function() {
+            if ($('td#edit-properties-form').length > 0) {
+                $('td#edit-properties-form').closest('tr').html(App.currentPropertyTrHtml);
+            }
+        }
 
+        self.resetProductFormTr = function() {
+            self.ProductView.hideAddForm(false);
+        }
+
+        self.productPropertyForm = function(is_new, property_type, name, value, option_id) {
             var context = {
                 option_id: option_id,
                 label: (is_new == true) ? "{% trans 'New Property' %}" : "&nbsp;",
@@ -549,10 +565,10 @@ $(document).ready(function(){
                 form_url: "",
                 value: value,
             };
-
+            // is a base property, one whose name cannot be changed but value cant
             if (property_type == 'base') {
                 var source   = $("script#base-property-form").html();
-                context.label = name;
+                context.label = name;// set the label to the current name
             }else{
                 var source   = $("script#basic-property-form").html();
             }
