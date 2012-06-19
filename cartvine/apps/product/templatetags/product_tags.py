@@ -7,6 +7,9 @@ from urlparse import urlparse
 from cartvine.utils import get_namedtuple_choices
 from cartvine.apps.product.models import Product
 
+import re
+
+
 register = template.Library()
 
 SHOP_IMAGE_SIZE = get_namedtuple_choices('SHOP_IMAGE_SIZE', (
@@ -37,7 +40,22 @@ def image_resize(src, size=None):
     return '%s://%s%s?%s%s' %(image.scheme, image.netloc, path, image.params, e)
 image_resize.is_safe = True
 
+
+@register.filter
+def option_offset(option):
+    non_decimal = re.compile(r'[^\d]+')
+    num = non_decimal.sub('', option)
+    return 'option%d' %(int(num) + Product.OPTION_OFFSET)
+option_offset.is_safe = True
+
 @register.filter
 def option_color(option_id):
     return '%s' % (Product.OPTION_COLORS.get_value_by_name(option_id),)
 option_color.is_safe = True
+
+
+@register.filter
+def color_plus(option_id):
+    return '%s' %('none',)    
+color_plus.is_safe = True
+

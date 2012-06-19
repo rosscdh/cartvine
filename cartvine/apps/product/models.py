@@ -1,13 +1,28 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 
+import numpy as np
+import colorsys
+
 from jsonfield import JSONField
 from cartvine.utils import get_namedtuple_choices
 from cartvine.apps.shop.models import Shop
 from managers import ProductManager
 
 
+def _get_colors(num_colors):
+    colors=[]
+    if num_colors > 0:
+        for i in np.arange(0., 360., 360. / num_colors):
+            hue = i/360.
+            lightness = (50 + np.random.rand() * 10)/100.
+            saturation = (90 + np.random.rand() * 10)/100.
+            colors.append(colorsys.hls_to_rgb(hue, lightness, saturation))
+    return colors
+
+
 class Product(models.Model):
+    OPTION_OFFSET = 3 # offset fromwhich to start the plus property counter
     PROPERTY_TYPE = get_namedtuple_choices('PROPERTY_TYPE', (
         (0, 'base', 'Base Attributes'),
         (1, 'basic', 'Basic Properties'),
@@ -117,6 +132,16 @@ class Product(models.Model):
 
     def properties_plus(self):
         return [] if not self.has_properties_plus else [(key, self.data['properties_plus'][key]) for key in sorted(self.data['properties_plus'].iterkeys())]
+
+    def properties_plus_colors(self):
+        props = self.properties_plus()
+        colors = _get_colors(len(props))
+        c = 0
+        for k,v in props:
+            props[k] = colors[c]
+            c = c+1
+        return props
+
 
     def get_images_src(self):
         return self.data['images'] if 'images' in self.data and isinstance(self.data['images'], type([])) else None

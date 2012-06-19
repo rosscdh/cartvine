@@ -55,7 +55,7 @@
                         </tbody>
                         <tbody class="plusProperties" data-bind="foreach: plusProperties">
                             <tr>
-                                <td class="name" data-property_type="plus"  data-bind="attr: {'data-option_id': name}">
+                                <td class="name" data-property_type="plus"  data-bind="attr: {'data-option_id': internal_name}">
                                     <span class="value" data-bind="html: value"></span>
                                     <div class="pull-right"><span class="tiny" style="color:{{ property.option_id|option_color }};" data-bind="html: name"></span></div>
                                 </td>
@@ -293,7 +293,7 @@ $(document).ready(function(){
         self.showAddForm = ko.observable(false);
         self.selectedProperty = ko.observable();
         self.basicProperties = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('basic', '{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
-        self.plusProperties = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
+        self.plusProperties = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o }}','{{ o|option_offset }}','{{ v }}'),{% endfor %}]);
 
         /**
         * method to process the form postback
