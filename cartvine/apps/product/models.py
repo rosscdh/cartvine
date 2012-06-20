@@ -3,6 +3,7 @@ from django.template.defaultfilters import slugify
 
 import numpy as np
 import colorsys
+import webcolors
 
 from jsonfield import JSONField
 from cartvine.utils import get_namedtuple_choices
@@ -13,11 +14,14 @@ from managers import ProductManager
 def _get_colors(num_colors):
     colors=[]
     if num_colors > 0:
+        increment = 12
         for i in np.arange(0., 360., 360. / num_colors):
             hue = i/360.
-            lightness = (50 + np.random.rand() * 10)/100.
-            saturation = (90 + np.random.rand() * 10)/100.
-            colors.append(colorsys.hls_to_rgb(hue, lightness, saturation))
+            lightness = (50 + increment * 28)/100.
+            saturation = (90 + increment * 28)/100.
+            color_rgb = colorsys.hls_to_rgb(hue, lightness, saturation)
+            color_hex = webcolors.rgb_to_hex(color_rgb)
+            colors.append({'rgb': color_rgb, 'hex': color_hex})
     return colors
 
 
