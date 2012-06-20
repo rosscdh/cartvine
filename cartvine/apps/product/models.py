@@ -108,6 +108,23 @@ class Product(models.Model):
         return basic
 
     @property
+    def has_basic_properties(self):
+        return True if 'properties_basic' in self.data else False
+
+    def reset_basic_properties(self):
+        self.data['properties_basic'] = {}
+
+    def set_basic_property(self, value, option_id):
+        if not self.has_basic_properties:
+            self.reset_basic_properties()
+
+        if value != self.data['properties_basic']:
+            # is a change so update variants
+            pass
+
+        self.data['properties_basic'][option_id] = value
+
+    @property
     def has_properties_plus(self):
         return True if 'properties_plus' in self.data else False
 
@@ -124,6 +141,10 @@ class Product(models.Model):
     def set_properties_plus(self, value, option_id=None):
         if not self.has_properties_plus:
             self.reset_properties_plus()
+        else:
+            if value != self.data['properties_plus'][option_id]:
+                # is a change, so update variants
+                pass
 
         if option_id in [None,'']:
             option_id = self.get_next_properties_plus_option_id()

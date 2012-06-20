@@ -101,6 +101,7 @@ class BaseProductPropertiesView(ProductPropertiesView):
         form = self.get_form(self.get_form_class())
 
         response = self.get_response_json()
+
         if not form.is_valid():
             response['status'] = 'error'
             response['message'] = str(form.errors)
@@ -112,15 +113,38 @@ class BaseProductPropertiesView(ProductPropertiesView):
                 response['object']['pk'] = product.pk
 
                 response['status'] = 'success'
-                response['message'] = unicode(_('Success, We saved your product!'))
+                response['message'] = unicode(_('Success, Product Property Updated'))
             except:
                 response['status'] = 'error'
                 response['message'] = unicode(_('Strange an error occurred; but were not sure what.'))
 
         return HttpResponse(json.dumps(response), content_type='text/json')
 
+
 class BasicProductPropertiesView(ProductPropertiesView):
     form_class = BasicProductPropertiesForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form(self.get_form_class())
+
+        response = self.get_response_json()
+        if not form.is_valid():
+            response['status'] = 'error'
+            response['message'] = str(form.errors)
+        else:
+            # try:
+            product = form.save()
+            response['pk'] = product.pk
+            response['object'] = product.data
+            response['object']['pk'] = product.pk
+
+            response['status'] = 'success'
+            response['message'] = unicode(_('Success, Product Property Updated'))
+            # except:
+            #     response['status'] = 'error'
+            #     response['message'] = unicode(_('Strange an error occurred; but were not sure what.'))
+
+        return HttpResponse(json.dumps(response), content_type='text/json')
 
 
 class PlusProductPropertiesView(ProductPropertiesView):
@@ -141,7 +165,7 @@ class PlusProductPropertiesView(ProductPropertiesView):
                 response['object']['pk'] = product.pk
 
                 response['status'] = 'success'
-                response['message'] = unicode(_('Success, We saved your product!'))
+                response['message'] = unicode(_('Success, Product Property Updated'))
             except:
                 response['status'] = 'error'
                 response['message'] = unicode(_('Strange an error occurred; but were not sure what.'))
@@ -190,7 +214,7 @@ class ProductVariantView(FormView):
                 response['object']['basic_options'] = variant.basic_options()
 
                 response['status'] = 'success'
-                response['message'] = unicode(_('Success, We saved your variant!'))
+                response['message'] = unicode(_('Success, Variant Updated'))
             except:
                 response['status'] = 'error'
                 response['message'] = unicode(_('Strange an error occurred; but were not sure what.'))

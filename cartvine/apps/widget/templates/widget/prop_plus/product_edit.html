@@ -222,9 +222,7 @@ color: #da4f49;
     <label>{{label}}</label>
 </td>
 <td class="form">
-
     <div class="form-message" data-bind="html: App.ProductView.formSubmitMessage"></div>
-
     <form id="editBaseProperty" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
         <input type="hidden" name="property_type" value="{{property_type}}"/>
         <input type="hidden" name="name" value="{{option_id}}"/>
@@ -243,7 +241,7 @@ color: #da4f49;
     <div class="form-message" data-bind="html: App.ProductView.formSubmitMessage"></div>
     <form id="editBasicProperty" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
         <input type="hidden" name="property_type" value="{{property_type}}"/>
-        <input type="hidden" name="name" value="{{option_id}}"/>
+        <input type="hidden" name="option_id" value="{{option_id}}"/>
         <label>{{label}}</label>
         <input type="text" data-bind="" name="value" value="{{value}}"/>
         <div class="modal-footer pull-right">

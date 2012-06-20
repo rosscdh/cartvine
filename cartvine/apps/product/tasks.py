@@ -56,6 +56,8 @@ def sync_products(shop):
             p.data = safe_attribs
             p.name = product.title
             p.slug = slugify(product.title)
+            if not p.has_basic_properties:
+                p.reset_basic_properties()
             p.save()
 
             # Do variants
