@@ -40,7 +40,7 @@
                                 <td class="value" data-option_id="vendor"><span>{{ object.data.vendor }}</span></td>
                             </tr>
                         </tbody>
-                        <tbody class="basicProperties">
+<!--                         <tbody class="basicProperties">
                             {% for property in object.basic_props %}
                             <tr data-bind="event: {mouseover: $parent.showControls, mouseout: $parent.hideControls}">
                                 <td class="name" data-property_type="basic" data-option_id="{{ property.option_id }}">
@@ -52,6 +52,15 @@
                                 </td>
                             </tr>
                             {% endfor %}
+                        </tbody> -->
+                        <tbody class="basicProperties" data-bind="foreach: basicProperties">
+                            <tr data-bind="event: {mouseover: $parent.showControls, mouseout: $parent.hideControls}">
+                                <td class="name" data-property_type="basic"  data-bind="attr: {'data-option_id': internal_name}">
+                                    <span class="value" data-bind="html: value"></span>
+                                    <div class="pull-right" data-bind="style: { color: App.getColorForOption(internal_name) }"><span class="tiny" data-bind="html: name"></span></div>
+                                </td>
+                                <td class="value" data-option_id="{{ property.option_id }}">&nbsp;</td>
+                            </tr>
                         </tbody>
                         <tbody class="plusProperties" data-bind="foreach: plusProperties">
                             <tr>
@@ -290,7 +299,7 @@ $(document).ready(function(){
         self.theFormName = ko.observable('form#addPlusProperty');
         self.showAddForm = ko.observable(false);
         self.selectedProperty = ko.observable();
-        self.basicProperties = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('basic', '{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
+        self.basicProperties = ko.observableArray([{% for o,v in object.get_data_options %}new ProductOption('basic', '{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
         self.plusProperties = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o }}','{{ o|option_offset }}','{{ v }}'),{% endfor %}]);
 
         /**

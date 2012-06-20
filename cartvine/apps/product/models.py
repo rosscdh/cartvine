@@ -96,13 +96,13 @@ class Product(models.Model):
         if options is None:
             options = {}
             for option_id,o in self.BASIC_OPTIONS.get_choices():
-                options[option_id] = {'name':'', 'value':''}
+                options[option_id] = None
 
         for i,o in enumerate(self.data['options']):
             option_id = 'option%s'%(i+1,)
-            options[option_id]['name'] = o['name']
-            options[option_id]['value'] = set(options[option_id]['value'])
-        return options
+            options[option_id] = o['name']
+
+        return [(key, options[key]) for key in sorted(options.iterkeys())]
 
     def basic_props(self):
         """ assemble properties and lis of variant options uniquified ordered by name.. option1 option2... """
