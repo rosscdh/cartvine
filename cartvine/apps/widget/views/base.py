@@ -113,6 +113,7 @@ class WidgetsForShopView(DetailView):
         default_scripts = [
             # combined js files using yui compressor
             '%semberjs/js/ember-complete.js'%(static_url),
+            '%shandlebars.js'%(static_url),
             # '%semberjs/js/libs/ember-0.9.8.1.min.js'%(static_url),
             # '%semberjs/js/libs/ember-routemanager.min.js'%(static_url),
             # '%semberjs/js/libs/ember-data-latest.js'%(static_url),

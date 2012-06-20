@@ -1,29 +1,28 @@
 {% load url from future %}
-//this.widget_prop_plus = function() {
 this.{{ widget.widget_js_name }} = function() {
-    var _this = this;
+    var self = this;
 
-    this.App.productsView = Em.View.create({
-      template: Em.Handlebars.compile("<h1>PROJECTS</h1><p>State: {{this.App.routeManager.currentState.path}}</p>")
-    });
-    this.App.cartView = Em.View.create({
-      template: Em.Handlebars.compile("<h1>CART VIEW</h1><p>State: {{this.App.routeManager.currentState.path}}</p>")
-    });
+    self.variationControls = function() {
+        var source   = $("script#variation-controls").html();
+        var template = Handlebars.compile(source);
+        var context = {
+            'properties_list': ['a','b','c'],
+            'variations_list': ['1','2','3']
+        }
+        return template(context);
+    };
+    
+    self.productProperties = function() {
+        var source   = $("script#product-properties").html();
+        var template = Handlebars.compile(source);
+        var context = {
+            'properties_list': [
+                {'name': 'Name goes here', 'value': 'Value goes here'},
+            ],
+        }
+        return template(context);
+    };
 
-    this.App.routeManager = Em.RouteManager.create({
-        products: Em.ViewState.create({
-            route: 'products/:slug',
-            enter: function(stateManager, transition) {
-                var params = stateManager.get('params');
-                var slug = params.slug
-                console.log('Entered Ember products view and viewing prod: ' + slug)
-            }
-        }),
-        cart: Em.ViewState.create({
-            route: 'cart',
-            enter: function(stateManager, transition) {
-                console.log('Entered Ember cart view')
-            }
-        })
-    });
+    this.injectView(self.variationControls(), '{{ widget.widget_js_name }}', '{{ config.variations.target_id }}');
+    this.injectView(self.productProperties(), '{{ widget.widget_js_name }}', '{{ config.properties.target_id }}');
 },

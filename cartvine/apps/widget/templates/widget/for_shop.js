@@ -1,6 +1,9 @@
-//(function($) {
+$(document).ready(function() {
+
     // CV object
     var CartVine = function() {
+        var self = this;
+
         this.shop = "{{ object.name }}",
         this.shop_url = "{{ object.url }}",
         this.cartvine_shop_id = "{{ object.pk }}",
@@ -10,30 +13,35 @@
         this.App = void 0,
         this.DS = void 0,
 
+        // Output of combined widgets
         {{ combined_widgets|safe }}
+        // /End Output of combined widgets
 
         this.injectView = function(view, widget_name, target) {
         	target_ob = $(target);
-    	    if (target_ob.length <= 0) {
+    	    if (target_ob.length <= 0 || target == 'body') {
     	        // view insert target not found
     	        $('body').append('<p><strong>Please Note:</strong> You have specified ('+ target +') to insert this the "'+ widget_name +'" widget into, but it does not exist.</p>')
-    			view.appendTo('body');
+    			$('body').append(view)
     	    }else{
-    			view.appendTo(target_ob);
+    			target_ob.append(view);
     	    }
         },
+
         this.init = function () {
-        	var _this = this;
+        	var self = this;
 
     	    // Install Templates
     	    $.each(this.templates, function(index) {
-    	        $(_this.templates[index]).appendTo('head');
+    	        $(self.templates[index]).appendTo('head');
     	    });
 
         	// Install Scripts
         	// @TODO combine this
+        	var num_widgets = this.widgets.length;
+        	var loaded_widgets = 0;
         	$.each(this.widgets, function(index) {
-        		var url = _this.widgets[index];
+        		var url = self.widgets[index];
 
         		$.ajaxSetup({ cache: true });
 
@@ -42,42 +50,51 @@
     	            dataType: 'script',
     	            cache: true,
     	            complete: function(xhr) { 
-    	                if (typeof Em != 'undefined') {
-    	                    // Create the EmberJs Application which is shared between widgets
-    	                    // @TODO create object with event handlers to initialize CartVine objects
-    	                    _this.App = Em.Application.create();
-    	                };
-    	                if (typeof _this.App != 'undefined' && typeof DS != 'undefined' && typeof DS.DjangoTastypieAdapter != 'undefined') {
-    	                	_this.DS = DS;
-    	                    _this.App.store = DS.Store.create({
-    	                      revision: 4,
-    	                      adapter: DS.DjangoTastypieAdapter.create({
-    	                        serverDomain: url_scheme + "{{ request.get_host }}/",
-    	                        tastypieApiUrl: "api/v1/"
-    	                      })
-    	                    });
-    	                    _this.loadWidgets();
-    	                };
+    	                loaded_widgets++;
+
+                        // if (typeof Em != 'undefined') {
+                        //     // Create the EmberJs Application which is shared between widgets
+                        //     // @TODO create object with event handlers to initialize CartVine objects
+                        //     self.App = Em.Application.create();
+                        // };
+                        // if (typeof self.App != 'undefined' && typeof DS != 'undefined' && typeof DS.DjangoTastypieAdapter != 'undefined') {
+                        //  self.DS = DS;
+                        //     self.App.store = DS.Store.create({
+                        //       revision: 4,
+                        //       adapter: DS.DjangoTastypieAdapter.create({
+                        //         serverDomain: url_scheme + "{{ request.get_host }}/",
+                        //         tastypieApiUrl: "api/v1/"
+                        //       })
+                        //     });
+                        // };
+
+            	        if (loaded_widgets == num_widgets) {
+            	            self.loadWidgets();
+            	        }
+
     	                if (xhr.status == 304) return;
     	            },
     	            error: function () {}
     	        });
         	});
     		// fix local vars
-    		this.App = _this.App;
-    		this.DS = _this.DS;
+    		this.App = self.App;
+    		this.DS = self.DS;
         },
+
         this.loadWidgets = function() {
     		// complete init @TODO find a way to make this dynamic
-    		{% spaceless %}{% for w in widget_list_init_names %}
-    		this.{{ w }}();
+    		{% spaceless %}{% for widget in widget_list_init_names %}
+    		this.{{ widget }}();
     		{% endfor %}{% endspaceless %}
+    		console.log('loadWidgets')
             // fire the route manager event to bind the current page with the established routes (ember lame)
-            this.App.routeManager.set('location', window.location.pathname);
+            // this.App.routeManager.set('location', window.location.pathname);
         }
     };
 
     // cv instance
     var cartvine = new CartVine();
     cartvine.init();
-//})(jQuery);
+
+});

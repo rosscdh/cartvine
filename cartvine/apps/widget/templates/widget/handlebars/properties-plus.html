@@ -1,0 +1,27 @@
+{% load templatetag_handlebars %}{% load url from future %}{% spaceless %}
+{% tplhandlebars "variation-controls" %}
+<ul>
+{{#each properties_list}}
+<li>
+    <select id="" name="">
+        {{#each variations_list}}
+        <option value="">Here</option>
+        {{/each}}
+    </select>
+</li>
+{{/each}}
+<ul>
+{% endtplhandlebars %}
+
+{% tplhandlebars "product-properties" %}
+<table border="1">
+{{#each properties_list}}
+<tr>
+    <td class="cv-pp-name">name</td>
+    <td class="cv-pp-value">value</td>
+</tr>
+{{/each}}
+<table>
+{% endtplhandlebars %}
+
+{% endspaceless %}

@@ -1,17 +1,26 @@
 <html>
 <head>
-      <script type="text/javascript">
-        var Shopify = Shopify || {};
-        Shopify.shop = "price-turcotte-and-gleichner1525.myshopify.com";
-        Shopify.theme = {"name":"radiance","id":3020382};
-    </script>    
+<script type="text/javascript">
+var Shopify = Shopify || {};
+Shopify.shop = "price-turcotte-and-gleichner1525.myshopify.com";
+Shopify.theme = {"name":"radiance","id":3020382};
+
+/** EXAMPLE CONFIG
+{
+    "variations": {
+        "target_id": "div#variations-list"
+    },
+    "properties": {
+        "target_id": "div#product-properties"
+    }
+}
+*/
+</script>    
 </head>
 <body>
-    <div id="cartvine-fb-auth"></div>
+    <div id="variations-list"></div>
+    <div id="product-properties"></div>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
-    <!-- <script src="loader.js"></script> -->
-    
     <script src="http://localhost:8000/widget/cartvine-loader.js"></script>
-    <!-- <script src="http://shopify.cartvine.com/widget/cartvine-loader.js"></script> -->
 </body>
 </html>
