@@ -1,7 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 
-import numpy as np
 import colorsys
 import webcolors
 
@@ -11,17 +10,22 @@ from cartvine.apps.shop.models import Shop
 from managers import ProductManager
 
 
-def _get_colors(num_colors):
+def get_color_range(num_colors):
     colors=[]
     if num_colors > 0:
-        increment = 12
-        for i in np.arange(0., 360., 360. / num_colors):
-            hue = i/360.
-            lightness = (50 + increment * 28)/100.
-            saturation = (90 + increment * 28)/100.
+        start = 0
+        stop = 360
+        stop_d = 360.
+        step = (stop/num_colors)
+        increment = 120
+        for i in xrange(start, stop, step):
+            hue = i/stop_d
+            lightness = (50 + increment * 10)/100.
+            saturation = (90 + increment * 10)/100.
             color_rgb = colorsys.hls_to_rgb(hue, lightness, saturation)
             color_hex = webcolors.rgb_to_hex(color_rgb)
-            colors.append({'rgb': color_rgb, 'hex': color_hex})
+            colors.append(color_hex)
+
     return colors
 
 
@@ -146,9 +150,10 @@ class Product(models.Model):
         if not self.has_properties_plus:
             self.reset_properties_plus()
         else:
-            if value != self.data['properties_plus'][option_id]:
-                # is a change, so update variants
-                pass
+            if option_id not in [None,'']:
+                if value != self.data['properties_plus'][option_id]:
+                    # is a change, so update variants
+                    pass
 
         if option_id in [None,'']:
             option_id = self.get_next_properties_plus_option_id()
@@ -160,12 +165,15 @@ class Product(models.Model):
 
     def properties_plus_colors(self):
         props = self.properties_plus()
-        colors = _get_colors(len(props))
-        c = 0
-        for k,v in props:
-            props[k] = colors[c]
-            c = c+1
-        return props
+        num_props = len(props)
+        colors = {}
+        if num_props > 0:
+            crange = get_color_range(num_props)
+            c = 0
+            for k,v in props:
+                colors[k] = crange[c]
+                c = c+1
+        return colors
 
 
     def get_images_src(self):

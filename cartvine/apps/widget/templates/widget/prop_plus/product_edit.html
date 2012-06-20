@@ -57,7 +57,7 @@
                             <tr>
                                 <td class="name" data-property_type="plus"  data-bind="attr: {'data-option_id': internal_name}">
                                     <span class="value" data-bind="html: value"></span>
-                                    <div class="pull-right"><span class="tiny" style="color:{{ property.option_id|option_color }};" data-bind="html: name"></span></div>
+                                    <div class="pull-right" data-bind="style: { color: App.getColorForOption(internal_name) }"><span class="tiny" data-bind="html: name"></span></div>
                                 </td>
                                 <td class="value" data-option_id="{{ property.option_id }}">&nbsp;</td>
                             </tr>
@@ -588,7 +588,11 @@ $(document).ready(function(){
 
         self.currentPropertyTrHtml = null;
 
-        self.optionColors = { {% for c in object.properties_plus_colors %}"{{ c }}":"{{ c }}",{% endfor %} };
+        self.optionColors = { {% for o,c in object.properties_plus_colors.iteritems %}"{{ o }}":"{{ c }}",{% endfor %} };
+
+        self.getColorForOption = function(option_id) {
+            return self.optionColors[option_id];
+        }
 
         self.resetPreviousEditTr = function() {
             if ($('td#edit-properties-form').length > 0) {
