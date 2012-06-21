@@ -79,14 +79,14 @@ var CartVine = function() {
                         });
                     };
 
-        	        if (loaded_widgets == num_widgets) {
-        	            self.loadWidgets();
-        	        }
-
 	                if (xhr.status == 304) return;
 	            },
 	            error: function () {}
 	        });
+            if (loaded_widgets == num_widgets) {
+                console.log('Load Widgets')
+                self.loadWidgets();
+            }
     	});
 		// fix local vars
 		this.App = self.App;

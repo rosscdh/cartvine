@@ -81,7 +81,7 @@ class Command(BaseCommand):
       os.system(cmd)
 
     def append_file(self, source_file):
-      cmd = '/bin/cat %s >> %s' % (source_file, self.target)
+      cmd = '/bin/cat %s >> %s' % (source_file, self.tmp_target)
       #cmd = '/bin/cat %s' % (source_file,)
       os.system(cmd)
 
