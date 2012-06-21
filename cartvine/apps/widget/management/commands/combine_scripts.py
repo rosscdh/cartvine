@@ -33,6 +33,7 @@ class Command(BaseCommand):
     )
 
     target = None
+    tmp_target = None
     
     def handle(self, **options):
         """ Command uses YUI compressor to combine various js/css files 
@@ -40,9 +41,9 @@ class Command(BaseCommand):
         """
         no_output = options.get('no_output')
         target_file = options.get('target_file')
-        self.target = '%s/%s' % (settings.SITE_ROOT, target_file)
 
-        self.cleanup()
+        self.target = '%s/%s' % (settings.SITE_ROOT, target_file)
+        self.tmp_target = '%s.tmp' %(self.target,)
 
         for f in PRECOMPRESSED_TARGET_FILES:
           if os.path.exists(f):
@@ -56,13 +57,24 @@ class Command(BaseCommand):
           else:
             raise Exception('File to Compress does not exist. The file specified (%s) Does not exist'%(f,))
 
+        self.finalize()
+
         if not no_output:
           self.output()
 
 
-    def cleanup(self):
-      if os.path.exists(self.target):
+    def finalize(self):
+      # remove "old" original target file
+      if os.path.exists(self.tmp_target):
         os.remove(self.target)
+
+      # output the tmp file to the primary file
+      cmd = '/bin/cat %s > %s' % (self.tmp_target, self.target)
+      os.system(cmd)
+
+      # delete tmp file assuming the required file now exists
+      if os.path.exists(self.target):
+        os.remove(self.tmp_target)
 
     def output(self):
       cmd = '/bin/cat %s' % (self.target,)
@@ -74,5 +86,5 @@ class Command(BaseCommand):
       os.system(cmd)
 
     def compress_file(self, source_file):
-      cmd = '/usr/bin/java -jar %s/%s %s >> %s' % (settings.SITE_ROOT, COMPRESSOR, source_file, self.target)
+      cmd = '/usr/bin/java -jar %s/%s %s >> %s' % (settings.SITE_ROOT, COMPRESSOR, source_file, self.tmp_target)
       os.system(cmd)
