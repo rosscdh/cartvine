@@ -1,24 +1,7 @@
 {% load templatetag_handlebars %}{% load url from future %}{% spaceless %}
 
 {% tplhandlebars "variation-controls" %}
-{{#each variant_list}}
-<p>
-    {{id}}
-    <br/>{{title}}
-    <br/>{{sku}}
-<p>
-{{/each}}
-<ul>
-{{#each properties_list}}
-<li>
-    <select id="" name="">
-        {{#each variations_list}}
-        <option value="">Here</option>
-        {{/each}}
-    </select>
-</li>
-{{/each}}
-<ul>
+fdasf
 {% endtplhandlebars %}
 
 {% tplhandlebars "product-properties" %}

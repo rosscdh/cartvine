@@ -21,19 +21,21 @@ var CartVine = function() {
 	    if (target_ob.length <= 0 || target == 'body') {
 	        // view insert target not found
 	        //$('body').append('<p><strong>Please Note:</strong> You have specified ('+ target +') to insert this the "'+ widget_name +'" widget into, but it does not exist.</p>')
-	        if (typeof DS != 'undefined') {
+	        if (typeof Em != 'undefined') {
 	            view.appendTo('body');
             }else{
 			    $('body').append(view);
 		    }
 			
 	    }else{
-	        if (typeof DS != 'undefined') {
+
+	        if (typeof Em != 'undefined') {
 	            // ember
                 view.appendTo(target_ob);
 	        }else{
-	            // straight jquery
-	            target_ob.append(view);  
+	            // straight jquery)
+	            console.log(view)
+	            target_ob.append(view);
 	        }
 	    }
     }
@@ -68,7 +70,7 @@ var CartVine = function() {
                         self.App = Em.Application.create();
                     };
 
-                    if (typeof self.App != 'undefined' && typeof DS != 'undefined' && typeof DS.DjangoTastypieAdapter != 'undefined') {
+                    if (typeof Em != 'undefined' && typeof self.App != 'undefined' && typeof DS != 'undefined' && typeof DS.DjangoTastypieAdapter != 'undefined') {
                         self.DS = DS;
                         self.App.store = DS.Store.create({
                                 revision: 4,
@@ -80,7 +82,7 @@ var CartVine = function() {
                     };
 
                     // Routing
-                    if (typeof self.App != 'undefined') {
+                    if (typeof Em != 'undefined' && typeof self.App != 'undefined') {
                         self.App.routeManager = Em.RouteManager.create({});
                     }
 
@@ -95,13 +97,17 @@ var CartVine = function() {
 
     	});
 		// fix local vars
-		this.App = self.App;
-		this.DS = self.DS;
+		if (typeof Em != 'undefined') {
+    		this.App = self.App;
+    		this.DS = self.DS;
+	    }
     }
 
     this.loadWidgets = function() {
-        // fire the route manager event to bind the current page with the established routes (ember lame)
-        self.App.routeManager.set('location', window.location.pathname);
+        if (typeof Em != 'undefined') {
+            // fire the route manager event to bind the current page with the established routes (ember lame)
+            self.App.routeManager.set('location', window.location.pathname);
+        }
 
 		// complete init
 		{% spaceless %}{% for widget in widget_list_init_names %}

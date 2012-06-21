@@ -111,9 +111,10 @@ class WidgetsForShopView(DetailView):
         static_url = self.request.build_absolute_uri(settings.STATIC_URL)
 
         default_scripts = [
-            '%scartvine-complete.js'%(static_url),
+            #'%scartvine-complete.js'%(static_url),
             # combined js files using yui compressor
-            #'%shandlebars.js'%(static_url),
+            '%shandlebars.js'%(static_url),
+            '%ssammyjs/js/sammy.js'%(static_url),
             #'%semberjs/js/ember-complete.js'%(static_url),
             # '%semberjs/js/libs/ember-0.9.8.1.min.js'%(static_url),
             # '%semberjs/js/libs/ember-routemanager.min.js'%(static_url),

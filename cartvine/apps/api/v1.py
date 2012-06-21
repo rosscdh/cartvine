@@ -62,7 +62,7 @@ class ProductResource(CartvineBaseModelResource):
         resource_name = 'product'
         serializer = Serializer(formats=available_formats)
         filtering = {
-            'shop': ('exact', 'startswith',),
+            'shop': ('exact',),
             'slug': ['exact'],
         }
 
@@ -74,6 +74,38 @@ class ProductResource(CartvineBaseModelResource):
         bundle.data['tags'] = data['tags']
         bundle.data['product_type'] = data['product_type']
         bundle.data['vendor'] = data['vendor']
+        bundle.data['properties_basic'] = data['options'] if 'options' in data else None
+        bundle.data['properties_plus'] = data['properties_plus'] if 'properties_plus' in data else None
+
+        del(bundle.data['data'])
+        return bundle
+
+
+class ProductPropertiesResource(ProductResource):
+    class Meta:
+        queryset = Product.objects.all()
+        resource_name = 'product_properties'
+        serializer = Serializer(formats=available_formats)
+        filtering = {
+            'shop': ('exact',),
+            'slug': ['exact'],
+        }
+    def dehydrate(Self, bundle):
+        data = ast.literal_eval(bundle.data['data'])
+        options_list = []
+        if 'options' in data:
+            for v in data['options']:
+                options_list.append(v['name'])
+
+        if 'properties_plus' in data:
+            for k,v in data['properties_plus'].iteritems():
+                options_list.append(v)
+
+        c = 1
+        for i in options_list:
+            bundle.data['option%s'%(c,)] = i
+            c = c+1
+        bundle.data['num_items'] = len(options_list)
         del(bundle.data['data'])
         return bundle
 
@@ -112,6 +144,7 @@ class ProductVariantResource(CartvineBaseModelResource):
         bundle.data['option2'] = data['option2']
         bundle.data['option3'] = data['option3']
         bundle.data['compare_at_price'] = data['option3']
+
         del(bundle.data['data'])
         return bundle
 
@@ -144,6 +177,7 @@ class WidgetShopResource(CartvineBaseModelResource):
 
 """ Register the api resources """
 v1_public_api.register(ProductResource())
+v1_public_api.register(ProductPropertiesResource())
 v1_public_api.register(ProductVariantResource())
 v1_public_api.register(ShopResource())
 v1_public_api.register(CustomerResource())
