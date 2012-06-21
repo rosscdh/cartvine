@@ -85,24 +85,25 @@ class ProductVariantResource(CartvineBaseModelResource):
         serializer = Serializer(formats=available_formats)
         filtering = {
             'shop': ['exact'],
+            'product': ['exact'],
         }
 
     def dehydrate(self, bundle):
         data = ast.literal_eval(bundle.data['data'])
-        bundle.data['provider_id'] = data['id']
+        bundle.data['provider_id'] = data['id'] if 'id' in data else None
+        bundle.data['title'] = data['title'] if 'title' in data else None
         bundle.data['sku'] = data['sku']
         bundle.data['grams'] = data['grams']
-        bundle.data['title'] = data['title']
         bundle.data['inventory_policy'] = data['inventory_policy']
-        bundle.data['created_at'] = data['created_at']
+        bundle.data['created_at'] = data['created_at'] if 'created_at' in data else None
+        bundle.data['updated_at'] = data['updated_at'] if 'updated_at' in data else None
         bundle.data['requires_shipping'] = data['requires_shipping']
-        bundle.data['updated_at'] = data['updated_at']
         bundle.data['inventory_quantity'] = data['inventory_quantity']
         bundle.data['price'] = data['price']
-        bundle.data['inventory_management'] = data['inventory_management']
-        bundle.data['fulfillment_service'] = data['fulfillment_service']
+        bundle.data['inventory_management'] = data['inventory_management'] if 'inventory_management' in data else None
+        bundle.data['fulfillment_service'] = data['fulfillment_service'] if 'fulfillment_service' in data else None
         bundle.data['taxable'] = data['taxable']
-        bundle.data['position'] = data['position']
+        bundle.data['position'] = data['position'] if 'position' in data else None
         bundle.data['option1'] = data['option1']
         bundle.data['option2'] = data['option2']
         bundle.data['option3'] = data['option3']
