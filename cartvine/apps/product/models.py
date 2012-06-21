@@ -211,5 +211,5 @@ class ProductVariant(models.Model):
         options = {}
         for option_id,o in Product.BASIC_OPTIONS.get_choices():
             if option_id in self.data:
-                options[option_id] = {'name':option_id, 'value': self.data[option_id]}
-        return options
+                options[option_id] = self.data[option_id]
+        return [(key, options[key]) for key in sorted(options.iterkeys())]

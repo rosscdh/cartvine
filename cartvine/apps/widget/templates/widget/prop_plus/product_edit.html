@@ -162,6 +162,7 @@
                                 <td class="value">{{variant.sku}}</td>
                                 <td class="value"><span data-bind="html: $parent.currencySymbol"></span>{{variant.cost}}</td>
                                 <td class="value">{{variant.inventory_quantity}}</td>
+                                {{variant.basic_options}}
                                 {% for option_id,option in variant.basic_options.iteritems %}
                                 <td class="value">{{ option.value }}</td>
                                 {% endfor %}

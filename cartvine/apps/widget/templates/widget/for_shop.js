@@ -20,7 +20,7 @@ var CartVine = function() {
     	target_ob = $(target);
 	    if (target_ob.length <= 0 || target == 'body') {
 	        // view insert target not found
-	        $('body').append('<p><strong>Please Note:</strong> You have specified ('+ target +') to insert this the "'+ widget_name +'" widget into, but it does not exist.</p>')
+	        //$('body').append('<p><strong>Please Note:</strong> You have specified ('+ target +') to insert this the "'+ widget_name +'" widget into, but it does not exist.</p>')
 	        if (typeof DS != 'undefined') {
 	            view.appendTo('body');
             }else{
@@ -36,7 +36,7 @@ var CartVine = function() {
 	            target_ob.append(view);  
 	        }
 	    }
-    },
+    }
 
     this.init = function () {
     	var self = this;
@@ -91,15 +91,16 @@ var CartVine = function() {
 		// fix local vars
 		this.App = self.App;
 		this.DS = self.DS;
-    },
+    }
 
     this.loadWidgets = function() {
-		// complete init @TODO find a way to make this dynamic
+        // fire the route manager event to bind the current page with the established routes (ember lame)
+        //self.App.routeManager.set('location', window.location.pathname);
+
+		// complete init
 		{% spaceless %}{% for widget in widget_list_init_names %}
 		this.{{ widget }}();
 		{% endfor %}{% endspaceless %}
-        // fire the route manager event to bind the current page with the established routes (ember lame)
-        // this.App.routeManager.set('location', window.location.pathname);
     }
 };
 

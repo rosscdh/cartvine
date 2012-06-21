@@ -301,6 +301,7 @@ REMOTE_IMAGE_STORAGE_PATH = 'remote'
 # Handlebars render style
 USE_EMBER_STYLE_ATTRS = True
 
+
 try:
     from shopify_settings import *
 except ImportError:

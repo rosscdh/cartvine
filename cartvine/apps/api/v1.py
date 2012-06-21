@@ -84,8 +84,8 @@ class ProductVariantResource(CartvineBaseModelResource):
         resource_name = 'variant'
         serializer = Serializer(formats=available_formats)
         filtering = {
-            'shop': ['exact'],
             'product': ['exact'],
+            'provider_id': ['exact']
         }
 
     def dehydrate(self, bundle):
