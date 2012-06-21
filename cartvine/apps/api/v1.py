@@ -63,6 +63,7 @@ class ProductResource(CartvineBaseModelResource):
         serializer = Serializer(formats=available_formats)
         filtering = {
             'shop': ('exact', 'startswith',),
+            'slug': ['exact'],
         }
 
     def dehydrate(self, bundle):
@@ -85,11 +86,14 @@ class ProductVariantResource(CartvineBaseModelResource):
         serializer = Serializer(formats=available_formats)
         filtering = {
             'product': ['exact'],
-            'provider_id': ['exact']
+            'provider_id': ['exact'],
+            'slug': ['exact'],
+            'name': ['exact']
         }
 
     def dehydrate(self, bundle):
         data = ast.literal_eval(bundle.data['data'])
+
         bundle.data['provider_id'] = data['id'] if 'id' in data else None
         bundle.data['title'] = data['title'] if 'title' in data else None
         bundle.data['sku'] = data['sku']

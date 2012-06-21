@@ -3,19 +3,19 @@ this.{{ widget.widget_js_name }} = function() {
     var self = this;
 
     // ----- MODELS -----
-    // self.App.Product = self.DS.Model.extend({
-    //     id: self.DS.attr('string'),
-    //     featured_image: self.DS.attr('string'),
-    //     name: self.DS.attr('string'),
-    //     product_type: self.DS.attr('string'),
-    //     provider_id: self.DS.attr('string'),
-    //     resource_uri: self.DS.attr('string'),
-    //     shop: self.DS.attr('string'),
-    //     slug: self.DS.attr('string'),
-    //     tags: self.DS.attr('string'),
-    //     vendor: self.DS.attr('string'),
-    //     vendor_id: self.DS.attr('string')
-    // });
+    self.App.Product = self.DS.Model.extend({
+        id: self.DS.attr('number'),
+        featured_image: self.DS.attr('string'),
+        name: self.DS.attr('string'),
+        product_type: self.DS.attr('string'),
+        provider_id: self.DS.attr('string'),
+        resource_uri: self.DS.attr('string'),
+        shop: self.DS.attr('string'),
+        slug: self.DS.attr('string'),
+        tags: self.DS.attr('string'),
+        vendor: self.DS.attr('string'),
+        vendor_id: self.DS.attr('string')
+    });
     self.App.Variant = self.DS.Model.extend({
         //product: self.DS.belongsTo('self.App.Product'),
         id: self.DS.attr('number'),
@@ -44,7 +44,9 @@ this.{{ widget.widget_js_name }} = function() {
 
     // ----- DATA -----
     //var variant_list = self.App.store.findAll(self.App.Variant);
-    var variant_list = self.App.store.find(self.App.Variant, 1);
+    var product = self.App.store.find(self.App.Product, {shop: 1, slug: 'centralized-full-range-framework'});
+    console.log(product.get('name'))
+    var variant_list = self.App.store.find(self.App.Variant, {shop: 1, product: product.get('id') });
 
     // ----- VIEWS -----
     var variationControls = Ember.View.create({
