@@ -79,10 +79,15 @@ var CartVine = function() {
                         });
                     };
 
+                    // Routing
+                    if (typeof self.App != 'undefined') {
+                        self.App.routeManager = Em.RouteManager.create({});
+                    }
+
                     if (loaded_widgets == num_widgets) {
-                        console.log('Load Widgets')
                         self.loadWidgets();
                     }
+
 	                if (xhr.status == 304) return;
 	            },
 	            error: function () {}
@@ -96,7 +101,7 @@ var CartVine = function() {
 
     this.loadWidgets = function() {
         // fire the route manager event to bind the current page with the established routes (ember lame)
-        //self.App.routeManager.set('location', window.location.pathname);
+        self.App.routeManager.set('location', window.location.pathname);
 
 		// complete init
 		{% spaceless %}{% for widget in widget_list_init_names %}
