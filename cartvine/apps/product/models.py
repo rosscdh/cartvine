@@ -59,6 +59,8 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         self.set_data_all_properties()
+        for v in self.productvariant_set.all():
+            v.save()
         return super(Product, self).save(*args, **kwargs)
 
     @property
@@ -182,7 +184,6 @@ class Product(models.Model):
     @property
     def all_properties(self):
         props = self.get_data_options() + self.properties_plus()
-        print props
         return [{'option_id':option_id, 'name':name } for option_id,name in props]
 
     def set_data_all_properties(self):
@@ -206,6 +207,10 @@ class ProductVariant(models.Model):
     class Meta:
         ordering = ['position']
 
+    def save(self, *args, **kwargs):
+        self.set_data_all_properties()
+        return super(ProductVariant, self).save(*args, **kwargs)
+
     def set_slug(self):
         if 'extra_options' in self.data:
             for i in self.data['extra_options']:
@@ -226,3 +231,10 @@ class ProductVariant(models.Model):
             if option_id in self.data:
                 options[option_id] = self.data[option_id]
         return [(key, options[key]) for key in sorted(options.iterkeys())]
+
+    @property
+    def all_properties(self):
+        return self.product.all_properties
+
+    def set_data_all_properties(self):
+        self.data['all_properties'] = self.all_properties

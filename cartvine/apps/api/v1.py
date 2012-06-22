@@ -74,8 +74,6 @@ class ProductResource(CartvineBaseModelResource):
         bundle.data['tags'] = data['tags']
         bundle.data['product_type'] = data['product_type']
         bundle.data['vendor'] = data['vendor']
-        # bundle.data['properties_basic'] = data['options'] if 'options' in data else None
-        # bundle.data['properties_plus'] = data['properties_plus'] if 'properties_plus' in data else None
         bundle.data['all_properties'] = data['all_properties'] if 'all_properties' in data else []
 
         del(bundle.data['data'])
@@ -141,10 +139,8 @@ class ProductVariantResource(CartvineBaseModelResource):
         bundle.data['fulfillment_service'] = data['fulfillment_service'] if 'fulfillment_service' in data else None
         bundle.data['taxable'] = data['taxable']
         bundle.data['position'] = data['position'] if 'position' in data else None
-        bundle.data['option1'] = data['option1']
-        bundle.data['option2'] = data['option2']
-        bundle.data['option3'] = data['option3']
         bundle.data['compare_at_price'] = data['option3']
+        bundle.data['all_properties'] = data['all_properties'] if 'all_properties' in data else []
 
         del(bundle.data['data'])
         return bundle

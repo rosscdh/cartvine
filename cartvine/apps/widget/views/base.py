@@ -10,6 +10,7 @@ from django.contrib import messages
 
 from cartvine.utils import get_namedtuple_choices
 from cartvine.apps.shop.models import Shop
+from cartvine.context_processors import cartvine_sites
 
 from cartvine.apps.widget.models import Widget, WidgetShop
 from cartvine.apps.widget.forms import FacebookAuthWidgetForm, ProductsLikeWidgetForm, ShopPropsWidgetConfigForm
@@ -126,8 +127,8 @@ class WidgetsForShopView(DetailView):
 
         widget_list = Widget.objects.filter(shop=self.object)
         context['widget_list_init_names'] = [ w.widget_js_name for w in widget_list]
-
-        context['scripts'] = default_scripts #+ [ '%s'%(self.request.build_absolute_uri(reverse('widget:script', kwargs={'shop_slug': self.object.slug, 'slug': widget.slug})),) for widget in widget_list ]
+        context['scripts'] = default_scripts
+        context['cartvine_sites'] = cartvine_sites(self.request)
 
         # must be the last in this view as it needs a full context
         c = Context(context)
