@@ -1,7 +1,15 @@
 {% load templatetag_handlebars %}{% load url from future %}{% spaceless %}
 
 {% tplhandlebars "variation-controls" %}
-fdasf
+
+{{#with product}}
+<select>
+{{#each prop_list}}
+    <option value="{{option_id}}">{{name}}</option>
+{{/each}}
+</select>
+{{/with}}
+
 {% endtplhandlebars %}
 
 {% tplhandlebars "product-properties" %}

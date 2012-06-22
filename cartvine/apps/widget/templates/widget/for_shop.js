@@ -21,7 +21,7 @@ var CartVine = function() {
 	    if (target_ob.length <= 0 || target == 'body') {
 	        // view insert target not found
 	        //$('body').append('<p><strong>Please Note:</strong> You have specified ('+ target +') to insert this the "'+ widget_name +'" widget into, but it does not exist.</p>')
-	        if (typeof Em != 'undefined') {
+	        if (typeof view.appendTo != 'undefined') {
 	            view.appendTo('body');
             }else{
 			    $('body').append(view);
@@ -29,12 +29,11 @@ var CartVine = function() {
 			
 	    }else{
 
-	        if (typeof Em != 'undefined') {
+	        if (typeof view.appendTo != 'undefined') {
 	            // ember
                 view.appendTo(target_ob);
 	        }else{
 	            // straight jquery)
-	            console.log(view)
 	            target_ob.append(view);
 	        }
 	    }
