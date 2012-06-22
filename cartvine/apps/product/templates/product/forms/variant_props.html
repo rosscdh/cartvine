@@ -31,7 +31,7 @@
         <div class="clearfix"></div>
         <hr/>
         <!-- basic properties - thanks shopify  -->
-        <div data-bind="foreach: selectedVariant().basic_props" class="control-group">
+        <div data-bind="foreach: selectedVariant().basic_product_options()" class="control-group">
             <label class="control-label" for="input01" data-bind="text: name"></label>
             <div class="controls">
                 <input type="text" data-bind="attr: {'name': field_name, 'value': value}" id="">
