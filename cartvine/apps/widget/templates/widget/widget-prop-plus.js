@@ -6,8 +6,11 @@ this.{{ widget.widget_js_name }} = function() {
     var Variant = null;
 
     var app = Sammy('#main', function() {
-
         // define a 'route'
+        this.get('#/products/', function() {
+            console.log('route')
+        });
+
         this.get('/products/:slug', function() {
             var sam = this;
             var slug = sam.params.slug.replace('.html', '');
@@ -44,25 +47,9 @@ this.{{ widget.widget_js_name }} = function() {
                     self.injectView(productPropertiesView(), '{{ widget.widget_js_name }}', '{{ config.products.target_id }}');
                 });
             });
-
-            // var variationControlsView = function(sam) {
-            //     var slug = sam.params.slug.replace('.html', '');
-            //     var source   = $("script#variation-controls").html();
-
-
-            //     var context = {
-            //         'product': Product,
-
-            //     };
-            //     var template = Handlebars.compile(source);
-            //     return template(context);
-            // };
-
-            // self.injectView(variationControlsView(sam), '{{ widget.widget_js_name }}', '{{ config.variations.target_id }}');
-
-            });
         });
+    });
 
     // start the application
-    app.run('#/');
+    app.run('#');
 }
