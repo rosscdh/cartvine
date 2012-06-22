@@ -118,6 +118,7 @@ class Product(models.Model):
             p = options[option_id]
             # append the id to the p object
             p['option_id'] = option_id
+            p['name'] = name
             basic.append(p)
         return basic
 

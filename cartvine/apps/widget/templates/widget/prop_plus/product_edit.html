@@ -136,7 +136,7 @@
             </div>
         </div>
         <div class="span12">
-            <div class="widget widget-table" data-bind="with: VariantView">
+
                 <div class="widget-header">
                     <span class="icon-barcode"></span>
                     <h3>{% trans 'Product Inventory' %}</h3>
@@ -149,22 +149,40 @@
 								<th>SKU</th>
 								<th>Price</th>
 								<th>In Stock</th>
-								{% for option in object.basic_props %}
-								<th>{{ option.name }}</th>
+                                {% for option_id,option in object.get_data_options %}
+								<th>{{ option }}</th>
 								{% endfor %}
-								<th class="cen">(<i data-bind="text: variantsList().length"></i> {% trans 'items' %})</th>
+								<th class="cen">(<i data-bind="text: App.VariantView.variantsList().length"></i> {% trans 'items' %})</th>
 							</tr>
 						</thead>
+                        <!-- <tbody class="variantList" data-bind="foreach: App.VariantView.variantsList()">
+                        <tr>
+                                <td class="cen"><input type="checkbox" class="option-variant" value=""/></td>
+                                <td class="value" data-bind="html: sku"></td>
+                                <td class="value"><span data-bind="html: App.VariantView.currencySymbol"></span><span data-bind="html: cost"></span></td>
+                                <td class="value" data-bind="html: inventory_quantity"></td>
+
+                                <td class="value"></td>
+
+                                <td class="value cen">
+                                    <div class="controls">
+                                        <a data-toggle="modal" data-variant_pk="{{ variant.pk }}" href="#editVariationModal" class="edit btn-modal-form"><i class="icon-pencil"></i></a>
+                                        <a href="" class="delete"><i class="icon-remove"></i></a>
+                                        <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tr>
+                        </tbody> -->
 						<tbody>
 						    {% for variant in variants %}
 						    <tr>
                                 <td class="cen"><input type="checkbox" class="option-variant" value=""/></td>
                                 <td class="value">{{variant.sku}}</td>
-                                <td class="value"><span data-bind="html: $parent.currencySymbol"></span>{{variant.cost}}</td>
+                                <td class="value"><span data-bind="html: App.VariantView.currencySymbol"></span>{{variant.cost}}</td>
                                 <td class="value">{{variant.inventory_quantity}}</td>
-                                {{variant.basic_options}}
-                                {% for option_id,option in variant.basic_options.iteritems %}
-                                <td class="value">{{ option.value }}</td>
+                                {% for option_id,option in variant.basic_options %}
+                                <td class="value">{{ option }}</td>
                                 {% endfor %}
                                 <td class="value cen">
                                     <div class="controls">
@@ -203,9 +221,6 @@
     </div>
 </div>
 
-<!-- <div data-bind="with: ProductView">
-{% include 'product/forms/product_props.html' %}
-</div> -->
 <div data-bind="with: VariantView">
 {% include 'product/forms/variant_props.html' %}
 </div>
@@ -437,6 +452,8 @@ $(document).ready(function(){
         self.setVariantBasicProperties = function() {
             // reset
             self.basic_props([]);
+
+//            console.log(App.VariantView.extraProductOptions)
 
             for (var i = 0; i < App.VariantView.basicProductOptions().length; i++) {
                 prop_type = App.VariantView.basicProductOptions()[i].prop_type;
@@ -699,7 +716,7 @@ $(document).ready(function(){
                         $('#editVariationModal').modal('hide');
                     }, 1500);
                     // @TEMPORARY @TODO remove this and update inline
-//                    document.location.reload();
+                    document.location.reload();
                 }
                 submit_button.css('visibility','visible');
                 submit_button.attr('disabled',false);
