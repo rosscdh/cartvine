@@ -12,14 +12,14 @@ import subprocess
 COMPRESSOR = getattr(settings, 'COMPRESSOR_PATH', '../yuicompressor-2.4.7.jar')
 
 PRECOMPRESSED_TARGET_FILES = [
- '%s/cartvine/apps/default%semberjs/js/libs/ember-0.9.8.1.min.js'%(settings.SITE_ROOT, settings.STATIC_URL),
+ # '%s/cartvine/apps/default%semberjs/js/libs/ember-0.9.8.1.min.js'%(settings.SITE_ROOT, settings.STATIC_URL),
 ]
 COMPRESSOR_TARGET_FILES = [
     '%s/cartvine/apps/default%shandlebars.js'%(settings.SITE_ROOT, settings.STATIC_URL),
     '%s/cartvine/apps/default%ssammyjs/js/sammy.js'%(settings.SITE_ROOT, settings.STATIC_URL),
-    '%s/cartvine/apps/default%semberjs/js/libs/ember-routemanager.min.js'%(settings.SITE_ROOT, settings.STATIC_URL),
-    '%s/cartvine/apps/default%semberjs/js/libs/ember-data-latest.js'%(settings.SITE_ROOT, settings.STATIC_URL),
-    '%s/cartvine/apps/default%semberjs/js/libs/tastypie_adapter.js'%(settings.SITE_ROOT, settings.STATIC_URL),
+    # '%s/cartvine/apps/default%semberjs/js/libs/ember-routemanager.min.js'%(settings.SITE_ROOT, settings.STATIC_URL),
+    # '%s/cartvine/apps/default%semberjs/js/libs/ember-data-latest.js'%(settings.SITE_ROOT, settings.STATIC_URL),
+    # '%s/cartvine/apps/default%semberjs/js/libs/tastypie_adapter.js'%(settings.SITE_ROOT, settings.STATIC_URL),
 ]
 
 PRECOMPRESSED_TARGET_FILES = getattr(settings, 'PRECOMPRESSED_TARGET_FILES', PRECOMPRESSED_TARGET_FILES)

@@ -57,6 +57,10 @@ class Product(models.Model):
     def __unicode__(self):
         return u'%s' % (self.slug,)
 
+    def save(self, *args, **kwargs):
+        self.set_data_all_properties()
+        return super(Product, self).save(*args, **kwargs)
+
     @property
     def summary(self):
         return u'%s' % (self.data['body_html'],)
@@ -174,6 +178,15 @@ class Product(models.Model):
                 colors[k] = crange[c]
                 c = c+1
         return colors
+
+    @property
+    def all_properties(self):
+        props = self.get_data_options() + self.properties_plus()
+        print props
+        return [{'option_id':option_id, 'name':name } for option_id,name in props]
+
+    def set_data_all_properties(self):
+        self.data['all_properties'] = self.all_properties
 
 
     def get_images_src(self):

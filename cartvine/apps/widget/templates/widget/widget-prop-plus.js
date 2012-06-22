@@ -1,36 +1,48 @@
 {% load url from future %}
 this.{{ widget.widget_js_name }} = function() {
     var self = this;
+
+    var Product = null;
+
     var app = Sammy('#main', function() {
 
         // define a 'route'
         this.get('/products/:slug', function() {
             var sam = this;
+            var slug = sam.params.slug.replace('.html', '');
 
-            self.App.Product = self.DS.Model.extend({
-                id: DS.attr('number'),
-                slug: DS.attr('string'),
-                name: DS.attr('string'),
-                prop_list: function() {
-                    return [{'option_id':'option1', 'name':'My First Property',}];
-                }.property()
+            
+            var url = 'http://localhost:8000/api/v1/product/?slug=' + slug;
+            $.getJSON(url, function(data) {
+                self.Product = data.objects[0];
+
+                var variationControlsView = function(sam) {
+                    var source   = $("script#variation-controls").html();
+                    var context = {
+                        'product': self.Product,
+                    };
+                    var template = Handlebars.compile(source);
+                    return template(context);
+                };
+
+                self.injectView(variationControlsView(), '{{ widget.widget_js_name }}', '{{ config.variations.target_id }}');
+
             });
 
-            var variationControlsView = function(sam) {
-                var slug = sam.params.slug.replace('.html', '');
-                var source   = $("script#variation-controls").html();
+            // var variationControlsView = function(sam) {
+            //     var slug = sam.params.slug.replace('.html', '');
+            //     var source   = $("script#variation-controls").html();
 
-                var Product = self.App.store.find(self.App.Product, {'slug': slug});
-                console.log(Product)
-                var context = {
-                    'product': Product,
 
-                };
-                var template = Handlebars.compile(source);
-                return template(context);
-            };
+            //     var context = {
+            //         'product': Product,
 
-            self.injectView(variationControlsView(sam), '{{ widget.widget_js_name }}', '{{ config.variations.target_id }}');
+            //     };
+            //     var template = Handlebars.compile(source);
+            //     return template(context);
+            // };
+
+            // self.injectView(variationControlsView(sam), '{{ widget.widget_js_name }}', '{{ config.variations.target_id }}');
 
             });
         });

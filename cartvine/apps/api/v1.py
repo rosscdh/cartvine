@@ -74,8 +74,9 @@ class ProductResource(CartvineBaseModelResource):
         bundle.data['tags'] = data['tags']
         bundle.data['product_type'] = data['product_type']
         bundle.data['vendor'] = data['vendor']
-        bundle.data['properties_basic'] = data['options'] if 'options' in data else None
-        bundle.data['properties_plus'] = data['properties_plus'] if 'properties_plus' in data else None
+        # bundle.data['properties_basic'] = data['options'] if 'options' in data else None
+        # bundle.data['properties_plus'] = data['properties_plus'] if 'properties_plus' in data else None
+        bundle.data['all_properties'] = data['all_properties'] if 'all_properties' in data else []
 
         del(bundle.data['data'])
         return bundle
