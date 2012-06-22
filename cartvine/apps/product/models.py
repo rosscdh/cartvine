@@ -181,13 +181,12 @@ class Product(models.Model):
                 c = c+1
         return colors
 
-    @property
     def all_properties(self):
         props = self.get_data_options() + self.properties_plus()
         return [{'option_id':option_id, 'name':name } for option_id,name in props]
 
     def set_data_all_properties(self):
-        self.data['all_properties'] = self.all_properties
+        self.data['all_properties'] = self.all_properties()
 
 
     def get_images_src(self):
@@ -232,9 +231,8 @@ class ProductVariant(models.Model):
                 options[option_id] = self.data[option_id]
         return [(key, options[key]) for key in sorted(options.iterkeys())]
 
-    @property
     def all_properties(self):
-        return self.product.all_properties
+        return self.product.all_properties()
 
     def set_data_all_properties(self):
-        self.data['all_properties'] = self.all_properties
+        self.data['all_properties'] = self.all_properties()

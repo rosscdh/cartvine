@@ -10,11 +10,16 @@
 
 {% tplhandlebars "product-properties" %}
 <table border="1">
-{{#each variant.all_properties}}
+{{#each variant_list}}
+<tr>
+    <td colspan="2"><h3>{{#if title}}{{title}}{{else}}{{sku}}{{/if}}</h3></td>
+</tr>
+{{#each all_properties}}
 <tr>
     <td class="cv-pp-name">{{name}}</td>
     <td class="cv-pp-value">{{value}}</td>
 </tr>
+{{/each}}
 {{/each}}
 <table>
 {% endtplhandlebars %}

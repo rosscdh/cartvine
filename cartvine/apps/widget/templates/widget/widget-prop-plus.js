@@ -32,13 +32,13 @@ this.{{ widget.widget_js_name }} = function() {
 
                 var url = 'http://{{ cartvine_sites.shopify_app_domain }}/api/v1/variant/?product=' + self.Product.id;
                 $.getJSON(url, function(data) {
-                    self.Variant = data.objects[0];
-
+                    self.VariantList = data.objects;
+                    console.log(self.VariantList)
                     var productPropertiesView = function(sam) {
                         var source   = $("script#product-properties").html();
                         var context = {
                             'product': self.Product,
-                            'variant': self.Variant,
+                            'variant_list': self.VariantList,
                         };
                         var template = Handlebars.compile(source);
                         return template(context);
