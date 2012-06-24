@@ -57,12 +57,6 @@ class Product(models.Model):
     def __unicode__(self):
         return u'%s' % (self.slug,)
 
-    def save(self, *args, **kwargs):
-        self.set_data_all_properties()
-        for v in self.productvariant_set.all():
-            v.save()
-        return super(Product, self).save(*args, **kwargs)
-
     @property
     def summary(self):
         return u'%s' % (self.data['body_html'],)
@@ -103,6 +97,9 @@ class Product(models.Model):
             options = {}
             for option_id,o in self.BASIC_OPTIONS.get_choices():
                 options[option_id] = None
+
+        if 'options' not in self.data:
+            self.data['options'] = options
 
         for i,o in enumerate(self.data['options']):
             option_id = 'option%s'%(i+1,)
@@ -206,10 +203,6 @@ class ProductVariant(models.Model):
 
     class Meta:
         ordering = ['position']
-
-    def save(self, *args, **kwargs):
-        self.set_data_all_properties()
-        return super(ProductVariant, self).save(*args, **kwargs)
 
     def set_slug(self):
         if 'extra_options' in self.data:

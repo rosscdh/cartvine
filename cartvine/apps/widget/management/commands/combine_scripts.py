@@ -15,7 +15,7 @@ PRECOMPRESSED_TARGET_FILES = [
 ]
 COMPRESSOR_TARGET_FILES = [
     '%s/cartvine/apps/default%shandlebars.js'%(settings.SITE_ROOT, settings.STATIC_URL),
-    '%s/cartvine/apps/default%scrossroads.js'%(settings.SITE_ROOT, settings.STATIC_URL),
+    '%s/cartvine/apps/default%sdavis.js'%(settings.SITE_ROOT, settings.STATIC_URL),
 ]
 
 PRECOMPRESSED_TARGET_FILES = getattr(settings, 'PRECOMPRESSED_TARGET_FILES', PRECOMPRESSED_TARGET_FILES)

@@ -12,30 +12,13 @@ var CartVine = function() {
     this.App = void 0,
     this.DS = void 0,
 
-    // Output of combined widgets
-    {{ combined_widgets|safe }}
-    // /End Output of combined widgets
-
     this.injectView = function(view, widget_name, target) {
     	target_ob = $(target);
 	    if (target_ob.length <= 0 || target == 'body') {
 	        // view insert target not found
-	        //$('body').append('<p><strong>Please Note:</strong> You have specified ('+ target +') to insert this the "'+ widget_name +'" widget into, but it does not exist.</p>')
-	        if (typeof view.appendTo != 'undefined') {
-	            view.appendTo('body');
-            }else{
-			    $('body').append(view);
-		    }
-			
+			$('body').append(view);
 	    }else{
-
-	        if (typeof view.appendTo != 'undefined') {
-	            // ember
-                view.appendTo(target_ob);
-	        }else{
-	            // straight jquery)
-	            target_ob.append(view);
-	        }
+            target_ob.append(view);
 	    }
     }
 
@@ -63,26 +46,8 @@ var CartVine = function() {
 	            complete: function(xhr) { 
 	                loaded_widgets++;
 
-                    if (typeof Em != 'undefined') {
-                        // Create the EmberJs Application which is shared between widgets
-                        // @TODO create object with event handlers to initialize CartVine objects
-                        self.App = Em.Application.create();
-                    };
-
-                    if (typeof Em != 'undefined' && typeof self.App != 'undefined' && typeof DS != 'undefined' && typeof DS.DjangoTastypieAdapter != 'undefined') {
-                        self.DS = DS;
-                        self.App.store = DS.Store.create({
-                                revision: 4,
-                                    adapter: DS.DjangoTastypieAdapter.create({
-                                    serverDomain: url_scheme + "{{ request.get_host }}/",
-                                    tastypieApiUrl: "api/v1/"
-                                })
-                        });
-                    };
-
-                    // Routing
-                    if (typeof Em != 'undefined' && typeof self.App != 'undefined') {
-                        self.App.routeManager = Em.RouteManager.create({});
+                    if (Davis != 'undefined') {
+                        self.App = Davis(function () {});
                     }
 
                     if (loaded_widgets == num_widgets) {
@@ -95,26 +60,25 @@ var CartVine = function() {
 	        });
 
     	});
-		// fix local vars
-		if (typeof Em != 'undefined') {
-    		this.App = self.App;
-    		this.DS = self.DS;
-	    }
     }
 
     this.loadWidgets = function() {
-        if (typeof Em != 'undefined') {
-            // fire the route manager event to bind the current page with the established routes (ember lame)
-            self.App.routeManager.set('location', window.location.pathname);
-        }
-
+        var self = this;
 		// complete init
 		{% spaceless %}{% for widget in widget_list_init_names %}
-		this.{{ widget }}();
+		//self.{{ widget }}();
 		{% endfor %}{% endspaceless %}
+
+        // Output of combined widgets
+        {{ combined_widgets|safe }}
+        // /End Output of combined widgets
+
+        self.App.start();
     }
 };
 
 // cv instance
 var cartvine = new CartVine();
 cartvine.init();
+
+
