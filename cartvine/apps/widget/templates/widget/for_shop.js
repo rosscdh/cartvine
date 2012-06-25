@@ -72,18 +72,12 @@
 
         this.loadWidgets = function() {
             var self = this;
-            if (Davis != 'undefined') {
 
-                self.App = Davis(function () {
-                    var d = this;
+            if (routes != 'undefined') {
+                self.App = new routes();
 
-                    // Start app Url
-                    {{ combined_widgets|safe }}
-
-                });
-
-                self.App.start();
-            };
+                {{ combined_widgets|safe }}
+            }
         }
     };
 

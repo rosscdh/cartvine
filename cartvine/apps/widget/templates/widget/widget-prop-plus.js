@@ -1,5 +1,5 @@
 {% load url from future %}
-this.get('/products/:slug', function (req) {
+self.App.get('/products/:slug.html', function (req) {
 
     var slug = req.params['slug'].replace('.html', '');
     var url = self.buildUrl('/api/v1/product/?slug=' + slug);

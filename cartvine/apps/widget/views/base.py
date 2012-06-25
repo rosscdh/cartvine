@@ -114,6 +114,7 @@ class WidgetsForShopView(DetailView):
         default_scripts = [
             '%scartvine-complete.js'%(static_url),
             # combined js files using yui compressor
+            # '%sleviroutes.js'%(static_url),
             # '%shandlebars.js'%(static_url),
             # '%ssammyjs/js/sammy.js'%(static_url),
             #'%semberjs/js/ember-complete.js'%(static_url),
