@@ -459,123 +459,6 @@ $(document).ready(function(){
         self.value = value;
     }
 
-    // Product Property helpers
-    $('div#ProductProperties button#addProperty').live('click', function(event) {
-        event.preventDefault();
-        // restore the previous tr html
-        App.resetPreviousEditTr();
-        App.ProductView.showAddForm(true);
-    });
-
-    $('div#ProductProperties button#saveNewProperty').live('click', function(event) {
-        event.preventDefault();
-        App.ProductView.formPostUrl("{% url 'product:plus_properties' slug=object.slug %}");
-        App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $('#addPropertyInterface'));
-    });
-
-    $('form.property-form button.submit-btn').live('click', function(event) {
-        event.preventDefault();
-
-        var formName = 'form#' + $(this).closest('form').attr('id');
-        App.ProductView.theFormName(formName);
-
-        App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $(this).closest('td.form'));
-    });
-
-    $('div#ProductProperties tbody.baseProperties tr, div#ProductProperties tbody.basicProperties tr, div#ProductProperties tbody.plusProperties tr').live('mouseenter mouseleave', function(event) {
-        event.preventDefault();
-        // only if there is no edit form there and the edit control is not already there
-        var target = $(this).find('td:last');
-        if ($(this).find('td form').length == 0 && $(this).find('div.property-controls').length == 0) {
-
-            var option_id = target.attr('data-option_id')
-            var property_type = $(this).find('td:first').attr('data-property_type');
-            var controls = App.propertyControls($(this), option_id, property_type);
-
-            if (event.type == 'mouseleave') {
-                target.find('div.controls').remove();
-            }else{
-                target.append(controls);
-            }
-        }else{
-            target.find('div.controls').remove();
-        }
-    });
-
-    $('div.property-controls a.edit').live('click', function(event) {
-        event.preventDefault();
-        var option_id = $(this).attr('data-option_id');
-        var property_type = $(this).attr('data-property_type');
-
-        var tr = $(this).closest('tr');
-
-        if (tr.find('td.name span.value').text() != undefined) {
-            // restore the previous tr html
-            App.resetPreviousEditTr();
-            App.resetProductFormTr();
-
-            // set the current tr html to this ones html value
-            tr.find('div.property-controls').remove();
-            App.currentPropertyTrHtml = tr.html();
-
-            if (property_type == 'base') {
-                // take the name/value pair
-                var name = tr.find('td.name').text();
-                var value = tr.find('td.value').text();
-            }else if (property_type == 'basic') {
-                // set the value equal to the name as in basic properties this 
-                // is the change case
-                var name = tr.find('td.name').text();
-                var value = tr.find('td.name span.value').text();
-                var option_id = tr.find('td.name').attr('data-option_id');
-            }else if (property_type == 'plus') {
-                // set the value equal to the name as in basic properties this 
-                // is the change case
-                var name = tr.find('td.name').text();
-                var value = tr.find('td.name span.value').text();
-                var option_id = tr.find('td.name').attr('data-option_id');
-                property_type = tr.find('td.name').attr('data-property_type');
-            }
-            var controls = App.productPropertyForm(false,property_type,name,value,option_id);
-            // replace the current tr html with our control form
-            tr.html(controls);
-        }
-    });
-
-    // Variant Helpers
-    $('#editVariationModal a.submit-btn:last').live('click', function(event) {
-        event.preventDefault();
-        App.submitModalWindow(App.VariantView, App.VariantView.processFormResponseObject, $('div#editVariationModal'));
-    });
-    
-    $('a.btn-modal-form').live('click', function(event) {
-        event.preventDefault();
-        var variant_pk = $(this).attr('data-variant_pk');
-        if (variant_pk != undefined && variant_pk != 'add') {
-            App.VariantView.setSelectedVariant(variant_pk);
-        }else{
-            App.VariantView.updateSelectedVariant(App.VariantView.blankVariant);
-        }
-    });
-
-    $('#toggle-all-variants').live('click', function(event) {
-        if ($(this).attr('checked') == 'checked') {
-            $('input[type="checkbox"].option-variant').attr('checked', 'checked')
-        }else{
-            $('input[type="checkbox"].option-variant').attr('checked', false)
-        }
-    });
-    $('select#variant-select-options').live('change', function(event) {
-        event.preventDefault();
-        num_items_selected = $('input[type="checkbox"].option-variant:checked').length;
-        if (num_items_selected > 0) {
-            items_selected = $('input[type="checkbox"].option-variant:checked');
-            console.log('Send '+ $(this).val() +' event to backend for ids: ' + items_selected);
-        }
-        $(this).prop('selectedIndex', 0);
-    });
-
-
     /**
     * Primary view acts as a holder for the other views
     */
@@ -707,6 +590,125 @@ $(document).ready(function(){
     App = new PageMasterViewModel()
     // ----- KO Bindings -----
     ko.applyBindings(App);
+
+
+
+    // Product Property helpers
+    $('div#ProductProperties button#addProperty').live('click', function(event) {
+        event.preventDefault();
+        // restore the previous tr html
+        App.resetPreviousEditTr();
+        App.ProductView.showAddForm(true);
+    });
+
+    $('div#ProductProperties button#saveNewProperty').live('click', function(event) {
+        event.preventDefault();
+        App.ProductView.formPostUrl("{% url 'product:plus_properties' slug=object.slug %}");
+        App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $('#addPropertyInterface'));
+    });
+
+    $('form.property-form button.submit-btn').live('click', function(event) {
+        event.preventDefault();
+
+        var formName = 'form#' + $(this).closest('form').attr('id');
+        App.ProductView.theFormName(formName);
+
+        App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $(this).closest('td.form'));
+    });
+
+    $('div#ProductProperties tbody.baseProperties tr, div#ProductProperties tbody.basicProperties tr, div#ProductProperties tbody.plusProperties tr').live('mouseenter mouseleave', function(event) {
+        event.preventDefault();
+        // only if there is no edit form there and the edit control is not already there
+        var target = $(this).find('td:last');
+        if ($(this).find('td form').length == 0 && $(this).find('div.property-controls').length == 0) {
+
+            var option_id = target.attr('data-option_id')
+            var property_type = $(this).find('td:first').attr('data-property_type');
+            var controls = App.propertyControls($(this), option_id, property_type);
+
+            if (event.type == 'mouseleave') {
+                target.find('div.controls').remove();
+            }else{
+                target.append(controls);
+            }
+        }else{
+            target.find('div.controls').remove();
+        }
+    });
+
+    $('div.property-controls a.edit').live('click', function(event) {
+        event.preventDefault();
+        var option_id = $(this).attr('data-option_id');
+        var property_type = $(this).attr('data-property_type');
+
+        var tr = $(this).closest('tr');
+
+        if (tr.find('td.name span.value').text() != undefined) {
+            // restore the previous tr html
+            App.resetPreviousEditTr();
+            App.resetProductFormTr();
+
+            // set the current tr html to this ones html value
+            tr.find('div.property-controls').remove();
+            App.currentPropertyTrHtml = tr.html();
+
+            if (property_type == 'base') {
+                // take the name/value pair
+                var name = tr.find('td.name').text();
+                var value = tr.find('td.value').text();
+            }else if (property_type == 'basic') {
+                // set the value equal to the name as in basic properties this 
+                // is the change case
+                var name = tr.find('td.name').text();
+                var value = tr.find('td.name span.value').text();
+                var option_id = tr.find('td.name').attr('data-option_id');
+            }else if (property_type == 'plus') {
+                // set the value equal to the name as in basic properties this 
+                // is the change case
+                var name = tr.find('td.name').text();
+                var value = tr.find('td.name span.value').text();
+                var option_id = tr.find('td.name').attr('data-option_id');
+                property_type = tr.find('td.name').attr('data-property_type');
+            }
+            var controls = App.productPropertyForm(false,property_type,name,value,option_id);
+            // replace the current tr html with our control form
+            tr.html(controls);
+        }
+    });
+
+    // Variant Helpers
+    $('#editVariationModal a.submit-btn:last').live('click', function(event) {
+        event.preventDefault();
+        App.submitModalWindow(App.VariantView, App.VariantView.processFormResponseObject, $('div#editVariationModal'));
+    });
+    
+    $('a.btn-modal-form').live('click', function(event) {
+        event.preventDefault();
+        var variant_pk = $(this).attr('data-variant_pk');
+        if (variant_pk != undefined && variant_pk != 'add') {
+            App.VariantView.setSelectedVariant(variant_pk);
+        }else{
+            App.VariantView.updateSelectedVariant(App.VariantView.blankVariant);
+        }
+    });
+
+    $('#toggle-all-variants').live('click', function(event) {
+        if ($(this).attr('checked') == 'checked') {
+            $('input[type="checkbox"].option-variant').attr('checked', 'checked')
+        }else{
+            $('input[type="checkbox"].option-variant').attr('checked', false)
+        }
+    });
+    $('select#variant-select-options').live('change', function(event) {
+        event.preventDefault();
+        num_items_selected = $('input[type="checkbox"].option-variant:checked').length;
+        if (num_items_selected > 0) {
+            items_selected = $('input[type="checkbox"].option-variant:checked');
+            console.log('Send '+ $(this).val() +' event to backend for ids: ' + items_selected);
+        }
+        $(this).prop('selectedIndex', 0);
+    });
+
 });
 </script>
 {% endblock %}
