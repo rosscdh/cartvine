@@ -31,17 +31,17 @@
         <div class="clearfix"></div>
         <hr/>
         <!-- basic properties - thanks shopify  -->
-        <div data-bind="foreach: selectedVariant().basic_product_options()" class="control-group">
-            <label class="control-label" for="input01" data-bind="text: name"></label>
+        <div data-bind="foreach: basicProductOptions()" class="control-group">
+            <label class="control-label" for="input01" data-bind="text: value"></label>
             <div class="controls">
-                <input type="text" data-bind="attr: {'name': field_name, 'value': value}" id="">
+                <input type="text" data-bind="attr: {'name': name, 'value': $parent.selectedVariant().get_value_for('basic', name)}"/>
             </div>
         </div>
         <!-- properties+ - thanks cartvine -->
-        <div data-bind="foreach: extraProductOptions" class="control-group">
-            <label class="control-label" for="input01" data-bind="text: name"></label>
+        <div data-bind="foreach: extraProductOptions()" class="control-group">
+            <label class="control-label" for="input01" data-bind="text: value"></label>
             <div class="controls">
-                <input type="text" name="extra_props" id="" data-bind="value: value">
+                <input type="text" data-bind="attr: {'name': name, 'value': $parent.selectedVariant().get_value_for('plus', name)}"/>
             </div>
         </div>
         <!--End custom variation variables-->

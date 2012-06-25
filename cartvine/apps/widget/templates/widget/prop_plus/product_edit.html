@@ -323,7 +323,6 @@ $(document).ready(function(){
         */
         self.processFormResponseObject = function(response) {
             console.log('yay in processFormResponseObject')
-            console.log(response);
         }
 
         self.showAddPropButton = function() {
@@ -334,17 +333,6 @@ $(document).ready(function(){
             self.showAddForm(false);
             self.formSubmitMessage('');
         }
-
-        self.addPropertyPlus = function(internal_name,name) {
-            self.plusProperties.push({
-                'is_new': true,
-                'internal_name': '',
-                'name': '',
-            });
-        }
-        self.delPropertyPlus = function(prop) {
-            self.plusProperties.remove(prop);
-        }
     }
 
     function VariantViewModel() {
@@ -352,8 +340,8 @@ $(document).ready(function(){
 
         self.blankVariant = new Variant(null,null,0,null,0,0,false,false,false,0,[]);
         self.selectedVariant = ko.observable(self.blankVariant);
-        self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options.iteritems %}new ProductOption('{{ o }}','{{ v.name }}','{{ v.value }}'),{% endfor %}]);
-        self.extraProductOptions = ko.observableArray([]);
+        self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options %}new ProductOption('basic','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
+        self.extraProductOptions = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o }}','{{ o|option_offset }}','{{ v }}'),{% endfor %}]);
 
         self.theFormName = '#form-variant-props';
         self.formTitle = ko.observable('');
@@ -364,8 +352,7 @@ $(document).ready(function(){
         var variant_list = eval($('script#data-variant_list').html());
         for (var i = 0; i < variant_list.length; i++) {
             v = variant_list[i];
-            variant = new Variant(v.pk,v.provider_id,v.cost,v.sku,v.compare_at_price,v.weight,v.taxable,v.requires_shipping,v.inventory_management,v.inventory_quantity,v.basic_options);
-            self.variantsList.push(variant);
+            self.variantsList.push(new Variant(v.pk,v.provider_id,v.cost,v.sku,v.compare_at_price,v.weight,v.taxable,v.requires_shipping,v.inventory_management,v.inventory_quantity,v.basic_options));
         }
 
         self.updateVariantList = function(variant) {
@@ -426,10 +413,7 @@ $(document).ready(function(){
         self.processFormResponseObject = function(response) {
             if (response.object != null) {
                 v = response.object;
-                variant = new Variant(v.pk,v.provider_id,v.price,v.sku,v.compare_at_price,v.grams,v.taxable,v.requires_shipping,v.inventory_policy,v.inventory_quantity,v.basic_options);
-                self.updateVariantList(variant);
-            }else{
-                console.log('response.object is null in VariantViewModel.processFormResponseObject')
+                self.updateVariantList(new Variant(v.pk,v.provider_id,v.price,v.sku,v.compare_at_price,v.grams,v.taxable,v.requires_shipping,v.inventory_policy,v.inventory_quantity,v.basic_options));
             }
         }
     };
@@ -447,35 +431,24 @@ $(document).ready(function(){
         self.inventory_management = inventory_management;
         self.inventory_quantity = inventory_quantity;
         self.basic_product_options = basic_product_options;
-        self.basic_props = ko.observableArray([]);
+        self.all_properties = ko.observableArray([]);
+
+        self.init = function () {
+            self.setVariantBasicProperties()
+        }
+
+        self.get_value_for = function (type,name) {
+            //console.log(type+' '+name)
+        }
 
         self.setVariantBasicProperties = function() {
             // reset
-            self.basic_props([]);
+            self.all_properties([]);
 
-//            console.log(App.VariantView.extraProductOptions)
-
-            for (var i = 0; i < App.VariantView.basicProductOptions().length; i++) {
-                prop_type = App.VariantView.basicProductOptions()[i].prop_type;
-
-                field_name = App.VariantView.basicProductOptions()[i].prop_type
-                name = App.VariantView.basicProductOptions()[i].internal_name;
-
-                if (self.basic_product_options.length == 0) {
-                    value = ' ';
-                }else{
-                    if (self.basic_product_options[prop_type].value != '') {
-                        value = self.basic_product_options[prop_type].value;
-                    }else{
-                        value = ' ';
-                    }
-                }
-
-                if (name != '' && name != 'None' && value != '' && value != 'None') {
-                    self.basic_props.push({'field_name': field_name, 'name': name, 'value':  value})
-                }
-            }
+            //console.log(self.basic_product_options)
         }
+
+        self.init();
     }
 
     function ProductOption(prop_type,internal_name,name,value) {

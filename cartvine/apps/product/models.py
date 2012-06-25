@@ -5,7 +5,7 @@ import colorsys
 import webcolors
 
 from jsonfield import JSONField
-from cartvine.utils import get_namedtuple_choices
+from cartvine.utils import get_namedtuple_choices, DictDiffer
 from cartvine.apps.shop.models import Shop
 from managers import ProductManager
 
@@ -225,8 +225,6 @@ class ProductVariant(models.Model):
                 options[option_id] = self.data[option_id]
         return [(key, options[key]) for key in sorted(options.iterkeys())]
 
-    def all_properties(self):
-        return self.product.all_properties()
-
     def set_data_all_properties(self):
-        self.data['all_properties'] = self.all_properties()
+        properties = self.product.all_properties()
+        self.data['all_properties'] = properties
