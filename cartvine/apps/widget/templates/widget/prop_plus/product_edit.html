@@ -316,7 +316,7 @@ $(document).ready(function(){
         self.showAddForm = ko.observable(false);
         self.selectedProperty = ko.observable();
         self.basicProperties = ko.observableArray([{% for o,v in object.get_data_options %}new ProductOption('basic', '{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
-        self.plusProperties = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o }}','{{ o|option_offset }}','{{ v }}'),{% endfor %}]);
+        self.plusProperties = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o|option_offset }}','{{ o|option_offset }}','{{ v }}'),{% endfor %}]);
 
         /**
         * method to process the form postback
@@ -341,9 +341,9 @@ $(document).ready(function(){
         self.blankVariant = new Variant(null,null,0,null,0,0,false,false,false,0,[]);
         self.selectedVariant = ko.observable(self.blankVariant);
         self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options %}new ProductOption('basic','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
-        self.extraProductOptions = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o }}','{{ o|option_offset }}','{{ v }}'),{% endfor %}]);
+        self.extraProductOptions = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o|option_offset }}','{{ o|option_offset }}','{{ v }}'),{% endfor %}]);
 
-        self.theFormName = '#form-variant-props';
+        self.theFormName = ko.observable('#form-variant-props');
         self.formTitle = ko.observable('');
         self.formSubmitMessage = ko.observable('');
         self.formPostUrl = ko.observable('');
@@ -538,7 +538,7 @@ $(document).ready(function(){
 
             submit_button.css('visibility','hidden');
             submit_button.attr('disabled',true);
-            console.log(KOView.theFormName())
+
             $.ajax({
               type: 'POST',
               url: KOView.formPostUrl(),
@@ -609,10 +609,8 @@ $(document).ready(function(){
 
     $('form.property-form button.submit-btn').live('click', function(event) {
         event.preventDefault();
-
         var formName = 'form#' + $(this).closest('form').attr('id');
         App.ProductView.theFormName(formName);
-
         App.submitModalWindow(App.ProductView, App.ProductView.processFormResponseObject, $(this).closest('td.form'));
     });
 
@@ -679,9 +677,9 @@ $(document).ready(function(){
     // Variant Helpers
     $('#editVariationModal a.submit-btn:last').live('click', function(event) {
         event.preventDefault();
-        App.submitModalWindow(App.VariantView, App.VariantView.processFormResponseObject, $('div#editVariationModal'));
+        App.submitModalWindow(App.VariantView, App.VariantView.processFormResponseObject, $(this).closest('form'));
     });
-    
+
     $('a.btn-modal-form').live('click', function(event) {
         event.preventDefault();
         var variant_pk = $(this).attr('data-variant_pk');

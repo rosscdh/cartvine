@@ -219,4 +219,5 @@ class ProductVariantView(FormView):
                 response['status'] = 'error'
                 response['message'] = unicode(_('Strange an error occurred; but were not sure what.'))
 
+
         return HttpResponse(json.dumps(response), content_type='text/json')

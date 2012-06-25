@@ -6,6 +6,7 @@ from django.template.defaultfilters import slugify
 
 from cartvine.utils import get_namedtuple_choices
 from models import Product, ProductVariant
+import re
 
 
 class ProductVariantForm(bootstrap.BootstrapForm):
@@ -148,11 +149,6 @@ class ProductVariantForm(forms.Form):
             cleaned_data[key] = self.data.get(key)
             slug_parts.append(str(cleaned_data[key]))
 
-
-        if len(self.data.getlist('extra_props')) > 0:
-            #slug_parts.append(cleaned_data[key])
-            pass
-
         if slug_parts is not None and len(slug_parts) > 0:
             variant_slug = slugify(' '.join(slug_parts))
         else:
@@ -170,11 +166,20 @@ class ProductVariantForm(forms.Form):
 
         cleaned_data['provider_id'] = self.initial['variant'].provider_id if hasattr(self.initial['variant'], 'provider_id') else None
 
+        # Set the initial options
+        for key,value in self.data.iteritems():
+            if re.search(r'option(\d+)', key):
+                cleaned_data[key] = value
+
         return cleaned_data
 
     def save(self):
-        for key, value in self.cleaned_data.items():
-            self.initial['variant'].data[key] = value
+        for key,value in self.cleaned_data.items():
+            if re.search(r'option(\d+)', key):
+                self.initial['variant'].set_property(key, value)
+            else:
+                self.initial['variant'].data[key] = value
+
 
         self.initial['variant'].sku = self.initial['variant'].data['sku']
         self.initial['variant'].inventory_quantity = self.initial['variant'].data['inventory_quantity']

@@ -221,9 +221,24 @@ class ProductVariant(models.Model):
     def basic_options(self):
         options = {}
         for option_id,o in Product.BASIC_OPTIONS.get_choices():
-            if option_id in self.data:
-                options[option_id] = self.data[option_id]
+            for o in self.data['all_properties']:
+                if option_id == o['option_id']:
+                    options[option_id] = o['value'] if hasattr(o,'value') else None
         return [(key, options[key]) for key in sorted(options.iterkeys())]
+
+    def set_property(self, option_id, value):
+        found = False
+        if 'all_properties' not in self.data or type(self.data['all_properties']) != type(dict):
+            self.set_data_all_properties()
+
+        for i,p in enumerate(self.data['all_properties']):
+            if p['option_id'] == option_id:
+                p['value'] = value
+                self.data['all_properties'][i] = p
+                found = True
+                break
+        return found
+
 
     def set_data_all_properties(self):
         properties = self.product.all_properties()

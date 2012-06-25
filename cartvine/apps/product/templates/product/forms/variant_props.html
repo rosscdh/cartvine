@@ -34,14 +34,15 @@
         <div data-bind="foreach: basicProductOptions()" class="control-group">
             <label class="control-label" for="input01" data-bind="text: value"></label>
             <div class="controls">
-                <input type="text" data-bind="attr: {'name': name, 'value': $parent.selectedVariant().get_value_for('basic', name)}"/>
+                <input type="text" data-bind="attr: {'name': internal_name, 'value': $parent.selectedVariant().get_value_for('basic', name)}"/>
             </div>
         </div>
         <!-- properties+ - thanks cartvine -->
         <div data-bind="foreach: extraProductOptions()" class="control-group">
             <label class="control-label" for="input01" data-bind="text: value"></label>
             <div class="controls">
-                <input type="text" data-bind="attr: {'name': name, 'value': $parent.selectedVariant().get_value_for('plus', name)}"/>
+                <span data-bind="html: internal_name"></span>
+                <input type="text" data-bind="attr: {'name': internal_name, 'value': $parent.selectedVariant().get_value_for('plus', name)}"/>
             </div>
         </div>
         <!--End custom variation variables-->
