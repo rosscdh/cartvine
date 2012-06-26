@@ -627,19 +627,21 @@ $(document).ready(function(){
         var element = $(this);
         var option_id = $(this).attr('data-option_id');
         var property_type = $(this).attr('data-property_type');
-
+        console.log(property_type)
         if (property_type == 'variant') {
             var variant_pk = $(this).attr('data-variant_pk');
             var url = '{% url "product:delete_variant" pk=0 %}';
             url = url.replace('0', variant_pk);
         }
-        $.ajax({
-          type: 'DELETE',
-          url: url
-        })
-        .success(function(data, textStatus, jqXHR) {
-            element.closest('tr').remove();
-        });
+        if (url != 'undefined') {
+            $.ajax({
+              type: 'DELETE',
+              url: url
+            })
+            .success(function(data, textStatus, jqXHR) {
+                element.closest('tr').remove();
+            });
+        }
 
     });
 

@@ -93,6 +93,13 @@ class ProductPropertiesView(FormView):
         return HttpResponse(json.dumps(response), content_type='text/json')
 
 
+class DeleteProductPropertyView(DetailView):
+    def delete(self, request, *args, **kwargs):
+        print kwargs
+        response = {}
+        return HttpResponse(json.dumps(response), content_type='text/json')
+
+
 class BaseProductPropertiesView(ProductPropertiesView):
     form_class = BaseProductPropertiesForm
 
@@ -222,6 +229,7 @@ class ProductVariantView(FormView):
 
         return HttpResponse(json.dumps(response), content_type='text/json')
 
+
 class VariantDeleteView(DeleteView):
     """
     Sub-class the DeleteView to restrict a User from deleting other 
@@ -233,3 +241,4 @@ class VariantDeleteView(DeleteView):
         super(VariantDeleteView, self).delete(request, *args, **kwargs)
         response = {}
         return HttpResponse(json.dumps(response), content_type='text/json')
+
