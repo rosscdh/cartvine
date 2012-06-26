@@ -202,6 +202,9 @@ class ProductVariant(models.Model):
     class Meta:
         ordering = ['position']
 
+    def __unicode__(self):
+        return u'%s' %(self.sku)
+
     def set_slug(self):
         if 'extra_options' in self.data:
             for i in self.data['extra_options']:
@@ -218,6 +221,7 @@ class ProductVariant(models.Model):
 
     def basic_options(self):
         options = {}
+        self.ensure_all_properties()
         for option_id,o in Product.BASIC_OPTIONS.get_choices():
             for o in self.data['all_properties']:
                 if option_id == o['option_id']:
@@ -243,6 +247,10 @@ class ProductVariant(models.Model):
     def ensure_all_properties(self):
         if 'all_properties' not in self.data or type(self.data['all_properties']) != type([]):
             self.set_data_all_properties()
+
+    def all_properties(self):
+        self.ensure_all_properties()
+        return self.data['all_properties']
 
     def set_data_all_properties(self):
         properties = self.product.all_properties()

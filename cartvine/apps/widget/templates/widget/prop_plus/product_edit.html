@@ -155,25 +155,6 @@
 								<th class="cen">(<i data-bind="text: App.VariantView.variantsList().length"></i> {% trans 'items' %})</th>
 							</tr>
 						</thead>
-                        <!-- <tbody class="variantList" data-bind="foreach: App.VariantView.variantsList()">
-                        <tr>
-                                <td class="cen"><input type="checkbox" class="option-variant" value=""/></td>
-                                <td class="value" data-bind="html: sku"></td>
-                                <td class="value"><span data-bind="html: App.VariantView.currencySymbol"></span><span data-bind="html: cost"></span></td>
-                                <td class="value" data-bind="html: inventory_quantity"></td>
-
-                                <td class="value"></td>
-
-                                <td class="value cen">
-                                    <div class="controls">
-                                        <a data-toggle="modal" data-variant_pk="{{ variant.pk }}" href="#editVariationModal" class="edit btn-modal-form"><i class="icon-pencil"></i></a>
-                                        <a href="" class="delete"><i class="icon-remove"></i></a>
-                                        <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tr>
-                        </tbody> -->
 						<tbody>
 						    {% for variant in variants %}
 						    <tr>
@@ -181,8 +162,8 @@
                                 <td class="value">{{variant.sku}}</td>
                                 <td class="value"><span data-bind="html: App.VariantView.currencySymbol"></span>{{variant.cost}}</td>
                                 <td class="value">{{variant.inventory_quantity}}</td>
-                                {% for option_id,option in variant.basic_options %}
-                                <td class="value">{{ option }}</td>
+                                {% for option in variant.all_properties|slice:"3" %}
+                                <td class="value">{{ option.value }}</td>
                                 {% endfor %}
                                 <td class="value cen">
                                     <div class="controls">
@@ -302,6 +283,12 @@ color: #da4f49;
 </div>
 {% endtplhandlebars %}
 
+<script type="text/javascript" id="data-variant_list">
+[{% for v in variants %}
+{ 'pk': '{{ v.pk }}', 'provider_id':'{{ v.provider_id }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'inventory_quantity': '{{ v.inventory_quantity }}', 'all_properties': { {% for o in v.all_properties %}'{{ o.option_id }}': {'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %} } }{% if not forloop.last %}, {% endif %}
+{% endfor %}]
+</script>
+
 <script type="text/javascript" src="{{ STATIC_URL }}knockoutjs/js/knockout-2.1.0.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -350,9 +337,10 @@ $(document).ready(function(){
 
         self.variantsList = ko.observableArray([]);
         var variant_list = eval($('script#data-variant_list').html());
+
         for (var i = 0; i < variant_list.length; i++) {
             v = variant_list[i];
-            self.variantsList.push(new Variant(v.pk,v.provider_id,v.cost,v.sku,v.compare_at_price,v.weight,v.taxable,v.requires_shipping,v.inventory_management,v.inventory_quantity,v.basic_options));
+            self.variantsList.push(new Variant(v.pk,v.provider_id,v.cost,v.sku,v.compare_at_price,v.weight,v.taxable,v.requires_shipping,v.inventory_management,v.inventory_quantity,v.all_properties));
         }
 
         self.updateVariantList = function(variant) {
@@ -387,7 +375,6 @@ $(document).ready(function(){
         self.updateSelectedVariant = function(variant) {
             self.formSubmitMessage('');
             self.selectedVariant(variant);
-            self.selectedVariant().setVariantBasicProperties();
             self.updateVariantPropsPostUrl();
 
             return self.selectedVariant
@@ -413,12 +400,12 @@ $(document).ready(function(){
         self.processFormResponseObject = function(response) {
             if (response.object != null) {
                 v = response.object;
-                self.updateVariantList(new Variant(v.pk,v.provider_id,v.price,v.sku,v.compare_at_price,v.grams,v.taxable,v.requires_shipping,v.inventory_policy,v.inventory_quantity,v.basic_options));
+                self.updateVariantList(new Variant(v.pk,v.provider_id,v.price,v.sku,v.compare_at_price,v.grams,v.taxable,v.requires_shipping,v.inventory_policy,v.inventory_quantity,v.all_properties));
             }
         }
     };
 
-    function Variant(pk,provider_id,cost,sku,compare_at_price,weight,taxable,requires_shipping,inventory_management,inventory_quantity,basic_product_options) {
+    function Variant(pk,provider_id,cost,sku,compare_at_price,weight,taxable,requires_shipping,inventory_management,inventory_quantity,all_properties) {
         var self = this;
         self.pk = pk;
         self.provider_id = provider_id;
@@ -430,23 +417,25 @@ $(document).ready(function(){
         self.requires_shipping = requires_shipping;
         self.inventory_management = inventory_management;
         self.inventory_quantity = inventory_quantity;
-        self.basic_product_options = basic_product_options;
-        self.all_properties = ko.observableArray([]);
+        self.all_properties = ko.observable(all_properties);
 
         self.init = function () {
-            self.setVariantBasicProperties()
+            console.log(self.all_properties())
         }
 
-        self.get_value_for = function (type,name) {
-            console.log(type+' '+name)
-            console.log(self.basic_product_options)
-        }
+        self.get_value_for = function (type,option_id) {
+            var requested_option_id = option_id;
+            var return_value = null;
+            console.log(type + ', '+ option_id)
+            console.log(self.all_properties())
+            $.each(self.all_properties(), function(option_id, object) {
+                if (option_id == requested_option_id) {
+                    console.log(option_id + ' == '+ requested_option_id + ': '+ object.value)
+                    return_value = object.value;
+                }
+            });
 
-        self.setVariantBasicProperties = function() {
-            // reset
-            self.all_properties([]);
-
-            //console.log(self.basic_product_options)
+            return return_value;
         }
 
         self.init();

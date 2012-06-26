@@ -30,6 +30,13 @@
         </div>
         <div class="clearfix"></div>
         <hr/>
+        <!-- all properties - thanks shopify  -->
+        <div data-bind="foreach: selectedVariant().all_properties()" class="control-group">
+            <label class="control-label" for="input01" data-bind="text: value"></label>
+            <div class="controls">
+                <input type="text" data-bind="attr: {'name': internal_name, 'value': selectedVariant().get_value_for('basic', name)}"/>
+            </div>
+        </div>
         <!-- basic properties - thanks shopify  -->
         <div data-bind="foreach: basicProductOptions()" class="control-group">
             <label class="control-label" for="input01" data-bind="text: value"></label>
@@ -85,9 +92,3 @@
     <a href="#" class="btn btn-warning submit-btn">{% trans 'Save changes' %}</a>
 </div>
 </div>
-
-<script type="text/javascript" id="data-variant_list">
-[{% for v in variants %}
-{ 'pk': '{{ v.pk }}', 'provider_id':'{{ v.provider_id }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'inventory_quantity': '{{ v.inventory_quantity }}', 'all_properties': { {% for o in v.data.all_properties %}'{{ o.option_id }}': {'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %} } }{% if not forloop.last %}, {% endif %}
-{% endfor %}]
-</script>
