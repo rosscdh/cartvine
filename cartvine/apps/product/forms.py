@@ -176,6 +176,7 @@ class ProductVariantForm(forms.Form):
     def save(self):
         for key,value in self.cleaned_data.items():
             if re.search(r'option(\d+)', key):
+                print key
                 self.initial['variant'].set_property(key, value)
             else:
                 self.initial['variant'].data[key] = value

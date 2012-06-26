@@ -316,7 +316,7 @@ $(document).ready(function(){
         self.showAddForm = ko.observable(false);
         self.selectedProperty = ko.observable();
         self.basicProperties = ko.observableArray([{% for o,v in object.get_data_options %}new ProductOption('basic', '{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
-        self.plusProperties = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o|option_offset }}','{{ o|option_offset }}','{{ v }}'),{% endfor %}]);
+        self.plusProperties = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
 
         /**
         * method to process the form postback
@@ -341,7 +341,7 @@ $(document).ready(function(){
         self.blankVariant = new Variant(null,null,0,null,0,0,false,false,false,0,[]);
         self.selectedVariant = ko.observable(self.blankVariant);
         self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options %}new ProductOption('basic','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
-        self.extraProductOptions = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o|option_offset }}','{{ o|option_offset }}','{{ v }}'),{% endfor %}]);
+        self.extraProductOptions = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
 
         self.theFormName = ko.observable('#form-variant-props');
         self.formTitle = ko.observable('');
@@ -438,7 +438,8 @@ $(document).ready(function(){
         }
 
         self.get_value_for = function (type,name) {
-            //console.log(type+' '+name)
+            console.log(type+' '+name)
+            console.log(self.basic_product_options)
         }
 
         self.setVariantBasicProperties = function() {
@@ -572,7 +573,7 @@ $(document).ready(function(){
                         $('#editVariationModal').modal('hide');
                     }, 1500);
                     // @TEMPORARY @TODO remove this and update inline
-                    document.location.reload();
+//                    document.location.reload();
                 }
                 submit_button.css('visibility','visible');
                 submit_button.attr('disabled',false);

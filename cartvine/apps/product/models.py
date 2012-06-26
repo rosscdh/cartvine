@@ -138,26 +138,24 @@ class Product(models.Model):
 
     @property
     def has_properties_plus(self):
-        return True if 'properties_plus' in self.data else False
+        return True if 'properties_plus' in self.data and len(self.data['properties_plus'].keys()) > 0 else False
 
     def reset_properties_plus(self):
         self.data['properties_plus'] = {}
 
     def get_next_properties_plus_option_id(self):
         if not self.has_properties_plus:
-            index = 1
+            self.reset_properties_plus()
+            index = self.OPTION_OFFSET + 1
         else:
-            index = len(self.data['properties_plus']) + 1
+            index = (self.OPTION_OFFSET + 1) + len(self.data['properties_plus'].keys())
         return 'option%d' %(index,)
 
     def set_properties_plus(self, value, option_id=None):
         if not self.has_properties_plus:
             self.reset_properties_plus()
         else:
-            if option_id not in [None,'']:
-                if value != self.data['properties_plus'][option_id]:
-                    # is a change, so update variants
-                    pass
+            pass
 
         if option_id in [None,'']:
             option_id = self.get_next_properties_plus_option_id()
@@ -228,8 +226,8 @@ class ProductVariant(models.Model):
 
     def set_property(self, option_id, value):
         found = False
-        if 'all_properties' not in self.data or type(self.data['all_properties']) != type(dict):
-            self.set_data_all_properties()
+
+        self.ensure_all_properties()
 
         for i,p in enumerate(self.data['all_properties']):
             if p['option_id'] == option_id:
@@ -237,8 +235,14 @@ class ProductVariant(models.Model):
                 self.data['all_properties'][i] = p
                 found = True
                 break
+
+        if found is False:
+            self.data['all_properties'].append({"option_id": option_id, "name": None, "value": value})
         return found
 
+    def ensure_all_properties(self):
+        if 'all_properties' not in self.data or type(self.data['all_properties']) != type([]):
+            self.set_data_all_properties()
 
     def set_data_all_properties(self):
         properties = self.product.all_properties()

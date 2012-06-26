@@ -41,7 +41,6 @@
         <div data-bind="foreach: extraProductOptions()" class="control-group">
             <label class="control-label" for="input01" data-bind="text: value"></label>
             <div class="controls">
-                <span data-bind="html: internal_name"></span>
                 <input type="text" data-bind="attr: {'name': internal_name, 'value': $parent.selectedVariant().get_value_for('plus', name)}"/>
             </div>
         </div>
@@ -89,6 +88,6 @@
 
 <script type="text/javascript" id="data-variant_list">
 [{% for v in variants %}
-{ 'pk': '{{ v.pk }}', 'provider_id':'{{ v.provider_id }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'inventory_quantity': '{{ v.inventory_quantity }}', 'basic_options': { {% for option_id,o in v.basic_options.iteritems %}'{{ option_id }}': {'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %} } }{% if not forloop.last %}, {% endif %}
+{ 'pk': '{{ v.pk }}', 'provider_id':'{{ v.provider_id }}', 'cost': '{{ v.cost }}', 'sku': '{{ v.sku|default:"" }}', 'compare_at_price':'{{ v.data.compare_at_price }}', 'weight':'{{ v.weight_as_kg }}', 'taxable':{{ v.data.taxable|lower }}, 'requires_shipping':{{ v.data.requires_shipping|lower }}, 'inventory_management':'{{ v.data.inventory_management }}', 'inventory_quantity': '{{ v.inventory_quantity }}', 'all_properties': { {% for o in v.data.all_properties %}'{{ o.option_id }}': {'name':'{{ o.name }}', 'value':'{{ o.value }}'},{% endfor %} } }{% if not forloop.last %}, {% endif %}
 {% endfor %}]
 </script>
