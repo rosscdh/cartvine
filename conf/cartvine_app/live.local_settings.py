@@ -4,6 +4,9 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__+ '/../'))
 
 SITE_ID = 1
 
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
+
 USE_ETAGS = True
 
 DATABASES = {
