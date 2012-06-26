@@ -67,6 +67,7 @@ def sync_products(shop):
                 pv.inventory_quantity = v['inventory_quantity']
                 pv.position = v['position']
                 pv.data = v
+                pv.ensure_all_properties()
                 pv.save()
 
     return None

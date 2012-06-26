@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render_to_response, redirect
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.views.generic import DetailView, ListView, FormView
+from django.views.generic import DetailView, ListView, FormView, DeleteView
 from django.utils import simplejson as json
 from django.http import QueryDict
 from django.shortcuts import get_object_or_404
@@ -220,4 +220,16 @@ class ProductVariantView(FormView):
                 response['message'] = unicode(_('Strange an error occurred; but were not sure what.'))
 
 
+        return HttpResponse(json.dumps(response), content_type='text/json')
+
+class VariantDeleteView(DeleteView):
+    """
+    Sub-class the DeleteView to restrict a User from deleting other 
+    user's data.
+    """
+    success_url = '/'
+    success_message = "Deleted Successfully"
+    def delete(self, request, *args, **kwargs):
+        super(VariantDeleteView, self).delete(request, *args, **kwargs)
+        response = {}
         return HttpResponse(json.dumps(response), content_type='text/json')

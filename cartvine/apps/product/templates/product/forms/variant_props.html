@@ -1,94 +1,87 @@
 {% load i18n templatetag_handlebars product_tags %}
 {% load url from future %}
-<div id="editVariationModal" class="modal hide fade">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal">&times;</button>
-<h3 id="title-action" data-bind="text: formTitle"></h3>
-<div id="form-variant-message" class="form-message" data-bind="html: formSubmitMessage"></div>
-</div>
-<div class="modal-body">
-    <form id="form-variant-props" method="POST" class="form-horizontal">{% csrf_token %}
-        <fieldset>
-        <!-- The primary most important required Fields -->
-        <div>
-            <div class="span2">
-                <label>{% trans 'SKU' %}</label>
-                <input type="text" name="sku" id="" class="span2" data-bind="value: selectedVariant().sku"/>
-            </div>
-            <div class="span2">
-                <label>{% trans 'Selling Price' %}</label>
-                <div class="input-append">
-                    <input type="text" name="price" id="" class="span1" data-bind="value: selectedVariant().cost"/><span class="add-on" data-bind="html: $parent.currencySymbol"></span>
+<div id="editVariationModal" data-bind="with: VariantView" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3 id="title-action" data-bind="text: formTitle"></h3>
+        <div id="form-variant-message" class="form-message" data-bind="html: formSubmitMessage"></div>
+    </div>
+    <div class="modal-body">
+        <form id="form-variant-props" method="POST" class="form-horizontal">{% csrf_token %}
+            <fieldset>
+            <!-- The primary most important required Fields -->
+            <div>
+                <div class="span2">
+                    <label>{% trans 'SKU' %}</label>
+                    <input type="text" name="sku" id="" class="span2" data-bind="value: selectedVariant().sku"/>
+                </div>
+                <div class="span2">
+                    <label>{% trans 'Selling Price' %}</label>
+                    <div class="input-append">
+                        <input type="text" name="price" id="" class="span1" data-bind="value: selectedVariant().cost"/><span class="add-on" data-bind="html: $parent.currencySymbol"></span>
+                    </div>
+                </div>
+                <div class="span2">
+                    <label>{% trans 'Stock Level' %}</label>
+                    <div class="input-prepend">
+                        <span class="add-on">#</span><input type="text" name="inventory_quantity" id="" class="span1" data-bind="value: selectedVariant().inventory_quantity"/>
+                    </div>
                 </div>
             </div>
-            <div class="span2">
-                <label>{% trans 'Stock Level' %}</label>
-                <div class="input-prepend">
-                    <span class="add-on">#</span><input type="text" name="inventory_quantity" id="" class="span1" data-bind="value: selectedVariant().inventory_quantity"/>
+            <div class="clearfix"></div>
+            <hr/>
+            <!-- basic properties - thanks shopify  -->
+            <div data-bind="foreach: basicProductOptions()" class="control-group">
+                <label class="control-label" for="input01" data-bind="text: value"></label>
+                <div class="controls">
+                    <input type="text" data-bind="attr: {'name': internal_name, 'value': $parent.selectedVariant().get_value_for('basic', name)}"/>
                 </div>
             </div>
-        </div>
-        <div class="clearfix"></div>
-        <hr/>
-        <!-- all properties - thanks shopify  -->
-        <div data-bind="foreach: selectedVariant().all_properties()" class="control-group">
-            <label class="control-label" for="input01" data-bind="text: value"></label>
-            <div class="controls">
-                <input type="text" data-bind="attr: {'name': internal_name, 'value': selectedVariant().get_value_for('basic', name)}"/>
-            </div>
-        </div>
-        <!-- basic properties - thanks shopify  -->
-        <div data-bind="foreach: basicProductOptions()" class="control-group">
-            <label class="control-label" for="input01" data-bind="text: value"></label>
-            <div class="controls">
-                <input type="text" data-bind="attr: {'name': internal_name, 'value': $parent.selectedVariant().get_value_for('basic', name)}"/>
-            </div>
-        </div>
-        <!-- properties+ - thanks cartvine -->
-        <div data-bind="foreach: extraProductOptions()" class="control-group">
-            <label class="control-label" for="input01" data-bind="text: value"></label>
-            <div class="controls">
-                <input type="text" data-bind="attr: {'name': internal_name, 'value': $parent.selectedVariant().get_value_for('plus', name)}"/>
-            </div>
-        </div>
-        <!--End custom variation variables-->
-        <hr/>
-        <div>
-            <div class="span2">
-                <label>{% trans 'Compare at price' %}</label>
-                <div class="input-append">
-                    <input type="text" name="compare_at_price" id="" class="span1" data-bind="value: selectedVariant().compare_at_price"/><span class="add-on" data-bind="html: $parent.currencySymbol"></span>
+            <!-- properties+ - thanks cartvine -->
+            <div data-bind="foreach: extraProductOptions()" class="control-group">
+                <label class="control-label" for="input01" data-bind="text: value"></label>
+                <div class="controls">
+                    <input type="text" data-bind="attr: {'name': internal_name, 'value': $parent.selectedVariant().get_value_for('plus', name)}"/>
                 </div>
-            </div>  
-            <div class="span2">
-            <label>{% trans 'Weight' %}</label>
+            </div>
+            <!--End custom variation variables-->
+            <hr/>
+            <div>
+                <div class="span2">
+                    <label>{% trans 'Compare at price' %}</label>
+                    <div class="input-append">
+                        <input type="text" name="compare_at_price" id="" class="span1" data-bind="value: selectedVariant().compare_at_price"/><span class="add-on" data-bind="html: $parent.currencySymbol"></span>
+                    </div>
+                </div>  
+                <div class="span2">
+                <label>{% trans 'Weight' %}</label>
 
-                <div class="input-append">
-                    <input type="text" name="grams" id="" class="span1" data-bind="value: selectedVariant().weight"/><span class="add-on">{% trans 'grams' %}</span>
+                    <div class="input-append">
+                        <input type="text" name="grams" id="" class="span1" data-bind="value: selectedVariant().weight"/><span class="add-on">{% trans 'grams' %}</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="span4">
-            <br />
-            <label>
-                <input type="checkbox" name="taxable" id="" data-bind="checked: selectedVariant().taxable"/>
-                {% trans 'Charge taxes' %}
-            </label>
-            <label>
-                <input type="checkbox" name="requires_shipping" id="" data-bind="checked: selectedVariant().requires_shipping"/>
-                {% trans 'Require shipping address' %}
-            </label>
-            <label>
-                <input type="checkbox" name="inventory_policy" id="" data-bind="checked: selectedVariant().inventory_management"/>
-                {% trans 'Track stock levels' %}
-            </label>
-        </div>
-        <!--Start standard variation variables-->
-        </fieldset>
-    </form>
-</div>
-<div class="modal-footer">
-    <a href="#" class="btn" data-dismiss="modal" >{% trans 'Close' %}</a>
-    <a href="#" class="btn btn-warning submit-btn">{% trans 'Save changes' %}</a>
-</div>
+            <div class="span4">
+                <br />
+                <label>
+                    <input type="checkbox" name="taxable" id="" data-bind="checked: selectedVariant().taxable"/>
+                    {% trans 'Charge taxes' %}
+                </label>
+                <label>
+                    <input type="checkbox" name="requires_shipping" id="" data-bind="checked: selectedVariant().requires_shipping"/>
+                    {% trans 'Require shipping address' %}
+                </label>
+                <label>
+                    <input type="checkbox" name="inventory_policy" id="" data-bind="checked: selectedVariant().inventory_management"/>
+                    {% trans 'Track stock levels' %}
+                </label>
+            </div>
+            <!--Start standard variation variables-->
+            </fieldset>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal" >{% trans 'Close' %}</a>
+        <a href="#" class="btn btn-warning submit-btn">{% trans 'Save changes' %}</a>
+    </div>
 </div>

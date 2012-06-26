@@ -166,9 +166,9 @@
                                 <td class="value">{{ option.value }}</td>
                                 {% endfor %}
                                 <td class="value cen">
-                                    <div class="controls">
+                                    <div class="property-controls controls">
                                         <a data-toggle="modal" data-variant_pk="{{ variant.pk }}" href="#editVariationModal" class="edit btn-modal-form"><i class="icon-pencil"></i></a>
-                                        <a href="" class="delete"><i class="icon-remove"></i></a>
+                                        <a href="" data-option_id="" data-property_type="variant" data-variant_pk="{{ variant.pk }}" class="delete"><i class="icon-remove"></i></a>
                                         <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a>
                                     </div>
                                 </td>
@@ -202,9 +202,9 @@
     </div>
 </div>
 
-<div data-bind="with: VariantView">
+
 {% include 'product/forms/variant_props.html' %}
-</div>
+
 
 {% block css %}
 <style>
@@ -381,11 +381,11 @@ $(document).ready(function(){
         }
 
         self.updateVariantPropsPostUrl = function() {
-            var url = "{% url 'product:variant' slug=object.slug variant_pk=999 %}";
+            var url = "{% url 'product:variant' slug=object.slug variant_pk=0 %}";
 
             if (self.selectedVariant().pk !== null) {
                 self.formTitle('{% trans "Edit a Variant" %}');
-                url = url.replace('999', self.selectedVariant().pk) + '?provider_id=' + self.selectedVariant().provider_id;
+                url = url.replace('0', self.selectedVariant().pk) + '?provider_id=' + self.selectedVariant().provider_id;
             }else{
                 self.formTitle('{% trans "Add a Variant" %}');
                 url = "{% url 'product:add_variant' slug=object.slug %}";
@@ -420,17 +420,15 @@ $(document).ready(function(){
         self.all_properties = ko.observable(all_properties);
 
         self.init = function () {
-            console.log(self.all_properties())
         }
 
         self.get_value_for = function (type,option_id) {
             var requested_option_id = option_id;
             var return_value = null;
-            console.log(type + ', '+ option_id)
-            console.log(self.all_properties())
+
             $.each(self.all_properties(), function(option_id, object) {
                 if (option_id == requested_option_id) {
-                    console.log(option_id + ' == '+ requested_option_id + ': '+ object.value)
+                console.log(option_id+'  ==  '+requested_option_id + ' : '+ object.value)
                     return_value = object.value;
                 }
             });
@@ -622,6 +620,27 @@ $(document).ready(function(){
         }else{
             target.find('div.controls').remove();
         }
+    });
+
+    $('div.property-controls a.delete').live('click', function(event) {
+        event.preventDefault();
+        var element = $(this);
+        var option_id = $(this).attr('data-option_id');
+        var property_type = $(this).attr('data-property_type');
+
+        if (property_type == 'variant') {
+            var variant_pk = $(this).attr('data-variant_pk');
+            var url = '{% url "product:delete_variant" pk=0 %}';
+            url = url.replace('0', variant_pk);
+        }
+        $.ajax({
+          type: 'DELETE',
+          url: url
+        })
+        .success(function(data, textStatus, jqXHR) {
+            element.closest('tr').remove();
+        });
+
     });
 
     $('div.property-controls a.edit').live('click', function(event) {
