@@ -83,6 +83,10 @@ class Product(models.Model):
     def tags(self):
         return self.data['tags'].split() if 'tags' in self.data and self.data['tags'] is not None else None
 
+    def get_images_src(self):
+        return self.data['images'] if 'images' in self.data and isinstance(self.data['images'], type([])) else None
+
+# ----- PROPERTY METHODS -----
     def compile_basic_properties_from_variants(self, variant_list):
         """ @KEYMETHOD """
         for v in variant_list:
@@ -117,7 +121,6 @@ class Product(models.Model):
             self.data['all_properties'].append(new_property)
         return found
 
-# ----- DEPRECIATING METHODS -----
     def basic_properties(self, options=None):
         """ @KEYMETHOD """
         basic_properties = dict({})
@@ -151,11 +154,7 @@ class Product(models.Model):
                 colors[k] = crange[c]
                 c = c+1
         return colors
-# ----- END DEPRECIATING METHODS -----
-
-    def get_images_src(self):
-        return self.data['images'] if 'images' in self.data and isinstance(self.data['images'], type([])) else None
-
+# ----- END PROPERTY METHODS -----
 
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product)
