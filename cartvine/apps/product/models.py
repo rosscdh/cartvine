@@ -83,97 +83,65 @@ class Product(models.Model):
     def tags(self):
         return self.data['tags'].split() if 'tags' in self.data and self.data['tags'] is not None else None
 
-    def get_variant_prop_groups(self, options=None):
-        if options is None:
-            options = {}
-        #assemble variant options
-        for v in self.data['variants']:
-            for option_id,o in self.BASIC_OPTIONS.get_choices():
-                if option_id not in options:
-                    options[option_id] = {'name':option_id, 'value': [v[option_id]]}
-                else:
-                    options[option_id]['value'].append(v[option_id])
-        return options
-
-    def get_data_options(self, options=None):
+    def compile_basic_properties_from_variants(self, variant_list):
         """ @KEYMETHOD """
-        if options is None:
-            options = {}
-            for option_id,o in self.BASIC_OPTIONS.get_choices():
-                options[option_id] = None
+        for v in variants:
+            for basic_option in Product.BASIC_OPTIONS.get_choices():
+                self.set_property(option_id=basic_option, value=v[basic_option])
 
-        if 'options' not in self.data:
-            self.data['options'] = options
+    def ensure_all_properties(self):
+        if 'all_properties' not in self.data or type(self.data['all_properties']) != type([]):
+            self.set_data_all_properties()
 
-        for i,o in enumerate(self.data['options']):
-            option_id = 'option%s'%(i+1,)
-            options[option_id] = o['name']
+    def all_properties(self):
+        self.ensure_all_properties()
+        return self.data['all_properties']
 
-        return [(key, options[key]) for key in sorted(options.iterkeys())]
+    def set_data_all_properties(self):
+        self.data['all_properties'] = []
 
-    def basic_props(self):
-        """ assemble properties and lis of variant options uniquified ordered by name.. option1 option2... """
-        basic = []
-        options = self.get_data_options(self.get_variant_prop_groups())
-        for option_id,name in self.BASIC_OPTIONS.get_choices():
-            p = options[option_id]
-            # append the id to the p object
-            p['option_id'] = option_id
-            p['name'] = name
-            basic.append(p)
-        return basic
+    def set_property(self, option_id, value):
+        found = False
 
-    @property
-    def has_basic_properties(self):
-        return True if 'properties_basic' in self.data else False
+        self.ensure_all_properties()
 
-    def reset_basic_properties(self):
-        self.data['properties_basic'] = {}
-        for v in self.productvariant_set.all():
-            for p in v.all_properties():
-                self.data['properties_basic'][p['option_id']] = get_property_dict(option_id=p['option_id'], name=p['name'], value=None)
+        for i,p in enumerate(self.data['all_properties']):
+            if p['option_id'] == option_id:
+                p['value'] = value
+                self.data['all_properties'][i] = p
+                found = True
+                break
 
-    def set_basic_property(self, value, option_id):
-        if not self.has_basic_properties:
-            self.reset_basic_properties()
+        if found is False:
+            new_property = get_property_dict(option_id=option_id, name=value, value=None)
+            self.data['all_properties'].append(new_property)
+        return found
 
-        # if value != self.data['properties_basic'][option_id]:
-        #     # is a change so update variants
-        #     self.data['properties_basic'][option_id] = value
+# ----- DEPRECIATING METHODS -----
+    def basic_properties(self, options=None):
+        """ @KEYMETHOD """
+        basic_properties = dict({})
+        options = [option_id for option_id,v in self.BASIC_OPTIONS.get_choices()]
 
-        self.data['properties_basic'][option_id] = value
+        for p in self.all_properties():
+            if p['option_id'] in options:
+                basic_properties[p['option_id']] = p['name']
 
-    @property
-    def has_properties_plus(self):
-        return True if 'properties_plus' in self.data and len(self.data['properties_plus'].keys()) > 0 else False
+        return [(key, basic_properties[key]) for key in sorted(basic_properties.iterkeys())]
 
-    def reset_properties_plus(self):
-        self.data['properties_plus'] = {}
+    def plus_properties(self, options=None):
+        """ @KEYMETHOD """
+        plus_properties = dict({})
+        options = [option_id for option_id,v in self.BASIC_OPTIONS.get_choices()]
 
-    def get_next_properties_plus_option_id(self):
-        if not self.has_properties_plus:
-            self.reset_properties_plus()
-            index = self.OPTION_OFFSET + 1
-        else:
-            index = (self.OPTION_OFFSET + 1) + len(self.data['properties_plus'].keys())
-        return 'option%d' %(index,)
+        for p in self.all_properties():
+            if p['option_id'] not in options:
+                plus_properties[p['option_id']] = p['name']
 
-    def set_properties_plus(self, value, option_id=None):
-        if not self.has_properties_plus:
-            self.reset_properties_plus()
-        else:
-            pass
+        return [(key, plus_properties[key]) for key in sorted(plus_properties.iterkeys())]
 
-        if option_id in [None,'']:
-            option_id = self.get_next_properties_plus_option_id()
-
-        self.data['properties_plus'][option_id] = value
-
-    def properties_plus(self):
-        return [] if not self.has_properties_plus else [(key, self.data['properties_plus'][key]) for key in sorted(self.data['properties_plus'].iterkeys())]
-
-    def properties_plus_colors(self):
-        props = self.properties_plus()
+    def property_colors(self):
+        props = self.plus_properties()
         num_props = len(props)
         colors = {}
         if num_props > 0:
@@ -183,14 +151,7 @@ class Product(models.Model):
                 colors[k] = crange[c]
                 c = c+1
         return colors
-
-    def all_properties(self):
-        props = self.get_data_options() + self.properties_plus()
-        return [{'option_id':option_id, 'name':name } for option_id,name in props]
-
-    def set_data_all_properties(self):
-        self.data['all_properties'] = self.all_properties()
-
+# ----- END DEPRECIATING METHODS -----
 
     def get_images_src(self):
         return self.data['images'] if 'images' in self.data and isinstance(self.data['images'], type([])) else None

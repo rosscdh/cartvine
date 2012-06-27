@@ -40,19 +40,6 @@
                                 <td class="value" data-option_id="vendor"><span>{{ object.data.vendor }}</span></td>
                             </tr>
                         </tbody>
-<!--                         <tbody class="basicProperties">
-                            {% for property in object.basic_props %}
-                            <tr data-bind="event: {mouseover: $parent.showControls, mouseout: $parent.hideControls}">
-                                <td class="name" data-property_type="basic" data-option_id="{{ property.option_id }}">
-                                    <span class="value">{{ property.name }}</span>
-                                    <div data-property_type="basic" class="pull-right"><span class="tiny" style="color:{{ property.option_id|option_color }};">{{ property.option_id }}</span></div>
-                                </td>
-                                <td class="value" data-option_id="{{ property.option_id }}">
-                                    {% for p in property.value %}<span class="label label-info">{{ p }}</span>&nbsp;{% endfor %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody> -->
                         <tbody class="basicProperties" data-bind="foreach: basicProperties">
                             <tr data-bind="event: {mouseover: $parent.showControls, mouseout: $parent.hideControls}">
                                 <td class="name" data-property_type="basic"  data-bind="attr: {'data-option_id': internal_name}">
@@ -149,7 +136,7 @@
 								<th>SKU</th>
 								<th>Price</th>
 								<th>In Stock</th>
-                                {% for option_id,option in object.get_data_options %}
+                                {% for option_id,option in object.basic_properties %}
 								<th>{{ option }}</th>
 								{% endfor %}
 								<th class="cen">(<i data-bind="text: App.VariantView.variantsList().length"></i> {% trans 'items' %})</th>
@@ -302,8 +289,8 @@ $(document).ready(function(){
         self.theFormName = ko.observable('form#addPlusProperty');
         self.showAddForm = ko.observable(false);
         self.selectedProperty = ko.observable();
-        self.basicProperties = ko.observableArray([{% for o,v in object.get_data_options %}new ProductOption('basic', '{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
-        self.plusProperties = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
+        self.basicProperties = ko.observableArray([{% for o,v in object.basic_properties %}new ProductOption('basic', '{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
+        self.plusProperties = ko.observableArray([{% for o,v in object.plus_properties %}new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
 
         /**
         * method to process the form postback
@@ -327,8 +314,8 @@ $(document).ready(function(){
 
         self.blankVariant = new Variant(null,null,0,null,0,0,false,false,false,0,[]);
         self.selectedVariant = ko.observable(self.blankVariant);
-        self.basicProductOptions = ko.observableArray([{% for o,v in object.get_data_options %}new ProductOption('basic','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
-        self.extraProductOptions = ko.observableArray([{% for o,v in object.properties_plus %}new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
+        self.basicProductOptions = ko.observableArray([{% for o,v in object.basic_properties %}new ProductOption('basic','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
+        self.extraProductOptions = ko.observableArray([{% for o,v in object.plus_properties %}new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
 
         self.theFormName = ko.observable('#form-variant-props');
         self.formTitle = ko.observable('');
@@ -460,7 +447,7 @@ $(document).ready(function(){
         self.currentPropertyTrHtml = null;
 
         self.basicColors = [{% for c in object.OPTION_COLORS.get_values %}'{{ c }}',{% endfor %}];
-        self.optionColors = { {% for o,c in object.properties_plus_colors.iteritems %}"{{ o }}":"{{ c }}",{% endfor %} };
+        self.optionColors = { {% for o,c in object.property_colors.iteritems %}"{{ o }}":"{{ c }}",{% endfor %} };
 
         self.getColorForOption = function(option_id) {
             basic = ['option1', 'option2', 'option3'];

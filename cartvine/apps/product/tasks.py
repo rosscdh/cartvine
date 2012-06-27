@@ -22,14 +22,13 @@ def sync_products(shop):
     Called on login/install """
 
     shop.activate_shopify_session()
+    latest_product = None
 
     try:
         latest_product = Product.objects.filter(shop=shop).latest('provider_id')
     except Product.DoesNotExist:
         # No Products stored locally so simple get them all from the shop
         logger.info('No Products stored locally for %s so get all from the Shopify API'%(shop,))
-
-        latest_product = None
         shopify_products = shopify.Product.find()
 
     if latest_product:
@@ -42,9 +41,13 @@ def sync_products(shop):
         logger.info('%d new Products found for %s' %(len(shopify_products),shop,))
 
         for product in shopify_products:
-            # should use get_or_create here?
+            # extract variants
+            variants = [v.attributes for v in product.variants]
+
+            # use tmp dict
             safe_attribs = product.__dict__['attributes']
-            safe_attribs['variants'] = [v.attributes for v in product.variants]
+            # dont forget to override items that have non JSON serializable objects
+            safe_attribs['variants'] = None
             safe_attribs['options'] = [o.attributes for o in product.options]
             safe_attribs['featured_image'] = product.attributes['images'][0].attributes['src'] if len(product.attributes['images']) > 0 else None
             if len(product.attributes['images']) > 0:
@@ -56,17 +59,16 @@ def sync_products(shop):
             p.data = safe_attribs
             p.name = product.title
             p.slug = slugify(product.title)
-            if not p.has_basic_properties:
-                p.reset_basic_properties()
+            p.compile_basic_properties_from_variants(variants)
             p.save()
 
             # Do variants
-            for v in product.variants:
+            for v in variants:
                 pv, is_new = ProductVariant.objects.get_or_create(product=p, provider_id=v['id'])
+                pv.data = v
                 pv.sku = v['sku']
                 pv.inventory_quantity = v['inventory_quantity']
                 pv.position = v['position']
-                pv.data = v
                 pv.ensure_all_properties()
                 pv.save()
 
