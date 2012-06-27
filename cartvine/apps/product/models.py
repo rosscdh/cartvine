@@ -85,9 +85,9 @@ class Product(models.Model):
 
     def compile_basic_properties_from_variants(self, variant_list):
         """ @KEYMETHOD """
-        for v in variants:
-            for basic_option in Product.BASIC_OPTIONS.get_choices():
-                self.set_property(option_id=basic_option, value=v[basic_option])
+        for v in variant_list:
+            for option_id,basic_option in Product.BASIC_OPTIONS.get_choices():
+                self.set_property(option_id=option_id, value=v[option_id])
 
     def ensure_all_properties(self):
         if 'all_properties' not in self.data or type(self.data['all_properties']) != type([]):
