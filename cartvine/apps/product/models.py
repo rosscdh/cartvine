@@ -93,8 +93,14 @@ class Product(models.Model):
             for option_id,basic_option in Product.BASIC_OPTIONS.get_choices():
                 self.set_property(option_id=option_id, value=v[option_id])
 
-    def ensure_all_properties(self):
+    def valid_properties_list(self):
         if 'all_properties' not in self.data or type(self.data['all_properties']) != type([]):
+            return False
+        else:
+            return True
+
+    def ensure_all_properties(self):
+        if not self.valid_properties_list():
             self.set_data_all_properties()
 
     def all_properties(self):
@@ -104,14 +110,21 @@ class Product(models.Model):
     def set_data_all_properties(self):
         self.data['all_properties'] = []
 
-    def set_property(self, option_id, value):
+    def ensure_option_id(self, option_id=None):
+        if option_id in [None,'',False]:
+            option_id = self.get_next_properties_plus_option_id()
+        return option_id
+
+    def set_property(self, option_id=None, value=None):
         found = False
+
+        option_id = self.ensure_option_id(option_id)
 
         self.ensure_all_properties()
 
-        for i,p in enumerate(self.data['all_properties']):
+        for i,p in enumerate(self.all_properties()):
             if p['option_id'] == option_id:
-                p['value'] = value
+                p['name'] = value # This is the important line .. in Property name==value and in Variant value==value
                 self.data['all_properties'][i] = p
                 found = True
                 break
@@ -142,6 +155,13 @@ class Product(models.Model):
                 plus_properties[p['option_id']] = p['name']
 
         return [(key, plus_properties[key]) for key in sorted(plus_properties.iterkeys())]
+
+    def get_next_properties_plus_option_id(self):
+        if not self.valid_properties_list():
+            index = 1
+        else:
+            index = len(self.all_properties()) + 1
+        return 'option%d' %(index,)
 
     def property_colors(self):
         props = self.plus_properties()
@@ -195,12 +215,14 @@ class ProductVariant(models.Model):
                     options[option_id] = o['value'] if hasattr(o,'value') else None
         return [(key, options[key]) for key in sorted(options.iterkeys())]
 
-    def set_property(self, option_id, value):
+    def set_property(self, option_id=None, value=None):
         found = False
+
+        option_id = self.product.ensure_option_id(option_id)
 
         self.ensure_all_properties()
 
-        for i,p in enumerate(self.data['all_properties']):
+        for i,p in enumerate(self.product.all_properties()):
             if p['option_id'] == option_id:
                 p['value'] = value
                 self.data['all_properties'][i] = p

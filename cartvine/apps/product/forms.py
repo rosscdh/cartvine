@@ -86,7 +86,7 @@ class BasicProductPropertiesForm(forms.Form):
         return self.cleaned_data['value'].strip()
 
     def save(self):
-        self.initial['product'].set_basic_property(self.cleaned_data['value'], self.cleaned_data['option_id'])
+        self.initial['product'].set_property(self.cleaned_data['option_id'], self.cleaned_data['value'])
         self.initial['product'].save()
         return self.initial['product']
 
@@ -102,7 +102,7 @@ class PlusProductPropertiesForm(forms.Form):
         return self.cleaned_data['value'].strip()
 
     def save(self):
-        self.initial['product'].set_properties_plus(self.cleaned_data['value'], self.cleaned_data['option_id'])
+        self.initial['product'].set_property(self.cleaned_data['option_id'], self.cleaned_data['value'])
         self.initial['product'].save()
         return self.initial['product']
 

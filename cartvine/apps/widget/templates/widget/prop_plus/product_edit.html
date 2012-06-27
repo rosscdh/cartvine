@@ -432,6 +432,7 @@ $(document).ready(function(){
         self.internal_name = internal_name;
         self.name = name;
         self.value = value;
+console.log(prop_type)
     }
 
     /**
@@ -452,7 +453,7 @@ $(document).ready(function(){
         self.getColorForOption = function(option_id) {
             basic = ['option1', 'option2', 'option3'];
             basic_index = basic.indexOf(option_id);
-
+console.log(option_id)
             if ( basic_index >= 0 ) {
                 return self.basicColors[basic_index];
             }else{
