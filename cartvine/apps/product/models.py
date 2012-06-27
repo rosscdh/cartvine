@@ -225,7 +225,12 @@ class ProductVariant(models.Model):
         for i,p in enumerate(self.product.all_properties()):
             if p['option_id'] == option_id:
                 p['value'] = value
-                self.data['all_properties'][i] = p
+
+                try:
+                    self.data['all_properties'][i] = p
+                except IndexError:
+                    self.data['all_properties'].append(p)
+
                 found = True
                 break
 

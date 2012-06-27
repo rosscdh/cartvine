@@ -213,18 +213,18 @@ class ProductVariantView(FormView):
             response['status'] = 'error'
             response['message'] = str(form.errors)
         else:
-            try:
-                variant = form.save()
-                response['pk'] = variant.pk
-                response['object'] = variant.data
-                response['object']['pk'] = variant.pk
-                response['object']['basic_options'] = variant.basic_options()
+            # try:
+            variant = form.save()
+            response['pk'] = variant.pk
+            response['object'] = variant.data
+            response['object']['pk'] = variant.pk
+            response['object']['basic_options'] = variant.basic_options()
 
-                response['status'] = 'success'
-                response['message'] = unicode(_('Success, Variant Updated'))
-            except:
-                response['status'] = 'error'
-                response['message'] = unicode(_('Strange an error occurred; but were not sure what.'))
+            response['status'] = 'success'
+            response['message'] = unicode(_('Success, Variant Updated'))
+            # except:
+            #     response['status'] = 'error'
+            #     response['message'] = unicode(_('Strange an error occurred; but were not sure what.'))
 
 
         return HttpResponse(json.dumps(response), content_type='text/json')
