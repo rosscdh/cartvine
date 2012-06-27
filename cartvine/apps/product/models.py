@@ -10,6 +10,9 @@ from cartvine.apps.shop.models import Shop
 from managers import ProductManager
 
 
+def get_property_dict(**kwargs):
+    return {"option_id": kwargs['option_id'], "name": kwargs['name'], "value": kwargs['value']}
+
 def get_color_range(num_colors):
     colors=[]
     if num_colors > 0:
@@ -93,6 +96,7 @@ class Product(models.Model):
         return options
 
     def get_data_options(self, options=None):
+        """ @KEYMETHOD """
         if options is None:
             options = {}
             for option_id,o in self.BASIC_OPTIONS.get_choices():
@@ -125,14 +129,17 @@ class Product(models.Model):
 
     def reset_basic_properties(self):
         self.data['properties_basic'] = {}
+        for v in self.productvariant_set.all():
+            for p in v.all_properties():
+                self.data['properties_basic'][p['option_id']] = get_property_dict(option_id=p['option_id'], name=p['name'], value=None)
 
     def set_basic_property(self, value, option_id):
         if not self.has_basic_properties:
             self.reset_basic_properties()
 
-        if value != self.data['properties_basic']:
-            # is a change so update variants
-            pass
+        # if value != self.data['properties_basic'][option_id]:
+        #     # is a change so update variants
+        #     self.data['properties_basic'][option_id] = value
 
         self.data['properties_basic'][option_id] = value
 
@@ -241,7 +248,8 @@ class ProductVariant(models.Model):
                 break
 
         if found is False:
-            self.data['all_properties'].append({"option_id": option_id, "name": None, "value": value})
+            new_property = get_property_dict(option_id=option_id, name=None, value=value)
+            self.data['all_properties'].append(new_property)
         return found
 
     def ensure_all_properties(self):
