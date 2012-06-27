@@ -167,7 +167,7 @@
                                 {% endfor %}
                                 <td class="value cen">
                                     <div class="property-controls controls">
-                                        <a data-toggle="modal" data-variant_pk="{{ variant.pk }}" href="#editVariationModal" class="edit btn-modal-form"><i class="icon-pencil"></i></a>
+                                        <a data-toggle="modal" data-option_id="" data-property_type="variant" data-variant_pk="{{ variant.pk }}" href="#editVariationModal" class="edit btn-modal-form"><i class="icon-pencil"></i></a>
                                         <a href="" data-option_id="" data-property_type="variant" data-variant_pk="{{ variant.pk }}" class="delete"><i class="icon-remove"></i></a>
                                         <a href="#" class="btn btn-mini disabled pull-right"><i class="icon-resize-vertical"></i></a>
                                     </div>
@@ -633,13 +633,15 @@ $(document).ready(function(){
             var url = '{% url "product:delete_variant" pk=0 %}';
             url = url.replace('0', variant_pk);
         }
-        $.ajax({
-          type: 'DELETE',
-          url: url
-        })
-        .success(function(data, textStatus, jqXHR) {
-            element.closest('tr').remove();
-        });
+        if (url != 'undefined') {
+            $.ajax({
+              type: 'DELETE',
+              url: url
+            })
+            .success(function(data, textStatus, jqXHR) {
+                element.closest('tr').remove();
+            });
+        }
 
     });
 
@@ -647,6 +649,11 @@ $(document).ready(function(){
         event.preventDefault();
         var option_id = $(this).attr('data-option_id');
         var property_type = $(this).attr('data-property_type');
+
+        if (property_type == 'variant') {
+            // do not apply to variants
+            return false;
+        }
 
         var tr = $(this).closest('tr');
 

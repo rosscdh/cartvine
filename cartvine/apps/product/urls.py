@@ -7,7 +7,8 @@ from cartvine.decorators import shop_login_required
 from models import ProductVariant
 from views import ProductListView, ProductDetailView, ProductSearchView, \
 ProductPropertiesView, ProductVariantView, BaseProductPropertiesView, \
-BasicProductPropertiesView, PlusProductPropertiesView, VariantDeleteView
+BasicProductPropertiesView, PlusProductPropertiesView, DeleteProductPropertyView, \
+VariantDeleteView
 
 
 
@@ -16,10 +17,12 @@ urlpatterns = patterns('',
 
     url(r'^(?P<slug>.+)/variant/(?P<variant_pk>\d+)/properties/$', login_required(ProductVariantView.as_view()), name='variant'),
     url(r'^(?P<slug>.+)/variant/create/properties/$', login_required(ProductVariantView.as_view()), name='add_variant'),
-    url(r'^(?P<pk>\d+)/$', login_required(csrf_exempt(VariantDeleteView.as_view(
+    url(r'^variant/(?P<pk>\d+)/delete/$', login_required(csrf_exempt(VariantDeleteView.as_view(
                        model=ProductVariant,
                        success_message='Deleted.'
                        ))), name='delete_variant'),
+
+    url(r'^(?P<slug>.+)/properties/(?P<opton_id>option(\d+))/delete/$', login_required(DeleteProductPropertyView.as_view()), name='delete_property'),
     url(r'^(?P<slug>.+)/properties/$', login_required(ProductPropertiesView.as_view()), name='properties'),
     url(r'^(?P<slug>.+)/properties/base/$', login_required(BaseProductPropertiesView.as_view()), name='base_properties'),
     url(r'^(?P<slug>.+)/properties/basic/$', login_required(BasicProductPropertiesView.as_view()), name='basic_properties'),
