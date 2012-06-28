@@ -168,9 +168,6 @@
                         <td class="span10">
                             <select name="variant-select-options" id="variant-select-options">
                                 <option value="null"></option>
-                                <optgroup label="Shopify Functions">
-                                    <option value="sync-variants">{% trans 'Sync Selected with Shopify' %}</option>
-                                </optgroup>
                                 <optgroup label="Danger Zone">
                                     <option value="delete-variants">{% trans 'Delete Selected' %}</option>
                                 </optgroup>
@@ -251,18 +248,16 @@ color: #da4f49;
     <form id="editPlusProperty" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
         <input type="hidden" name="property_type" value="{{property_type}}"/>
         <input type="hidden" name="option_id" value="{{option_id}}"/>
-        <label>{{label}}</label>
-        <select id="" name="">
-            <optgroup label="Existing">
+        <label for="value">{{label}}</label>
+        <select id="" class="property-value" name="">
             {{#each select_option_list}}
-            <option value="{{value}}">{{name}}</option>
+            <option value="{{value}}"{{#if disabled}} disabled="true"{{/if}}{{#if selected}} selected="true"{{/if}}>{{name}}</option>
             {{/each}}
-            </optgroup>
             <optgroup label="----------">
-                <option value="add">Custom</option>
+                <option value="add"{{#unless has_selected}} selected="true"{{/unless}}>Custom</option>
             </optgroup>
         </select>
-        <input type="text" data-bind="" name="value" value="{{value}}"/>
+        <input type="text" class="property-value" name="value" value="{{value}}"/>
         <div class="modal-footer pull-right">
             <button type="add" id="" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
             <a href="#" onclick="App.resetPreviousEditTr();" class="delete"><i class="icon-remove"></i></a>
@@ -280,7 +275,7 @@ color: #da4f49;
 </div>
 {% endtplhandlebars %}
 
-{% all_product_properties_script shop=object.shop %}
+{% all_product_properties_script shop=object.shop product=object %}
 
 <script type="text/javascript" id="data-variant_list">
 [{% for v in variants %}
@@ -478,20 +473,42 @@ $(document).ready(function(){
 
         self.currentPropertyTrHtml = null;
 
+        self.basic = ['option1', 'option2', 'option3'];
         self.basicColors = [{% for c in object.OPTION_COLORS.get_values %}'{{ c }}',{% endfor %}];
         self.optionColors = { {% for o,c in object.property_colors.iteritems %}"{{ o }}":"{{ c }}",{% endfor %} };
 
         var allproductproperties_list = eval($('script#data-all_product_properties_list').html());
         self.allProductProperties = ko.observableArray(allproductproperties_list);
+        // props that have been used
+        self.usedGlobalProperties = ko.observableArray([]);
 
-        self.getGlobalOptionsForProductOption = function(option_id) {
+        self.getGlobalOptionsForProductOption = function(context) {
+            var option_id = context['option_id']
             var allProductProperties = self.allProductProperties()[0];
-            return allProductProperties[option_id];
+            var options_list = [];
+            var disabled = false;
+            var selected = false;
+            for (o in allProductProperties) {
+                for (p in allProductProperties[o]) {
+                    if (self.basic.indexOf() >= 0 && self.usedGlobalProperties().indexOf(o) >= 0) { 
+                        // not a basic option and not already used
+                        disabled = true;
+                    }
+                    if (o == option_id) {
+                        selected = true;
+                    }
+                    allProductProperties[o][p]['option_id'] = o;
+                    allProductProperties[o][p]['disabled'] = disabled;
+                    allProductProperties[o][p]['selected'] = selected;
+                    options_list.push(allProductProperties[o][p]);
+                }
+            }
+
+            return {'options': options_list, 'has_selected': selected}
         }
 
         self.getColorForOption = function(option_id) {
-            basic = ['option1', 'option2', 'option3'];
-            basic_index = basic.indexOf(option_id);
+            var basic_index = self.basic.indexOf(option_id);
             if ( basic_index >= 0 ) {
                 return self.basicColors[basic_index];
             }else{
@@ -530,7 +547,9 @@ $(document).ready(function(){
             }else{
                 var source   = $("script#plus-property-form").html();
                 context.property_type = {{ object.PROPERTY_TYPE.plus }};
-                context.select_option_list = self.getGlobalOptionsForProductOption(option_id);
+                select_object = self.getGlobalOptionsForProductOption(context);
+                context.select_option_list = select_object['options'];
+                context.has_selected = select_object['has_selected'];
                 App.ProductView.formPostUrl('{% url 'product:plus_properties' slug=object.slug %}');
             }
             var template = Handlebars.compile(source);

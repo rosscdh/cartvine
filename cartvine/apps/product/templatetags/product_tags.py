@@ -62,10 +62,10 @@ color_plus.is_safe = True
 
 
 @register.inclusion_tag('product/partials/product_properties.html')
-def all_product_properties_script(shop):
+def all_product_properties_script(shop, product):
     property_list = {}
     found_items = {}
-    for product in Product.objects.by_shop(shop).all():
+    for product in Product.objects.by_shop(shop).exclude(pk=product.pk).all():
         for p in product.all_properties():
             slug = slugify(p['name'])
             # initializers
@@ -76,7 +76,8 @@ def all_product_properties_script(shop):
             # make it a unique list
             if slug not in found_items[p['option_id']]:
                 found_items[p['option_id']].append(slug)
-                property_list[p['option_id']].append(p)
+                if p['name'] not in [None,'','None']:
+                    property_list[p['option_id']].append(p)
 
 
     return {'property_list': property_list}
