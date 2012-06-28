@@ -256,7 +256,7 @@ color: #da4f49;
                 <option class="custom-value" value="add"{{#unless has_selected}} selected="true"{{/unless}}>Custom</option>
             </optgroup>
         </select>
-        <input type="text" class="property-value" name="value" value="{{value}}"/>
+        <input type="text"{{#if has_selected}} style="display:none;"{{/if}} class="property-value" name="value" value="{{value}}"/>
         <div class="modal-footer pull-right">
             <button type="add" id="" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
             <a href="#" onclick="App.resetPreviousEditTr();" class="delete"><i class="icon-remove"></i></a>
@@ -295,6 +295,7 @@ $(document).ready(function(){
 
         self.theFormName = ko.observable('form#addPlusProperty');
         self.showAddForm = ko.observable(false);
+
         self.selectedProperty = ko.observable();
         self.basicProperties = ko.observableArray([{% for o,v in object.basic_properties %}ko.observable(new ProductOption('basic', '{{ o }}','{{ o }}','{{ v }}')),{% endfor %}]);
         self.plusProperties = ko.observableArray([{% for o,v in object.plus_properties %}ko.observable(new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}')),{% endfor %}]);
@@ -484,9 +485,9 @@ $(document).ready(function(){
                         // not a basic option and not already used
                         disabled = true;
                     }
-                    if (o == option_id) {
-                        selected = true;
-                    }
+                    // if (o == option_id) {
+                    //     //selected = true;
+                    // }
                     allProductProperties[o][p]['option_id'] = o;
                     allProductProperties[o][p]['disabled'] = disabled;
                     allProductProperties[o][p]['selected'] = selected;
@@ -768,9 +769,9 @@ $(document).ready(function(){
         var custom_option = $(this).find('option.custom-value');
 
         if ($(this).val() == custom_option.val()) {
-            target_input.css('display', 'block')
+            target_input.show();
         }else{
-            target_input.css('display', 'none')
+            target_input.hide();
         }
     });
     
