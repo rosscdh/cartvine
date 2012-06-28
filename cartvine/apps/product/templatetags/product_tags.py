@@ -2,6 +2,7 @@ from django.conf import settings
 from django import template
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
+from django.template.defaultfilters import slugify
 from urlparse import urlparse
 
 from cartvine.utils import get_namedtuple_choices
@@ -58,4 +59,25 @@ option_color.is_safe = True
 def color_plus(option_id):
     return '%s' %('none',)    
 color_plus.is_safe = True
+
+
+@register.inclusion_tag('product/partials/product_properties.html')
+def all_product_properties_script():
+    property_list = {}
+    found_items = {}
+    for product in Product.objects.all():
+        for p in product.all_properties():
+            slug = slugify(p['name'])
+            # initializers
+            if p['option_id'] not in property_list:
+                property_list[p['option_id']] = []
+                found_items[p['option_id']] = []
+
+            # make it a unique list
+            if slug not in found_items[p['option_id']]:
+                found_items[p['option_id']].append(slug)
+                property_list[p['option_id']].append(p)
+
+
+    return {'property_list': property_list}
 
