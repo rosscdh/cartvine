@@ -189,7 +189,6 @@
 
 {% include 'product/forms/variant_props.html' %}
 
-
 {% block css %}
 <style>
 div.controls{
@@ -254,7 +253,7 @@ color: #da4f49;
             <option value="{{value}}"{{#if disabled}} disabled="true"{{/if}}{{#if selected}} selected="true"{{/if}}>{{name}}</option>
             {{/each}}
             <optgroup label="----------">
-                <option value="add"{{#unless has_selected}} selected="true"{{/unless}}>Custom</option>
+                <option class="custom-value" value="add"{{#unless has_selected}} selected="true"{{/unless}}>Custom</option>
             </optgroup>
         </select>
         <input type="text" class="property-value" name="value" value="{{value}}"/>
@@ -291,6 +290,7 @@ $(document).ready(function(){
         var self = this;
 
         self.formSubmitMessage = ko.observable('');
+        self.blankPlusProperty = new ProductOption('plus', '','','');
         self.formPostUrl = ko.observable("{% url 'product:plus_properties' slug=object.slug %}");
 
         self.theFormName = ko.observable('form#addPlusProperty');
@@ -321,18 +321,8 @@ $(document).ready(function(){
 
         self.hideAddForm = function() {
             self.showAddForm(false);
-            // var theForm = $(self.theFormName);
-            // var valueField = theForm.find('input[name=value]:first')
-            // var optionidField = theForm.find('input[name=option_id]:first')
-            // var propertyTypeField = theForm.find('input[name=property_type]:first')
-            // valueField.attr('value','');
-            // optionidField.attr('value','');
-            // propertyTypeField.attr('value','');
-            // $.each($(self.theFormName).find('input'), function(index,element) {
-            //     if ($(element).attr('name') != 'csrfmiddlewaretoken') {
-            //         $(element).val('');
-            //     }
-            // });
+            var theForm = $(self.theFormName());
+            theForm.find('input[name=value]:first').attr('value','');
             self.formSubmitMessage('');
         }
     }
@@ -771,6 +761,20 @@ $(document).ready(function(){
         }
         $(this).prop('selectedIndex', 0);
     });
+
+    $('select.property-value').live('change', function(event){
+        // class="custom-value"
+        var target_input = $(this).closest('form').find('input.property-value:first');
+        var custom_option = $(this).find('option.custom-value');
+
+        if ($(this).val() == custom_option.val()) {
+            target_input.css('display', 'block')
+        }else{
+            target_input.css('display', 'none')
+        }
+    });
+    
+    
 
 });
 </script>
