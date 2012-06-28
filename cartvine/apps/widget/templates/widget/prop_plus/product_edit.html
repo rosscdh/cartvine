@@ -299,7 +299,12 @@ $(document).ready(function(){
             var product = response.object;
             var new_property = product.all_properties[product.all_properties.length-1];
             var option = new ProductOption('plus',new_property.option_id,new_property.value,new_property.name);
+
+            // add to the product view (need to merge these into one)
             self.plusProperties.push(ko.observable(option));
+            // add to the variant view (need to merge these into one)
+            App.VariantView.extraProductOptions.push(ko.observable(option));
+
             App.ProductView.hideAddForm();
         }
 
