@@ -40,7 +40,7 @@
                                 <td class="value" data-option_id="vendor"><span>{{ object.data.vendor }}</span></td>
                             </tr>
                         </tbody>
-                        <tbody class="basicProperties" data-bind="foreach: basicProperties">
+                        <tbody class="basicProperties" data-bind="foreach: basicProperties()">
                             <tr data-bind="event: {mouseover: $parent.showControls, mouseout: $parent.hideControls}">
                                 <td class="name" data-property_type="basic"  data-bind="attr: {'data-option_id': internal_name}">
                                     <span class="value" data-bind="html: value"></span>
@@ -49,11 +49,11 @@
                                 <td class="value" data-option_id="{{ property.option_id }}">&nbsp;</td>
                             </tr>
                         </tbody>
-                        <tbody class="plusProperties" data-bind="foreach: plusProperties">
+                        <tbody class="plusProperties" data-bind="foreach: plusProperties()">
                             <tr>
                                 <td class="name" data-property_type="plus"  data-bind="attr: {'data-option_id': internal_name}">
                                     <span class="value" data-bind="html: value"></span>
-                                    <div class="pull-right" data-bind="style: { color: App.getColorForOption(name) }"><span class="tiny" data-bind="html: name"></span></div>
+                                    <div class="pull-right" data-bind="style: { color: App.getColorForOption(internal_name) }"><span class="tiny" data-bind="html: internal_name"></span></div>
                                 </td>
                                 <td class="value" data-option_id="{{ property.option_id }}">&nbsp;</td>
                             </tr>
@@ -61,7 +61,7 @@
                         <tbody id="addPropertyInterface" class="addProperties" data-bind="visible: showAddForm()">
                             <tr>
                                 <td colspan="2" class="name modal-footer">
-                                    <div class="form-message" data-bind="html: formSubmitMessage"></div>
+                                    <div class="form-message" data-bind="html: formSubmitMessage()"></div>
                                     <form id="addPlusProperty" class="" action="{% url 'product:plus_properties' slug=object.slug %}" method="POST">{% csrf_token %}
                                         <input type="hidden" name="option_id" value=""/>
                                         <label>{% trans 'New Property' %}</label>
@@ -215,7 +215,7 @@ color: #da4f49;
     <label>{{label}}</label>
 </td>
 <td class="form">
-    <div class="form-message" data-bind="html: App.ProductView.formSubmitMessage"></div>
+    <div class="form-message" data-bind="html: App.ProductView.formSubmitMessage()"></div>
     <form id="editBaseProperty" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
         <input type="hidden" name="property_type" value="{{property_type}}"/>
         <input type="hidden" name="name" value="{{option_id}}"/>
@@ -231,7 +231,7 @@ color: #da4f49;
 
 {% tplhandlebars "basic-property-form" %}
 <td id="edit-properties-form" colspan="2" class="form name">
-    <div class="form-message" data-bind="html: App.ProductView.formSubmitMessage"></div>
+    <div class="form-message" data-bind="html: App.ProductView.formSubmitMessage()"></div>
     <form id="editBasicProperty" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
         <input type="hidden" name="property_type" value="{{property_type}}"/>
         <input type="hidden" name="option_id" value="{{option_id}}"/>
@@ -247,7 +247,7 @@ color: #da4f49;
 
 {% tplhandlebars "plus-property-form" %}
 <td id="edit-properties-form" colspan="2" class="form name">
-    <div class="form-message" data-bind="html: App.ProductView.formSubmitMessage"></div>
+    <div class="form-message" data-bind="html: App.ProductView.formSubmitMessage()"></div>
     <form id="editPlusProperty" class="property-form" action="{{form_url}}" method="POST">{% csrf_token %}
         <input type="hidden" name="property_type" value="{{property_type}}"/>
         <input type="hidden" name="option_id" value="{{option_id}}"/>
@@ -289,14 +289,18 @@ $(document).ready(function(){
         self.theFormName = ko.observable('form#addPlusProperty');
         self.showAddForm = ko.observable(false);
         self.selectedProperty = ko.observable();
-        self.basicProperties = ko.observableArray([{% for o,v in object.basic_properties %}new ProductOption('basic', '{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
-        self.plusProperties = ko.observableArray([{% for o,v in object.plus_properties %}new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
+        self.basicProperties = ko.observableArray([{% for o,v in object.basic_properties %}ko.observable(new ProductOption('basic', '{{ o }}','{{ o }}','{{ v }}')),{% endfor %}]);
+        self.plusProperties = ko.observableArray([{% for o,v in object.plus_properties %}ko.observable(new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}')),{% endfor %}]);
 
         /**
         * method to process the form postback
         */
         self.processFormResponseObject = function(response) {
-            console.log('yay in processFormResponseObject')
+            var product = response.object;
+            var new_property = product.all_properties[product.all_properties.length-1];
+            var option = new ProductOption('plus',new_property.option_id,new_property.value,new_property.name);
+            self.plusProperties.push(ko.observable(option));
+            App.ProductView.hideAddForm();
         }
 
         self.showAddPropButton = function() {
@@ -305,6 +309,9 @@ $(document).ready(function(){
 
         self.hideAddForm = function() {
             self.showAddForm(false);
+            $.each($(self.theFormName).find('input[type=text]'), function(index,element) {
+                $(element).val('');
+            });
             self.formSubmitMessage('');
         }
     }
@@ -314,8 +321,8 @@ $(document).ready(function(){
 
         self.blankVariant = new Variant(null,null,0,null,0,0,false,false,false,0,[]);
         self.selectedVariant = ko.observable(self.blankVariant);
-        self.basicProductOptions = ko.observableArray([{% for o,v in object.basic_properties %}new ProductOption('basic','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
-        self.extraProductOptions = ko.observableArray([{% for o,v in object.plus_properties %}new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}'),{% endfor %}]);
+        self.basicProductOptions = ko.observableArray([{% for o,v in object.basic_properties %}ko.observable(new ProductOption('basic','{{ o }}','{{ o }}','{{ v }}')),{% endfor %}]);
+        self.extraProductOptions = ko.observableArray([{% for o,v in object.plus_properties %}ko.observable(new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}')),{% endfor %}]);
 
         self.theFormName = ko.observable('#form-variant-props');
         self.formTitle = ko.observable('');
@@ -415,7 +422,6 @@ $(document).ready(function(){
 
             $.each(self.all_properties(), function(option_id, object) {
                 if (option_id == requested_option_id) {
-                console.log(option_id+'  ==  '+requested_option_id + ' : '+ object.value)
                     return_value = object.value;
                 }
             });
@@ -432,7 +438,6 @@ $(document).ready(function(){
         self.internal_name = internal_name;
         self.name = name;
         self.value = value;
-console.log(prop_type)
     }
 
     /**
@@ -453,7 +458,6 @@ console.log(prop_type)
         self.getColorForOption = function(option_id) {
             basic = ['option1', 'option2', 'option3'];
             basic_index = basic.indexOf(option_id);
-console.log(option_id)
             if ( basic_index >= 0 ) {
                 return self.basicColors[basic_index];
             }else{
@@ -596,7 +600,7 @@ console.log(option_id)
         var target = $(this).find('td:last');
         if ($(this).find('td form').length == 0 && $(this).find('div.property-controls').length == 0) {
 
-            var option_id = target.attr('data-option_id')
+            var option_id = $(this).find('td:first').attr('data-option_id')
             var property_type = $(this).find('td:first').attr('data-property_type');
             var controls = App.propertyControls($(this), option_id, property_type);
 
@@ -619,7 +623,11 @@ console.log(option_id)
         if (property_type == 'variant') {
             var variant_pk = $(this).attr('data-variant_pk');
             var url = '{% url "product:delete_variant" pk=0 %}';
-            url = url.replace('0', variant_pk);
+            url = url.replace('/0/', '/'+ variant_pk +'/');
+        }else if (property_type == 'plus') {
+            var url = '{% url "product:delete_property" slug=object.slug option="option0" %}';
+            url = url.replace('option0', option_id);
+            console.log(url)
         }
         if (url != 'undefined') {
             $.ajax({
@@ -706,7 +714,6 @@ console.log(option_id)
         num_items_selected = $('input[type="checkbox"].option-variant:checked').length;
         if (num_items_selected > 0) {
             items_selected = $('input[type="checkbox"].option-variant:checked');
-            console.log('Send '+ $(this).val() +' event to backend for ids: ' + items_selected);
         }
         $(this).prop('selectedIndex', 0);
     });

@@ -22,12 +22,12 @@ urlpatterns = patterns('',
                        success_message='Deleted.'
                        ))), name='delete_variant'),
 
-    url(r'^(?P<slug>.+)/properties/(?P<opton_id>option(\d+))/delete/$', login_required(DeleteProductPropertyView.as_view()), name='delete_property'),
+    url(r'^(?P<slug>.+)/properties/(?P<option>.+)/delete/$', login_required(csrf_exempt(DeleteProductPropertyView.as_view())), name='delete_property'),
     url(r'^(?P<slug>.+)/properties/$', login_required(ProductPropertiesView.as_view()), name='properties'),
     url(r'^(?P<slug>.+)/properties/base/$', login_required(BaseProductPropertiesView.as_view()), name='base_properties'),
     url(r'^(?P<slug>.+)/properties/basic/$', login_required(BasicProductPropertiesView.as_view()), name='basic_properties'),
     url(r'^(?P<slug>.+)/properties/plus/$', login_required(PlusProductPropertiesView.as_view()), name='plus_properties'),
 
-    url(r'^(?P<slug>.*)/$', login_required(ProductDetailView.as_view()), name='info'),
+    url(r'^(?P<slug>.+)/$', login_required(ProductDetailView.as_view()), name='info'),
     url(r'^$', login_required(ProductListView.as_view()), name='index'),
 )
