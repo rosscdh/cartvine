@@ -62,10 +62,10 @@ color_plus.is_safe = True
 
 
 @register.inclusion_tag('product/partials/product_properties.html')
-def all_product_properties_script():
+def all_product_properties_script(shop):
     property_list = {}
     found_items = {}
-    for product in Product.objects.all():
+    for product in Product.objects.by_shop(shop).all():
         for p in product.all_properties():
             slug = slugify(p['name'])
             # initializers

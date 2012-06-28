@@ -25,3 +25,13 @@ class ProductManager(models.Manager):
 
         return qs
 
+    def by_shop(self, shop):
+        """ Filter Products by shop """
+        qs = self.get_query_set()
+        try:
+            qs = qs.filter(shop=shop)
+        except AttributeError:
+            pass
+
+        return qs
+

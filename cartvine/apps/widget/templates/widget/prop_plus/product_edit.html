@@ -252,6 +252,16 @@ color: #da4f49;
         <input type="hidden" name="property_type" value="{{property_type}}"/>
         <input type="hidden" name="option_id" value="{{option_id}}"/>
         <label>{{label}}</label>
+        <select id="" name="">
+            <optgroup label="Existing">
+            {{#each select_option_list}}
+            <option value="{{value}}">{{name}}</option>
+            {{/each}}
+            </optgroup>
+            <optgroup label="----------">
+                <option value="add">Custom</option>
+            </optgroup>
+        </select>
         <input type="text" data-bind="" name="value" value="{{value}}"/>
         <div class="modal-footer pull-right">
             <button type="add" id="" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
@@ -270,7 +280,7 @@ color: #da4f49;
 </div>
 {% endtplhandlebars %}
 
-{% all_product_properties_script %}
+{% all_product_properties_script shop=object.shop %}
 
 <script type="text/javascript" id="data-variant_list">
 [{% for v in variants %}
@@ -474,8 +484,9 @@ $(document).ready(function(){
         var allproductproperties_list = eval($('script#data-all_product_properties_list').html());
         self.allProductProperties = ko.observableArray(allproductproperties_list);
 
-        self.getGlobalOptionsForProductOption = function getGlobalOptionsForProductOption (option_id) {
-            
+        self.getGlobalOptionsForProductOption = function(option_id) {
+            var allProductProperties = self.allProductProperties()[0];
+            return allProductProperties[option_id];
         }
 
         self.getColorForOption = function(option_id) {
@@ -519,6 +530,7 @@ $(document).ready(function(){
             }else{
                 var source   = $("script#plus-property-form").html();
                 context.property_type = {{ object.PROPERTY_TYPE.plus }};
+                context.select_option_list = self.getGlobalOptionsForProductOption(option_id);
                 App.ProductView.formPostUrl('{% url 'product:plus_properties' slug=object.slug %}');
             }
             var template = Handlebars.compile(source);
