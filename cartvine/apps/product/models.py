@@ -1,5 +1,9 @@
 from django.db import models
 from django.template.defaultfilters import slugify
+
+from django.contrib.contenttypes.models import ContentType
+from django.utils.encoding import force_unicode
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
 from django.dispatch import receiver
 
 import colorsys
@@ -135,7 +139,7 @@ class Product(models.Model):
             new_property = get_property_dict(option_id=option_id, name=value, value=None)
             self.data['all_properties'].append(new_property)
             # Add property to variants signal
-            add_variant_property.send(sender=self, new_property=new_property)
+            add_variant_property.send(sender=self, user_id=1, new_property=new_property)
 
         return found
 
@@ -144,7 +148,7 @@ class Product(models.Model):
             if p['option_id'] == option_id:
                 del(self.data['all_properties'][i])
                 # Delete property from variants signal
-                delete_variant_property.send(sender=self, option_id=option_id)
+                delete_variant_property.send(sender=self, user_id=1, option_id=option_id)
 
     def basic_properties(self, options=None):
         """ @KEYMETHOD """
@@ -271,8 +275,11 @@ class ProductVariant(models.Model):
 
 @receiver(add_variant_property)
 def new_variant_property(sender, **kwargs):
+    user_id = kwargs['user_id']
     product_property = kwargs['new_property']
-    for v in sender.productvariant_set.all():
+    variant_list = sender.productvariant_set.all()
+    num_variants = len(variant_list)
+    for v in variant_list:
         found = False
         props = v.all_properties()
         for i,p in enumerate(props):
@@ -283,17 +290,26 @@ def new_variant_property(sender, **kwargs):
             new_property = get_property_dict(option_id=product_property['option_id'], name=product_property['name'], value=None)
             v.data['all_properties'].append(new_property)
             v.save()
-    print("add_variant_property Request finished!")
+    change_message = 'Added a new Property "%s" for %d Variants for Product - %s' %(product_property['name'], num_variants, sender.name,)
+    LogEntry.objects.log_action(user_id, ContentType.objects.get_for_model(sender).pk, sender.pk, force_unicode(sender), ADDITION, change_message)
+
 
 @receiver(delete_variant_property)
 def del_variant_property(sender, **kwargs):
+    user_id = kwargs['user_id']
     option_id = kwargs['option_id']
-    for v in sender.productvariant_set.all():
+    option_name = None
+    variant_list = sender.productvariant_set.all()
+    num_variants = len(variant_list)
+    for v in variant_list:
         props = v.all_properties()
         for i,p in enumerate(props):
             if p['option_id'] == option_id:
+                option_name = p['name']
                 del(props[i])
         v.set_data_all_properties(props)
         v.save()
     print("delete_variant_property Request finished!")
+    change_message = 'Deleted Property "%s" for %d Variants for Product - %s' %(option_name, num_variants, sender.name,)
+    LogEntry.objects.log_action(user_id, ContentType.objects.get_for_model(sender).pk, sender.pk, force_unicode(sender), DELETION, change_message)
 
