@@ -471,6 +471,13 @@ $(document).ready(function(){
         self.basicColors = [{% for c in object.OPTION_COLORS.get_values %}'{{ c }}',{% endfor %}];
         self.optionColors = { {% for o,c in object.property_colors.iteritems %}"{{ o }}":"{{ c }}",{% endfor %} };
 
+        var allproductproperties_list = eval($('script#data-all_product_properties_list').html());
+        self.allProductProperties = ko.observableArray(allproductproperties_list);
+
+        self.getGlobalOptionsForProductOption = function getGlobalOptionsForProductOption (option_id) {
+            
+        }
+
         self.getColorForOption = function(option_id) {
             basic = ['option1', 'option2', 'option3'];
             basic_index = basic.indexOf(option_id);

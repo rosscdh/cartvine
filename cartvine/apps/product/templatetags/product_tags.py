@@ -80,4 +80,4 @@ def all_product_properties_script():
 
 
     return {'property_list': property_list}
-
+all_product_properties_script.is_safe = True

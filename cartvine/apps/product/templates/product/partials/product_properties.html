@@ -1,5 +1,5 @@
 <script type="text/javascript" id="data-all_product_properties_list">
-[{% for option_id,prop_list in property_list.iteritems %}{% spaceless %}
-{'option_id': '{{ option_id }}', 'options': {% for p in prop_list %}{'name':'{{ p.name }}', 'default': '{{ p.value }}'}{% if not forloop.last %},{% endif %}{% endfor %}}{% if not forloop.last %},{% endif %}
-{% endspaceless %}{% endfor %}]
+[{ {% for option_id,prop_list in property_list.iteritems %} 
+"{{ option_id }}": [{% for p in prop_list %}{"name":"{{ p.name }}", "default": "{{ p.value }}"}{% if not forloop.last %},{% endif %}{% endfor %}]{% if not forloop.last %},{% endif %}
+{% endfor %} }]
 </script>
