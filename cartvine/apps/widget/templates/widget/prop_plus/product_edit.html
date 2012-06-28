@@ -314,9 +314,18 @@ $(document).ready(function(){
 
         self.hideAddForm = function() {
             self.showAddForm(false);
-            $.each($(self.theFormName).find('input[type=text]'), function(index,element) {
-                $(element).val('');
-            });
+            // var theForm = $(self.theFormName);
+            // var valueField = theForm.find('input[name=value]:first')
+            // var optionidField = theForm.find('input[name=option_id]:first')
+            // var propertyTypeField = theForm.find('input[name=property_type]:first')
+            // valueField.attr('value','');
+            // optionidField.attr('value','');
+            // propertyTypeField.attr('value','');
+            // $.each($(self.theFormName).find('input'), function(index,element) {
+            //     if ($(element).attr('name') != 'csrfmiddlewaretoken') {
+            //         $(element).val('');
+            //     }
+            // });
             self.formSubmitMessage('');
         }
     }
