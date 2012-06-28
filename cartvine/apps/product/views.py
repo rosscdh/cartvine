@@ -94,8 +94,13 @@ class ProductPropertiesView(FormView):
 
 
 class DeleteProductPropertyView(DetailView):
+    def get_object(self, queryset=None):
+        return Product.objects.get(slug=self.kwargs['slug'])
+
     def delete(self, request, *args, **kwargs):
-        print kwargs
+        self.object = self.get_object()
+
+        self.object.delete_property(self.kwargs['option'])
         response = {}
         return HttpResponse(json.dumps(response), content_type='text/json')
 

@@ -120,19 +120,24 @@ class Product(models.Model):
 
         option_id = self.ensure_option_id(option_id)
 
-        self.ensure_all_properties()
-
         for i,p in enumerate(self.all_properties()):
             if p['option_id'] == option_id:
                 p['name'] = value # This is the important line .. in Property name==value and in Variant value==value
                 self.data['all_properties'][i] = p
                 found = True
+                # Add property to variants signal
                 break
 
         if found is False:
             new_property = get_property_dict(option_id=option_id, name=value, value=None)
             self.data['all_properties'].append(new_property)
         return found
+
+    def delete_property(self, option_id):
+        for i,p in enumerate(self.all_properties()):
+            if p['option_id'] == option_id:
+                del(self.data['all_properties'][i])
+                # Delete property from variants signal
 
     def basic_properties(self, options=None):
         """ @KEYMETHOD """

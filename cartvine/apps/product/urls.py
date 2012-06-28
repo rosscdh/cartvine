@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from cartvine.utils import login_required
 from cartvine.decorators import shop_login_required
 
-from models import ProductVariant
+from models import Product, ProductVariant
 from views import ProductListView, ProductDetailView, ProductSearchView, \
 ProductPropertiesView, ProductVariantView, BaseProductPropertiesView, \
 BasicProductPropertiesView, PlusProductPropertiesView, DeleteProductPropertyView, \
@@ -22,7 +22,7 @@ urlpatterns = patterns('',
                        success_message='Deleted.'
                        ))), name='delete_variant'),
 
-    url(r'^(?P<slug>.+)/properties/(?P<option>.+)/delete/$', login_required(csrf_exempt(DeleteProductPropertyView.as_view())), name='delete_property'),
+    url(r'^(?P<slug>.+)/properties/(?P<option>.+)/delete/$', login_required(csrf_exempt(DeleteProductPropertyView.as_view(model=Product))), name='delete_property'),
     url(r'^(?P<slug>.+)/properties/$', login_required(ProductPropertiesView.as_view()), name='properties'),
     url(r'^(?P<slug>.+)/properties/base/$', login_required(BaseProductPropertiesView.as_view()), name='base_properties'),
     url(r'^(?P<slug>.+)/properties/basic/$', login_required(BasicProductPropertiesView.as_view()), name='basic_properties'),
