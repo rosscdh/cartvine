@@ -101,6 +101,7 @@ class DeleteProductPropertyView(DetailView):
         self.object = self.get_object()
 
         self.object.delete_property(self.kwargs['option'])
+        self.object.save()
         response = {}
         return HttpResponse(json.dumps(response), content_type='text/json')
 

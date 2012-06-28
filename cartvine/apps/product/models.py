@@ -1,5 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.dispatch import receiver
 
 import colorsys
 import webcolors
@@ -7,6 +8,9 @@ import webcolors
 from jsonfield import JSONField
 from cartvine.utils import get_namedtuple_choices, DictDiffer
 from cartvine.apps.shop.models import Shop
+
+from signals import add_variant_property, delete_variant_property
+
 from managers import ProductManager
 
 
@@ -125,12 +129,14 @@ class Product(models.Model):
                 p['name'] = value # This is the important line .. in Property name==value and in Variant value==value
                 self.data['all_properties'][i] = p
                 found = True
-                # Add property to variants signal
                 break
 
         if found is False:
             new_property = get_property_dict(option_id=option_id, name=value, value=None)
             self.data['all_properties'].append(new_property)
+            # Add property to variants signal
+            add_variant_property.send(sender=self, new_property=new_property)
+
         return found
 
     def delete_property(self, option_id):
@@ -138,6 +144,7 @@ class Product(models.Model):
             if p['option_id'] == option_id:
                 del(self.data['all_properties'][i])
                 # Delete property from variants signal
+                delete_variant_property.send(sender=self, option_id=option_id)
 
     def basic_properties(self, options=None):
         """ @KEYMETHOD """
@@ -252,6 +259,41 @@ class ProductVariant(models.Model):
         self.ensure_all_properties()
         return self.data['all_properties']
 
-    def set_data_all_properties(self):
-        properties = self.product.all_properties()
+    def set_data_all_properties(self, properties=None):
+        if properties is None:
+            properties = self.product.all_properties()
         self.data['all_properties'] = properties
+
+
+
+
+# ----- Recievers -----
+
+@receiver(add_variant_property)
+def new_variant_property(sender, **kwargs):
+    product_property = kwargs['new_property']
+    for v in sender.productvariant_set.all():
+        found = False
+        props = v.all_properties()
+        for i,p in enumerate(props):
+            if p['option_id'] == product_property['option_id']:
+                found = True
+                break
+        if found is False:
+            new_property = get_property_dict(option_id=product_property['option_id'], name=product_property['name'], value=None)
+            v.data['all_properties'].append(new_property)
+            v.save()
+    print("add_variant_property Request finished!")
+
+@receiver(delete_variant_property)
+def del_variant_property(sender, **kwargs):
+    option_id = kwargs['option_id']
+    for v in sender.productvariant_set.all():
+        props = v.all_properties()
+        for i,p in enumerate(props):
+            if p['option_id'] == option_id:
+                del(props[i])
+        v.set_data_all_properties(props)
+        v.save()
+    print("delete_variant_property Request finished!")
+
