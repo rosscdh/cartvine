@@ -558,7 +558,6 @@ $(document).ready(function(){
                     allProductProperties[o][p]['disabled'] = disabled;
                     allProductProperties[o][p]['selected'] = selected;
                     options_list.push(allProductProperties[o][p]);
-                    console.log(allProductProperties[o][p])
                 }
             }
 
@@ -738,7 +737,6 @@ $(document).ready(function(){
         }else if (property_type == 'plus') {
             var url = '{% url "product:delete_property" slug=object.slug option="option0" %}';
             url = url.replace('option0', option_id);
-            console.log(url)
         }
         if (url != 'undefined') {
             $.ajax({
@@ -757,7 +755,6 @@ $(document).ready(function(){
         var option_id = $(this).attr('data-option_id');
         var slug = $(this).attr('data-slug');
         var property_type = $(this).attr('data-property_type');
-        console.log(slug)
         if (property_type == 'variant') {
             // do not apply to variants
             return false;
