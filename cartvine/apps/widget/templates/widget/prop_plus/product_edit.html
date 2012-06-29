@@ -248,7 +248,7 @@ color: #da4f49;
         <input type="hidden" name="property_type" value="{{property_type}}"/>
         <input type="hidden" name="option_id" value="{{option_id}}"/>
         <label for="value">{{label}}</label>
-        <select id="" class="property-value" name="">
+        <select id="" class="property-selection" name="">
             {{#each select_option_list}}
             <option value="{{value}}"{{#if disabled}} disabled="true"{{/if}}{{#if selected}} selected="true"{{/if}}>{{name}}</option>
             {{/each}}
@@ -257,6 +257,7 @@ color: #da4f49;
             </optgroup>
         </select>
         <input type="text"{{#if has_selected}} style="display:none;"{{/if}} class="property-value" name="value" value="{{value}}"/>
+        <span class="default-value"></span>
         <div class="modal-footer pull-right">
             <button type="add" id="" href="#" class="submit-btn btn btn-small btn-success"><i class="icon-ok"></i>&nbsp;{% trans 'Save' %}</button>
             <a href="#" onclick="App.resetPreviousEditTr();" class="delete"><i class="icon-remove"></i></a>
@@ -267,9 +268,9 @@ color: #da4f49;
 
 {% tplhandlebars "edit-helper" %}
 <div class="property-controls controls pull-right">
-    <a href="" data-option_id="{{option_id}}" data-property_type="{{property_type}}" class="edit"><i class="icon-pencil"></i></a>
+    <a href="" data-option_id="{{option_id}}" data-slug="{{slug}}" data-property_type="{{property_type}}" class="edit"><i class="icon-pencil"></i></a>
     {{#if is_plus}}
-    <a href="" data-option_id="{{option_id}}" data-property_type="{{property_type}}" class="delete"><i class="icon-remove"></i></a>
+    <a href="" data-option_id="{{option_id}}" data-slug="{{slug}}" data-property_type="{{property_type}}" class="delete"><i class="icon-remove"></i></a>
     {{/if}}
 </div>
 {% endtplhandlebars %}
@@ -290,15 +291,15 @@ $(document).ready(function(){
         var self = this;
 
         self.formSubmitMessage = ko.observable('');
-        self.blankPlusProperty = new ProductOption('plus', '','','');
+        self.blankPlusProperty = new ProductOption('plus', '','','','');
         self.formPostUrl = ko.observable("{% url 'product:plus_properties' slug=object.slug %}");
 
         self.theFormName = ko.observable('form#addPlusProperty');
         self.showAddForm = ko.observable(false);
 
         self.selectedProperty = ko.observable();
-        self.basicProperties = ko.observableArray([{% for o,v in object.basic_properties %}ko.observable(new ProductOption('basic', '{{ o }}','{{ o }}','{{ v }}')),{% endfor %}]);
-        self.plusProperties = ko.observableArray([{% for o,v in object.plus_properties %}ko.observable(new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}')),{% endfor %}]);
+        self.basicProperties = ko.observableArray([{% for o,v in object.basic_properties %}ko.observable(new ProductOption('basic', '{{ o }}','{{ v.slug }}','{{ o }}','{{ v.name }}')),{% endfor %}]);
+        self.plusProperties = ko.observableArray([{% for o,v in object.plus_properties %}ko.observable(new ProductOption('plus','{{ o }}','{{ v.slug }}','{{ o }}','{{ v.name }}')),{% endfor %}]);
 
         /**
         * method to process the form postback
@@ -333,8 +334,8 @@ $(document).ready(function(){
 
         self.blankVariant = new Variant(null,null,0,null,0,0,false,false,false,0,[]);
         self.selectedVariant = ko.observable(self.blankVariant);
-        self.basicProductOptions = ko.observableArray([{% for o,v in object.basic_properties %}ko.observable(new ProductOption('basic','{{ o }}','{{ o }}','{{ v }}')),{% endfor %}]);
-        self.extraProductOptions = ko.observableArray([{% for o,v in object.plus_properties %}ko.observable(new ProductOption('plus','{{ o }}','{{ o }}','{{ v }}')),{% endfor %}]);
+        self.basicProductOptions = ko.observableArray([{% for o,v in object.basic_properties %}ko.observable(new ProductOption('basic','{{ o }}','{{ v.slug }}','{{ o }}','{{ v.name }}')),{% endfor %}]);
+        self.extraProductOptions = ko.observableArray([{% for o,v in object.plus_properties %}ko.observable(new ProductOption('plus','{{ o }}','{{ v.slug }}', '{{ o }}','{{ v.name }}')),{% endfor %}]);
 
         self.theFormName = ko.observable('#form-variant-props');
         self.formTitle = ko.observable('');
@@ -351,7 +352,7 @@ $(document).ready(function(){
 
         self.updateVariantList = function(variant) {
             var is_present = false;
-            if (variant.pk != undefined) {
+            if (variant.pk != 'undefined') {
                 for (var i=0; i < self.variantsList().length; i++) {
                     if (self.variantsList()[i].pk == variant.pk) {
                         // update the variant
@@ -444,10 +445,11 @@ $(document).ready(function(){
         self.init();
     }
 
-    function ProductOption(prop_type,internal_name,name,value) {
+    function ProductOption(prop_type,internal_name,slug,name,value) {
         var self = this;
         self.prop_type = prop_type;
         self.internal_name = internal_name;
+        self.slug = slug;
         self.name = name;
         self.value = value;
     }
@@ -492,6 +494,7 @@ $(document).ready(function(){
                     allProductProperties[o][p]['disabled'] = disabled;
                     allProductProperties[o][p]['selected'] = selected;
                     options_list.push(allProductProperties[o][p]);
+                    console.log(allProductProperties[o][p])
                 }
             }
 
@@ -517,9 +520,10 @@ $(document).ready(function(){
             self.ProductView.hideAddForm(false);
         }
 
-        self.productPropertyForm = function(is_new, property_type, name, value, option_id) {
+        self.productPropertyForm = function(is_new, property_type, name, value, slug, option_id) {
             var context = {
                 option_id: option_id,
+                slug: slug,
                 label: (is_new == true) ? "{% trans 'New Property' %}" : "&nbsp;",
                 property_type: $.trim(property_type),
                 form_url: self.ProductView.formPostUrl(),
@@ -689,8 +693,9 @@ $(document).ready(function(){
     $('div.property-controls a.edit').live('click', function(event) {
         event.preventDefault();
         var option_id = $(this).attr('data-option_id');
+        var slug = $(this).attr('data-slug');
         var property_type = $(this).attr('data-property_type');
-
+        console.log(slug)
         if (property_type == 'variant') {
             // do not apply to variants
             return false;
@@ -698,7 +703,7 @@ $(document).ready(function(){
 
         var tr = $(this).closest('tr');
 
-        if (tr.find('td.name span.value').text() != undefined) {
+        if (tr.find('td.name span.value').text() != 'undefined') {
             // restore the previous tr html
             App.resetPreviousEditTr();
             App.resetProductFormTr();
@@ -725,7 +730,7 @@ $(document).ready(function(){
                 var option_id = tr.find('td.name').attr('data-option_id');
                 property_type = tr.find('td.name').attr('data-property_type');
             }
-            var controls = App.productPropertyForm(false,property_type,name,value,option_id);
+            var controls = App.productPropertyForm(false,property_type,name,value,slug,option_id);
             // replace the current tr html with our control form
             tr.html(controls);
         }
@@ -740,7 +745,7 @@ $(document).ready(function(){
     $('a.btn-modal-form').live('click', function(event) {
         event.preventDefault();
         var variant_pk = $(this).attr('data-variant_pk');
-        if (variant_pk != undefined && variant_pk != 'add') {
+        if (variant_pk != 'undefined' && variant_pk != 'add') {
             App.VariantView.setSelectedVariant(variant_pk);
         }else{
             App.VariantView.updateSelectedVariant(App.VariantView.blankVariant);
