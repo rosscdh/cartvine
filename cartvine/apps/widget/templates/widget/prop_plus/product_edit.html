@@ -46,7 +46,11 @@
                                     <span class="value" data-bind="html: value"></span>
                                     <div class="pull-right" data-bind="style: { color: App.getColorForOption(internal_name) }"><span class="tiny" data-bind="html: name"></span></div>
                                 </td>
-                                <td class="value" data-option_id="{{ property.option_id }}">&nbsp;</td>
+                                <td class="value" data-option_id="{{ property.option_id }}">
+                                    <span data-bind="foreach: App.VariantView.getAllVariantValuesByOptionId(internal_name)">
+                                        <span data-bind="html: $data"></span>
+                                    </span>
+                                </td>
                             </tr>
                         </tbody>
                         <tbody class="plusProperties" data-bind="foreach: plusProperties()">
@@ -55,7 +59,11 @@
                                     <span class="value" data-bind="html: value"></span>
                                     <div class="pull-right" data-bind="style: { color: App.getColorForOption(internal_name) }"><span class="tiny" data-bind="html: internal_name"></span></div>
                                 </td>
-                                <td class="value" data-option_id="{{ property.option_id }}">&nbsp;</td>
+                                <td class="value" data-option_id="{{ property.option_id }}">
+                                    <span data-bind="foreach: App.VariantView.getAllVariantValuesByOptionId(internal_name)">
+                                        <span data-bind="html: $data"></span>
+                                    </span>
+                                </td>
                             </tr>
                         </tbody>
                         <tbody id="addPropertyInterface" class="addProperties" data-bind="visible: showAddForm()">
@@ -133,12 +141,12 @@
 						<thead>
 							<tr>
 								<th class="cen span1"><input type="checkbox" id="toggle-all-variants"></th>
-								<th>SKU</th>
-								<th>Price</th>
-								<th>In Stock</th>
                                 {% for option_id,option in object.basic_properties %}
-								<th>{{ option }}</th>
+								<th style="color:{{ option_id|option_color }};">{{ option.name }}</th>
 								{% endfor %}
+                                <th>SKU</th>
+                                <th>Price</th>
+                                <th>In Stock</th>
 								<th class="cen">(<i data-bind="text: App.VariantView.variantsList().length"></i> {% trans 'items' %})</th>
 							</tr>
 						</thead>
@@ -146,12 +154,12 @@
 						    {% for variant in variants %}
 						    <tr>
                                 <td class="cen"><input type="checkbox" class="option-variant" value=""/></td>
+                                {% for option in variant.all_properties|slice:"3" %}
+                                <td style="color:{{ option.option_id|option_color }};" class="value">{{ option.value }}</td>
+                                {% endfor %}
                                 <td class="value">{{variant.sku}}</td>
                                 <td class="value"><span data-bind="html: App.VariantView.currencySymbol"></span>{{variant.cost}}</td>
                                 <td class="value">{{variant.inventory_quantity}}</td>
-                                {% for option in variant.all_properties|slice:"3" %}
-                                <td class="value">{{ option.value }}</td>
-                                {% endfor %}
                                 <td class="value cen">
                                     <div class="property-controls controls">
                                         <a data-toggle="modal" data-option_id="" data-property_type="variant" data-variant_pk="{{ variant.pk }}" href="#editVariationModal" class="edit btn-modal-form"><i class="icon-pencil"></i></a>
@@ -307,7 +315,7 @@ $(document).ready(function(){
         self.processFormResponseObject = function(response) {
             var product = response.object;
             var new_property = product.all_properties[product.all_properties.length-1];
-            var option = new ProductOption('plus',new_property.option_id,new_property.value,new_property.name);
+            var option = new ProductOption('plus',new_property.option_id,new_property.slug,new_property.value,new_property.name);
 
             // add to the product view (need to merge these into one)
             self.plusProperties.push(ko.observable(option));
@@ -348,6 +356,16 @@ $(document).ready(function(){
         for (var i = 0; i < variant_list.length; i++) {
             v = variant_list[i];
             self.variantsList.push(new Variant(v.pk,v.provider_id,v.cost,v.sku,v.compare_at_price,v.weight,v.taxable,v.requires_shipping,v.inventory_management,v.inventory_quantity,v.all_properties));
+        }
+
+        self.getVariantByPk = function(pk) {
+            var variant = false;
+            for (var i=0; i < self.variantsList().length; i++) {
+                if (self.variantsList()[i].pk == pk) {
+                    variant = self.variantsList()[i];
+                }
+            }
+            return variant;
         }
 
         self.updateVariantList = function(variant) {
@@ -401,6 +419,28 @@ $(document).ready(function(){
             return self.formPostUrl;
         }
 
+        self.getAllVariantValuesByOptionId = function(option_id) {
+            var props = [];
+            var is_basic = false;
+            if (App.basic.indexOf(option_id) >= 0) {
+                is_basic = true;
+            }
+            for (var i=0; i < self.variantsList().length; i++) {
+                if (is_basic === true) {
+                    values = self.variantsList()[i].get_basic_properties(option_id);
+                    for (p in values) {
+                        props.push(values[p].value);
+                    }
+                }else{
+                    values = self.variantsList()[i].get_extra_properties(option_id);
+                    for (p in values) {
+                        props.push(values[p].value);
+                    }
+                }
+            }
+            return props;
+        }
+
         /**
         * method to process the form postback
         */
@@ -427,6 +467,30 @@ $(document).ready(function(){
         self.all_properties = ko.observable(all_properties);
 
         self.init = function () {
+        }
+
+        self.get_extra_properties = function(requested_option_id) {
+            var extra_props = []
+            $.each(self.all_properties(), function(option_id, object) {
+                if (App.basic.indexOf(option_id) == -1) {
+                    if (requested_option_id == 'undefined' || requested_option_id == option_id) {
+                        extra_props.push(object);
+                    }
+                }
+            });
+            return extra_props;
+        }
+
+        self.get_basic_properties = function(requested_option_id) {
+            var basic_props = []
+            $.each(self.all_properties(), function(option_id, object) {
+                if (App.basic.indexOf(option_id) >= 0) {
+                    if (requested_option_id == 'undefined' || requested_option_id == option_id) {
+                        basic_props.push(object);
+                    }
+                }
+            });
+            return basic_props;
         }
 
         self.get_value_for = function (type,option_id) {
@@ -483,7 +547,7 @@ $(document).ready(function(){
             var selected = false;
             for (o in allProductProperties) {
                 for (p in allProductProperties[o]) {
-                    if (self.basic.indexOf() >= 0 && self.usedGlobalProperties().indexOf(o) >= 0) { 
+                    if (self.basic.indexOf(o) >= 0 && self.usedGlobalProperties().indexOf(o) >= 0) { 
                         // not a basic option and not already used
                         disabled = true;
                     }
@@ -619,8 +683,6 @@ $(document).ready(function(){
     App = new PageMasterViewModel()
     // ----- KO Bindings -----
     ko.applyBindings(App);
-
-
 
     // Product Property helpers
     $('div#ProductProperties button#addProperty').live('click', function(event) {
