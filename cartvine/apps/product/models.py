@@ -19,7 +19,7 @@ from managers import ProductManager
 
 
 def get_property_dict(**kwargs):
-    return {"option_id": kwargs['option_id'], "name": kwargs['name'], "value": kwargs['value']}
+    return {"option_id": kwargs['option_id'], "slug": slugify(kwargs['name']), "name": kwargs['name'], "value": kwargs['value']}
 
 def get_color_range(num_colors):
     colors=[]
@@ -157,7 +157,7 @@ class Product(models.Model):
 
         for p in self.all_properties():
             if p['option_id'] in options:
-                basic_properties[p['option_id']] = p['name']
+                basic_properties[p['option_id']] = {'slug': p['slug'], 'name': p['name'],}
 
         return [(key, basic_properties[key]) for key in sorted(basic_properties.iterkeys())]
 
@@ -168,7 +168,7 @@ class Product(models.Model):
 
         for p in self.all_properties():
             if p['option_id'] not in options:
-                plus_properties[p['option_id']] = p['name']
+                plus_properties[p['option_id']] = {'slug': p['slug'], 'name': p['name'],}
 
         return [(key, plus_properties[key]) for key in sorted(plus_properties.iterkeys())]
 

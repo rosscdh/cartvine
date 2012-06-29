@@ -68,6 +68,7 @@ def all_product_properties_script(shop, product):
     for product in Product.objects.by_shop(shop).exclude(pk=product.pk).all():
         for p in product.all_properties():
             slug = slugify(p['name'])
+            p['slug'] = slug
             # initializers
             if p['option_id'] not in property_list:
                 property_list[p['option_id']] = []
